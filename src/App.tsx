@@ -2,7 +2,7 @@
 const App = () => {
   return (
     <main>
-  
+        hi
     </main>
   )
 }
