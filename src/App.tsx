@@ -1,10 +1,8 @@
 
-
-function App() {
-
+const App = () => {
   return (
     <main>
-      
+  
     </main>
   )
 }
