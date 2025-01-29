@@ -35,54 +35,55 @@ The goal is to create an innovative platform that helps students, particularly t
 - **Linting and Formatting:** ESLint and Prettier for code quality and consistency.
 
 **Structure of Project:**
-root/
-├── node_modules/
-├── public/
-├── src/
-│   ├── modules/
-│   ├── features/
-│   │   ├── applications/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   ├── services/
-│   │   │   └── tests/
-│   │   ├── auth/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   ├── services/
-│   │   │   └── tests/
-│   │   └── dashboards/
-│   │       ├── home/
-│   │       │   ├── components/
-│   │       │   ├── hooks/
-│   │       │   ├── services/
-│   │       │   └── tests/
-│   │       ├── internships/
-│   │       │   ├── components/
-│   │       │   ├── hooks/
-│   │       │   ├── services/
-│   │       │   └── tests/
-│   │       └── profileManagement/
-│   │           ├── components/
-│   │           ├── hooks/
-│   │           ├── services/
-│   │           └── tests/
-│   └── shared/
-│       ├── components/
-│       ├── hooks/
-│       ├── layout/
-│       ├── store/
-│       └── utils/
-├── App.tsx
-├── index.css
-├── main.tsx
-├── .gitignore
-├── eslint.config.js
-├── index.html
-├── package.json
-├── package-lock.json
-├── README.md
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.node.json
-└── vite.config.ts
+
+    root/
+    ├── node_modules/
+    ├── public/
+    ├── src/
+    │   ├── modules/
+    │   ├── features/
+    │   │   ├── applications/
+    │   │   │   ├── components/
+    │   │   │   ├── hooks/
+    │   │   │   ├── services/
+    │   │   │   └── tests/
+    │   │   ├── auth/
+    │   │   │   ├── components/
+    │   │   │   ├── hooks/
+    │   │   │   ├── services/
+    │   │   │   └── tests/
+    │   │   └── dashboards/
+    │   │       ├── home/
+    │   │       │   ├── components/
+    │   │       │   ├── hooks/
+    │   │       │   ├── services/
+    │   │       │   └── tests/
+    │   │       ├── internships/
+    │   │       │   ├── components/
+    │   │       │   ├── hooks/
+    │   │       │   ├── services/
+    │   │       │   └── tests/
+    │   │       └── profileManagement/
+    │   │           ├── components/
+    │   │           ├── hooks/
+    │   │           ├── services/
+    │   │           └── tests/
+    │   └── shared/
+    │       ├── components/
+    │       ├── hooks/
+    │       ├── layout/
+    │       ├── store/
+    │       └── utils/
+    ├── App.tsx
+    ├── index.css
+    ├── main.tsx
+    ├── .gitignore
+    ├── eslint.config.js
+    ├── index.html
+    ├── package.json
+    ├── package-lock.json
+    ├── README.md
+    ├── tsconfig.app.json
+    ├── tsconfig.json
+    ├── tsconfig.node.json
+    └── vite.config.ts
