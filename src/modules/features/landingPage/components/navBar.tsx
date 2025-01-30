@@ -9,7 +9,7 @@ export function NavBar() {
 
   const navItems = [
     { href: '/', label: 'Home' },
-    { href: '/', label: 'A&Q' },
+    { href: '/', label: 'Q&A' },
     { href: '/', label: 'Contact us' },
   ]
 
@@ -20,7 +20,7 @@ export function NavBar() {
           <div className="flex items-center">
             <a href="/" className="text-xl font-bold flex">
             <div className="flex flex-col ml-[1.137vw]">
-                <img src="/assets/logo.svg" alt="logo" className="h-7 w-auto" />
+                <img src="/assets/logo.svg" alt="logo" className="h-6 w-auto" />
             </div>            
             </a>
           </div>
@@ -48,7 +48,7 @@ export function NavBar() {
             //   size="icon"
               onClick={() => {
                 setIsOpen(!isOpen)
-                // document.body.style.overflow = isOpen ? 'auto' : 'hidden'
+                document.body.style.overflow = isOpen ? 'auto' : 'hidden'
               }
               }
               className=" items-center"

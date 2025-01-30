@@ -21,35 +21,31 @@ const AppSection = () => {
         title: "Kick-Start Your Career",
         description: "Get the experience you need to kick-start your career and land your dream job.",
         img: "/assets/cardPics/lock.svg",
-      },{
-        title: "Track Your Applications",
-        description: "Keep track of all your applications in one place and never miss an opportunity.",
-        img: "/assets/cardPics/bag.svg",
-      },
-      {
-        title: "Kick-Start Your Career",
-        description: "Get the experience you need to kick-start your career and land your dream job.",
-        img: "/assets/cardPics/lock.svg",
-      },
+      }
     ];
   
     return (
-    <main className="flex flex-col items-center   mx-20"> 
+    <main className="flex flex-col items-center "> 
      <div className="flex gap-5">
      <aside className=" ">
-     <section className="w-[95%] mt-14">
-        <h2 className="text-5xl/normal font-bold">Land Your Dream <span className="text-primary">internship</span> with Our  <span className="text-primary">App</span></h2>
-        <p className="mt-10 text-xl/relaxed">Find the best opportunities, connect with top companies, track your applications, and kick-start your career today!</p>
+     <section className="mt-14 xl:mx-20 xl:block flex justify-center items-center flex-col">
+        <h2 className="2xl:text-6xl/normal xl:text-5xl/normal font-extrabold xl:text-left text-center md:text-3xl/normal text-2xl/normal lg:text-4xl/normal max-w-[70%]">Land Your Dream <span className="text-primary">internship</span> with Our  <span className="text-primary">App</span></h2>
+        <p className="md:text-2xl/relaxed xl:text-left text-center sm:text-96/normaltext-80 max-w-[80%]">Find the best opportunities, connect with top companies, track your applications, and kick-start your career today!</p>
     </section>                
-    <section className="grid grid-cols-3 gap-20 mt-10">
+   <aside className="flex xl:justify-between xl:flex-row justify-center items-center flex-col mt-10 sm:ml-20 lg:gap-10 ">
+   <section className="sm:grid md:grid-cols-2  gap-8 xl:mb-16 flex flex-col items-center">
            { (cards.map((card, index) => (
             <Card key={index} title={card.title} description={card.description} image={card.img}/>    
         )))
         }
     </section>
+<div className="flex x justify-center items-center">
+<img src="/assets/appMockup.svg" alt="Phone" className="w-auto h-min hidden md:block mt-10 "/>
+</div>
+   </aside>
     </aside>
         </div>
-        <h1 className="text-5xl/normal font-bold mt-10"><span className="text-primary">Download</span> the app</h1>
+        <h1 className=" mt-10 2xl:text-6xl/normal xl:text-5xl/normal font-extrabold text-center md:text-3xl/normal text-2xl/normal lg:text-4xl/normal "><span className="text-primary">Download</span> the app</h1>
         <div className="flex gap-10 mt-10 mb-20">
         <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 35C0 15.67 15.67 0 35 0C54.33 0 70 15.67 70 35C70 54.33 54.33 70 35 70C15.67 70 0 54.33 0 35ZM40.6979 20.6521C42.0343 18.9271 43.0473 16.4888 42.6809 14C40.4968 14.1518 37.9438 15.5492 36.4542 17.3706C35.0963 19.021 33.9803 21.4761 34.4161 23.8589C36.8038 23.9336 39.2682 22.5025 40.6979 20.6521ZM51.3145 27.7476C44.4364 31.5399 45.55 41.4205 52.5 44.0635C51.5444 46.1933 51.0846 47.145 49.8536 49.0315C48.1365 51.6649 45.7153 54.944 42.7121 54.9681C41.4775 54.9815 40.6673 54.6078 39.7937 54.2048C38.7811 53.7377 37.6832 53.2314 35.7405 53.243C33.8092 53.2533 32.6937 53.7536 31.6675 54.2139C30.7708 54.616 29.9423 54.9877 28.6971 54.9753C25.6963 54.9488 23.402 51.9902 21.6849 49.3568C16.8807 41.9987 16.3754 33.3613 19.3379 28.7667C21.4454 25.5045 24.7695 23.5963 27.8924 23.5963C29.5563 23.5963 30.8972 24.0771 32.1749 24.5352C33.3377 24.9521 34.4482 25.3503 35.7022 25.3503C36.8626 25.3503 37.8167 24.9869 38.8576 24.5905C40.1066 24.1148 41.4804 23.5915 43.4856 23.5915C46.2685 23.5915 49.2166 25.1166 51.3145 27.7476Z" fill="#160E0E"/>
