@@ -1,3 +1,15 @@
 @import "tailwindcss";
-@import "tailwindcss/utilities";
 
+
+:root {
+    --font-family-poppins: "Poppins", sans-serif;
+}
+  
+@theme {
+    --color-primary:#92E3A9;
+    --color-white: #fff;
+    --color-purple: #3f3cbb;
+    --color-midnight: #121063;
+    --color-tahiti: #3ab7bf;
+    --color-bermuda: #78dcca;
+  }
