@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 
-:root {
-    --font-family-poppins: "Poppins", sans-serif;
+body {
+    --font-family-poppins: "Poppins", sans-serif;   
+    overflow-x:hidden ;
+    font-family: var(--font-family-poppins);
 }
   
 @theme {
@@ -13,3 +15,4 @@
     --color-tahiti: #3ab7bf;
     --color-bermuda: #78dcca;
   }
+
