@@ -15,21 +15,22 @@ const Signup = () => {
     ];
 
     return (
-        <main className="flex flex-col items-center  mx-20">
-            <div className="flex mx-20 ">
-            <aside className="w-[60%] mt-14">
-                <h2 className="text-5xl/normal font-bold max-w-[95%]">Sign up to find new  <span className="text-primary">Opportunity</span> and  <span className="text-primary">internship</span></h2>
-                <p className="mt-10 max-w-2/3 text-2xl/relaxed">Our powerful matching technology will send the right internship right to your inbox.</p>
+        <main className="flex justify-around items-center md:mx-24 mx-1 flex-col">
+            <div className="flex lg:flex-row flex-col lg:space-x-32 w-full gap-x-20 mb-10">
+            <aside className="flex justify-center items-center "> 
+            <img src="/assets/signupHero.svg" alt="Signup" className=""/>
             </aside>
-            <aside  className="w-[40%] flex justify-center items-center"> 
-                <img src="/assets/signupHero.svg" alt="Signup" className="w-auto"/>
+            <aside className="flex justify-center items-center flex-col lg:items-start gap-10 ">
+            <h2 className="2xl:text-5xl/normal xl:text-5xl/normal font-extrabold lg:text-left text-center md:text-3xl/normal text-2xl/normal lg:text-4xl/normal  ">Sign up to find new <br/> <span className="text-primary">Opportunity</span> and  <span className="text-primary">internship</span></h2>
+            <p className="  xl:text-3xl/relaxed md:text-2xl/relaxed lg:text-left text-center sm:text-96/normaltext-80" >Our powerful matching technology will send the right internship right to your inbox.</p>
             </aside>
+            
         </div>
-        <ul className="flex">
+        <ul className="flex flex-wrap justify-center mt-10">
             {services.map((service, index) => (
-                <li key={index} className="flex justify-between flex-col items-center mx-32 mt-10">
-                        <img src={service.path} alt="Service" className="w-32 h-auto"/>
-                        <p className="text-2xl/relaxed text-center">{service.text}</p>
+                <li key={index} className="flex justify-between flex-col items-center mt-10">
+                        <img src={service.path} alt="Service" className="xl:w-32 h-auto lg:w-24 md:w-20 w-16"/>
+                        <p className="xl:text-2xl/relaxed text-center w-2/3  ">{service.text}</p>
                 </li>
             ))}
         </ul>

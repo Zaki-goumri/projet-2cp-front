@@ -6,7 +6,7 @@ import Signup from "./components/signup";
 
 const LandingPage = () => {
     return (
-        <div>
+        <div className="overflow-x-hidden ">
             <NavBar/>
             <Discovering/>
             <Signup/>
