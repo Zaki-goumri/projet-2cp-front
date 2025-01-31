@@ -16,7 +16,7 @@ const SignUp = () => {
           <FormRegistration />
         </div>
         <div>
-          <img src="../../../../../../public/assets/signup.svg" alt="34" />
+          <img src="assets/signup.svg" alt="Hero Image" />
         </div>
       </div>
 
