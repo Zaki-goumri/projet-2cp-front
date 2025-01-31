@@ -13,7 +13,6 @@ if (root) {
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/signup" element={<SignUp />}></Route>
-          
         </Routes>
       </BrowserRouter>
     </StrictMode>
