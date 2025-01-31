@@ -21,7 +21,7 @@ import FormRegistration from './formData'
       </div>
       <div>
         <div>
-            {/* //google linkdin */}
+            {/* google linkdin */}
         </div>
         <div><p>Already have an accont ?</p></div>
       </div>
