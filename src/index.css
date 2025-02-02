@@ -1,6 +1,9 @@
 
+/* @import "tailwindcss"; */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
 @import "tailwindcss";
-
 
 body {
     --font-family-poppins: "Poppins", sans-serif;   
@@ -22,3 +25,9 @@ body {
   @theme {
    --breakpoint-xs: 320px
   }
+
+  @layer base {
+  :root {
+        --radius: 0.5rem;
+    }
+}
