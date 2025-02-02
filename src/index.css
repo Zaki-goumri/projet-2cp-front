@@ -1,5 +1,8 @@
 
-@import "tailwindcss";
+/* @import "tailwindcss"; */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 
 body {
@@ -22,3 +25,9 @@ body {
   @theme {
    --breakpoint-xs: 320px
   }
+
+  @layer base {
+  :root {
+        --radius: 0.5rem;
+    }
+}
