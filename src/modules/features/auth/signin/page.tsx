@@ -3,12 +3,8 @@
 import { Alert } from "@mui/material";
 import SignForm from "@/modules/features/auth/signin/components/signinForm";
 import Google from "./components/googleButton";
-import { useState } from "react";
-import { LinkedIn } from "react-linkedin-login-oauth2";
-import LinkedInAuthButton from "./components/linkedinButtton";
 import React from "react";
-// const Linkedin = React.lazy(() => import("./components/linkedinButtton"));
-import Linkedin from "./components/linkedinButtton";
+const Linkedin = React.lazy(() => import('@/modules/features/auth/signin/components/linkedinButtton'));
 
 
 const Signin = () => {
@@ -33,11 +29,11 @@ const Signin = () => {
             <p className="text-2xl opacity-47 "> or</p>
             <hr className="w-1/6 opacity-47 " />
           </span>
-        <span>
-          <Google />
-          <Linkedin/>
+          <section className="flex justify-center items-center gap-10 w-full md:flex-col flex-col">
+            <Google />
+            <Linkedin />
+            </section>
 
-        </span>
         </section>
       </main>
   );
