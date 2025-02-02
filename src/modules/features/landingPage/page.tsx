@@ -1,9 +1,9 @@
-import AppSection from "@/modules/features/landingPage/components/appSection";
-import Discovering from "@/modules/features/landingPage/components/discovering";
-import Footer from "@/modules/features/landingPage/components/footer";
-import  NavBar  from "@/modules/features/landingPage/components/navBar";
-import Signup from "@/modules/features/landingPage/components/signup";
-
+import React from "react";
+const NavBar = React.lazy(() => import('@/modules/features/landingPage/components/navBar'));
+const Signup = React.lazy(() => import('@/modules/features/landingPage/components/signup'));
+const Discovering = React.lazy(() => import('@/modules/features/landingPage/components/discovering'));
+const AppSection = React.lazy(() => import('@/modules/features/landingPage/components/appSection'));
+const Footer = React.lazy(() => import('@/modules/shared/components/footer'));
 const LandingPage = () => {
     return (
         <div className="overflow-x-hidden ">
