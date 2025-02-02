@@ -1,6 +1,13 @@
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
-
+import {Link } from "react-router";
 const Footer = () => {
+  const links = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+    { href: "/services", label: "Services" },
+    { href: "/contact", label: "Contact" },
+  ];
+
   return (
     <footer className="bg-gray-100 text-gray-600 py-8 " >
       <div className="container mx-auto px-4">
@@ -13,28 +20,18 @@ const Footer = () => {
           </div>
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Quick Links</h3>
-            <ul className="text-sm">
-              <li className="mb-1">
-                <a href="/" className="hover:text-gray-900">
-                  Home
-                </a>
-              </li>
-              <li className="mb-1">
-                <a href="/about" className="hover:text-gray-900">
-                  About
-                </a>
-              </li>
-              <li className="mb-1">
-                <a href="/services" className="hover:text-gray-900">
-                  Services
-                </a>
-              </li>
-              <li className="mb-1">
-                <a href="/contact" className="hover:text-gray-900">
-                  Contact
-                </a>
-              </li>
-            </ul>
+           
+              <ul className="text-sm">
+
+              {links.map((link) => (
+                <li key={link.href} className="mb-1">
+                <Link to={link.href} className="hover:text-gray-900">
+                  {link.label}
+                </Link>
+                </li>
+              ))}
+              </ul>
+              
           </div>
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
