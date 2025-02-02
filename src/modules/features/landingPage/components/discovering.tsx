@@ -12,7 +12,7 @@ const Discovering = () => {
         <img src="/assets/discoveringHero.svg" alt="Discovering" className=" mt-5  lg:w-[55%] xs:p-0 p-[20%] "/>
         </aside>
         <aside className="flex xl:justify-start justify-center w-full items-center ">
-        <Link to="/" className="bg-primary text-white font-bold py-4 px-6 rounded-full text-center cursor-pointer mt-12">Get started!</Link>
+        <Link to="/home" className="bg-primary text-white font-bold py-4 px-6 rounded-full text-center cursor-pointer mt-12">Get started!</Link>
         </aside>
         
         </div>
