@@ -26,7 +26,9 @@ const LinkedInAuthButton = () => {
           onClick={linkedInLogin}
         className="flex items-center justify-center w-64 h-10 border border-gray-300 rounded-full shadow-sm bg-white hover:bg-gray-100 transition"
         >
-          <FaLinkedin size={20} className="text-blue-600 text-xl mr-2" />
+          <FaLinkedin size={20} 
+          // className ="text-blue-600 text-xl mr-2" 
+          />
           <span className="text-gray-700 font-medium">Sign in with LinkedIn</span>
         </button>
       )}
