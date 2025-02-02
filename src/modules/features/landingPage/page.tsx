@@ -1,8 +1,8 @@
-import AppSection from "./components/appSection";
-import Discovering from "./components/discovering";
-import Footer from "./components/footer";
-import { NavBar } from "./components/navBar";
-import Signup from "./components/signup";
+import AppSection from "@/modules/features/landingPage/components/appSection";
+import Discovering from "@/modules/features/landingPage/components/discovering";
+import Footer from "@/modules/features/landingPage/components/footer";
+import  NavBar  from "@/modules/features/landingPage/components/navBar";
+import Signup from "@/modules/features/landingPage/components/signup";
 
 const LandingPage = () => {
     return (
