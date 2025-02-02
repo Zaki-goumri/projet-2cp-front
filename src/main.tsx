@@ -1,20 +1,21 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter as Router, Route, Routes } from "react-router";
 import App from "./App";
-import SignUp from "./modules/features/auth/components/SignUP/signUp";
+// import SignUp from "./modules/features/auth/components/SignUP/signUp";
+import SignIn from "./modules/features/auth/components/SignIN/signIn";
 
 const root = document.getElementById("root");
 
 if (root) {
   ReactDOM.createRoot(root).render(
     <StrictMode>
-      <BrowserRouter>
+      <Router>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/signup" element={<SignUp />}></Route>
+          <Route path="/signup" element={<SignIn />}/>
         </Routes>
-      </BrowserRouter>
+      </Router>
     </StrictMode>
   );
 }
