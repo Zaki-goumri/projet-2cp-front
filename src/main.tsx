@@ -1,18 +1,25 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router";
-import App from "./App";
+import "./index.css"
+import React, { Suspense } from 'react';
+const App = React.lazy(() => import('./App'));
+const Signin = React.lazy(() => import('./modules/features/auth/signin/page'));
+const Footer = React.lazy(() => import('./modules/shared/components/footer'));
 
 const root = document.getElementById("root");
 
 if (root) {
   ReactDOM.createRoot(root).render(
     <StrictMode>
+      <Suspense fallback={<div>Loading...</div>}>
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
+          <Route path="/signin" element={<Signin/>} />
         </Routes>
       </Router>
+      </Suspense>
     </StrictMode>
   );
 }
