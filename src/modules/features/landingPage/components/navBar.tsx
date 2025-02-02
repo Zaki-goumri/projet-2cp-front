@@ -37,7 +37,7 @@ import { Link } from "react-router";
                   {item.label}
                 </Link>
               ))}
-              <Link to="/" className='text-2xl/70 text-primary hover:scale-110 px-3 py-2 rounded-md font-bold transition-colors'>Sign in</Link>
+              <Link to="/signin" className='text-2xl/70 text-primary hover:scale-110 px-3 py-2 rounded-md font-bold transition-colors'>Sign in</Link>
               {/* <ThemeToggle /> */}
             </div>
           </div>
