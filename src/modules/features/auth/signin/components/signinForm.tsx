@@ -1,8 +1,7 @@
 "use client";
-import { z } from "zod";
+import { set, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,6 +16,8 @@ import React, { useState } from "react";
 import Alert from "@mui/material/Alert";
 import { serialize } from "cookie";
 import { Eye, EyeOff,Mail,Lock } from "lucide-react";
+import axios from "@/api/axios.config";
+import { setTokens } from "../services/singinServices";
 
 const formSchema = z.object({
   email: z
@@ -45,28 +46,19 @@ const SignForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    //   axios.post(`/auth/login`,values)
-    //     .then(response => {
-    //       const { accessToken, refreshToken } = response.data;
-    //       document.cookie = serialize('accessToken', accessToken, {
-    //         httpOnly: false,
-    //         expires: new Date(Date.now() + 60 * 60 * 1000)
-    //       });
-    //       document.cookie = serialize('refreshToken', refreshToken, {
-    //         httpOnly: false,
-    //         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    //       });
-    //         push(`/home`)
-    //     })
-    //     .catch(error => {
-    //     const message = error.response?.data?.message || 'An error occurred';
-    //     setIsMatch(message);
-    //     });
+      axios.post(`/Auth/Login`,values)
+        .then(response => {
+          setTokens (response.data.accessToken,response.data.refreshToken);
+        })
+        .catch(error => {
+          setIsMatch(error.response.data);
+          
+        });
   }
 
   return (
     <div className="flex justify-center items-center">
-      <div className="bg-white p-5 sm:p-10 md:p-12 rounded-lg shadow-lg h-md mx-4">
+      <div className="bg-white p-5 sm:p-10 md:p-12 rounded-lg shadow-lg  h-md mx-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
             <FormField
