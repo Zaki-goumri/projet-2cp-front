@@ -65,7 +65,7 @@ export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
   return (
     <div className=''>
       <Form {...form}>
-          <form onSubmit={form.handleSubmit(submit)} className=" space-y-6">
+          <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
 
           <div className='flex'> <FormField
             control={form.control}
@@ -115,7 +115,7 @@ export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
           </span>          )
          
           }
-              <div className="flex justify-center "><CtaButton Text="Continue" Color={value.length==6?"bg-primary  ":'bg-gray-400 '} Style={ `!px-40 !py-4 ease-in-out duration-400 ${value.length!=6 && "!cursor-not-allowed"}`  }/>
+              <div className="flex justify-center"><CtaButton Text="Continue" Color={value.length==6?"bg-primary  ":'bg-gray-400 '} Style={ `!px-40 !py-4 ease-in-out duration-400 ${value.length!=6 && "!cursor-not-allowed"}`  }/>
       </div>
 
                      </form>

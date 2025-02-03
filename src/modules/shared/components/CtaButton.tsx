@@ -7,7 +7,7 @@ interface CtaButtonProps {
 }
 const CtaButton = ({Color,Text,onClick,Style,type}:CtaButtonProps) => {
   return (
-    <div className="w-full">
+    <div className="w-fit">
   <button type={type} className={`${Color} text-white font-bold py-4 px-6 rounded-lg text-center cursor-pointer  ${Style}`} >{Text}</button>
 
     </div>
