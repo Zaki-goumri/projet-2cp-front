@@ -1,5 +1,5 @@
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
-import {Link } from "react-router";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Link } from "react-router";
 const Footer = () => {
   const links = [
     { href: "/", label: "Home" },
@@ -9,29 +9,28 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-100 text-gray-600 py-8 " >
+    <footer className="bg-gray-100 text-gray-600 py-8 ">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">About Us</h3>
             <p className="text-sm">
-              We are a company dedicated to providing excellent services and products to our customers.
+              We are a company dedicated to providing excellent services and
+              products to our customers.
             </p>
           </div>
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Quick Links</h3>
-           
-              <ul className="text-sm">
 
+            <ul className="text-sm">
               {links.map((link) => (
                 <li key={link.href} className="mb-1">
-                <Link to={link.href} className="hover:text-gray-900">
-                  {link.label}
-                </Link>
+                  <Link to={link.href} className="hover:text-gray-900">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
-              </ul>
-              
+            </ul>
           </div>
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
@@ -62,12 +61,14 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-200 mt-8 pt-8 text-sm text-center">
-          <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Your Company Name. All rights
+            reserved.
+          </p>
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
-
+export default Footer;
