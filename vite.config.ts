@@ -17,7 +17,7 @@ export default defineConfig({
       threshold: 10240, // Compress assets > 10KB
       deleteOriginFile: false, // Keep original files
     }),
-    viteCompression({ algorithm: 'brotliCompress', ext: '.br' }),
+    viteCompression({ algorithm: "brotliCompress", ext: ".br" }),
   ],
   resolve: {
     alias: {
