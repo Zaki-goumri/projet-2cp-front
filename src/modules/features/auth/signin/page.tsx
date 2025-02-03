@@ -38,6 +38,7 @@ const Signin = () => {
           <Google />
           <Linkedin />
           <span className="flex flex-col items-center justify-center gap-2">
+
             <h3 className="opacity-55">Don&apos;t you have an account ?</h3>
             <Link
               to="/auth/signup"
@@ -45,6 +46,7 @@ const Signin = () => {
             >
               Sign up
             </Link>
+
           </span>
         </section>
       </section>
