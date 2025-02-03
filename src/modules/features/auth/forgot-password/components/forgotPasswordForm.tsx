@@ -1,3 +1,4 @@
+
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 import { Input } from '@/components/ui/input';
@@ -6,7 +7,7 @@ import CtaButton from '@/modules/shared/components/CtaButton';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, SendHorizonal } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod'
 const formSchema=z.object({
     email: z
@@ -23,8 +24,11 @@ interface ForgotPasswordFormProps {
 }
 
 export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
+  const inputRef=useRef<HTMLInputElement>(null)
   async function handleHorizontalClick(){
-    setAbleToReqEmail((prev)=>!prev)
+    const isValid=await form.trigger();
+    if (!isValid) return;
+    setAbleToReqEmail(false)
     console.log('Resend OTP')
   }
  async function handleOtpSubmit(Otp:string){
@@ -38,6 +42,9 @@ export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
   // NOTE: this to be changed based on the counter to resend again a request to get the OTP
   const [ableToReqEmail, setAbleToReqEmail] = useState<boolean>(true);
   useEffect(()=>{
+    if (ableToReqEmail){
+      return
+    }
     const timer=setTimeout(()=>{
       setCounter((prev)=>prev-1)
     },1000)
@@ -46,7 +53,7 @@ export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
       setAbleToReqEmail(true)
     }
     return ()=>clearTimeout(timer)
-  },[counter])
+  },[counter,ableToReqEmail])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,8 +75,7 @@ export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
               <FormItem >
                 <FormControl>
                   <div className="relative">
-                    <Input
-                      placeholder="E-mail"
+                    <Input                       placeholder="E-mail"
                       {...field}
                       className=" h-12 p-7  pl-10 pr-20 text-lg focus:outline-none rounded-xl opacity-50  w-full   "
                     />
@@ -98,15 +104,15 @@ export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
 
           {/* NOTE: change pattern in case change in OTP input */}
           
-          { isOtpShown&& (            <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} onChange={(e)=>{setValue(e)}} value={value} onSubmit={()=>handleOtpSubmit(value)} >
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
+          { isOtpShown&& (          <span className='w-full flex justify-center px-10 lg:justify-start lg:px-0'>  <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} onChange={(e)=>{setValue(e)}} value={value} onSubmit={()=>handleOtpSubmit(value)} >
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
           </InputOTP>
-          )
+          </span>          )
          
           }
               <div className="flex justify-center "><CtaButton Text="Continue" Color={value.length==6?"bg-primary  ":'bg-gray-400 '} Style={ `!px-40 !py-4 ease-in-out duration-400 ${value.length!=6 && "!cursor-not-allowed"}`  }/>
@@ -119,3 +125,4 @@ export const ForgotPasswordForm = ({submit}: ForgotPasswordFormProps) => {
     </div>
   )
 }
+
