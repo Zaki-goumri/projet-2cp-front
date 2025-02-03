@@ -15,7 +15,7 @@ import { Link } from "react-router";
 import React, { useState } from "react";
 import Alert from "@mui/material/Alert";
 import { serialize } from "cookie";
-import { Eye, EyeOff,Mail,Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import axios from "@/api/axios.config";
 import { setTokens } from "../services/singinServices";
 
@@ -33,7 +33,6 @@ const formSchema = z.object({
 });
 
 const SignForm = () => {
-  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,14 +45,14 @@ const SignForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-      axios.post(`/Auth/Login`,values)
-        .then(response => {
-          setTokens (response.data.accessToken,response.data.refreshToken);
-        })
-        .catch(error => {
-          setIsMatch(error.response.data);
-          
-        });
+    axios
+      .post(`/Auth/Login`, values)
+      .then((response) => {
+        setTokens(response.data.accessToken, response.data.refreshToken);
+      })
+      .catch((error) => {
+        setIsMatch(error.response.data);
+      });
   }
 
   return (
@@ -74,9 +73,8 @@ const SignForm = () => {
                         className=" h-12 p-7 pl-10 text-lg focus:outline-none rounded-xl opacity-50  w-full  "
                       />
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <Mail className="h-5 w-auto opacity-45" />
+                        <Mail className="h-5 w-auto opacity-45" />
                       </span>
-                      
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -139,5 +137,5 @@ const SignForm = () => {
       </div>
     </div>
   );
-}
+};
 export default SignForm;
