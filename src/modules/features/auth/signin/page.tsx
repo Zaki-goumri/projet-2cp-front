@@ -4,6 +4,7 @@ import { Alert } from "@mui/material";
 import SignForm from "@/modules/features/auth/signin/components/signinForm";
 import Google from "./components/googleButton";
 import React from "react";
+import { Link } from "react-router";
 const Linkedin = React.lazy(() => import('@/modules/features/auth/signin/components/linkedinButtton'));
 
 
@@ -29,10 +30,14 @@ const Signin = () => {
             <p className="text-2xl opacity-47 "> or</p>
             <hr className="w-1/6 opacity-47 " />
           </span>
-          <section className="flex justify-center items-center gap-10 w-full md:flex-col flex-col">
+          <section className="flex justify-center items-center gap-5 w-full md:flex-col flex-col">
             <Google />
-            <Linkedin />
-            </section>
+          <Linkedin />
+          <span className="flex flex-col items-center justify-center gap-2">
+          <h3 className="opacity-55">Don&apos;t you have an account ?</h3>
+          <Link to="/auth/signup" className="text-primary underline font-bold">Sign up</Link>  
+          </span>
+          </section>
 
         </section>
       </main>
