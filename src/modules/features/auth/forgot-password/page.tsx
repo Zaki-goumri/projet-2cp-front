@@ -8,12 +8,12 @@ export const ForgotPassword = (props: {}) => {
   }
 
   return (
-     <main className="flex flex-col justify-around h-[100vh]">
+     <main className="flex flex-col justify-around h-[100vh] md:px-10">
       <div className=' mt-10 flex justify-center '>
   <img src="/assets/logo.svg" alt="hero" className="" />
       </div>
       <section className='flex justify-around items-center '>
-        <div className="flex flex-col gap-6"><h1 className='text-5xl font-bold flex gap-4 flex-row'> Forgot <p className='text-primary text-5xl'> Password</p>?</h1>
+        <div className="flex flex-col gap-6 justify-center items-center lg:items-start xl:items-start"><h1 className='text-5xl font-bold flex gap-4 '> Forgot <p className='text-primary text-5xl'> Password</p>?</h1>
           
       
          <h3 className="text-2xl">We've sent you a link to reset your password. Enter your E-mail.</h3>
@@ -23,7 +23,7 @@ export const ForgotPassword = (props: {}) => {
 
       
         <aside>
-       <img src='assets/forgotPasswordHero.svg' alt='hero'/>
+       <img src='assets/forgotPasswordHero.svg' alt='hero' className="hidden lg:block xl:bloc"/>
         </aside>
       </section>
        </main>
