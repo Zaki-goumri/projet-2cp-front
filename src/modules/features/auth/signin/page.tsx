@@ -35,7 +35,7 @@ const Signin = () => {
           <Linkedin />
           <span className="flex flex-col items-center justify-center gap-2">
           <h3 className="opacity-55">Don&apos;t you have an account ?</h3>
-          <Link to="/auth/signup" className="text-primary underline font-bold">Sign up</Link>  
+          <Link to="/signup" className="text-primary underline font-bold">Sign up</Link>  
           </span>
           </section>
 
