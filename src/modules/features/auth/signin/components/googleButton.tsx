@@ -25,7 +25,7 @@ const GoogleSignInButton = () => {
       onClick={() => login()}
       className="flex items-center justify-center w-64 h-10 border border-gray-300 rounded-full shadow-sm bg-white hover:bg-gray-100 transition"
     >
-      <FcGoogle  className=" text-xl mr-2" />
+      <FcGoogle className=" text-xl mr-2" />
       <span className="text-gray-700 font-medium">Sign in with Google</span>
     </button>
   );
