@@ -14,7 +14,7 @@ const AppSection = React.lazy(
 const Footer = React.lazy(() => import("@/modules/shared/components/footer"));
 const LandingPage = () => {
   return (
-    <div className="overflow-x-hidden ">
+    <div className="overflow-x-hidden zoom-in">
       <NavBar />
       <Discovering />
       <Signup />
