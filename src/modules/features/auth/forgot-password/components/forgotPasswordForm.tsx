@@ -5,12 +5,10 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Input } from "@/components/ui/input";
 import {
   InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import CtaButton from "@/modules/shared/components/CtaButton";
@@ -19,6 +17,7 @@ import { Mail, SendHorizonal } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
 const formSchema = z.object({
   email: z
     .string()
@@ -130,21 +129,21 @@ export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
                 value={value}
                 onSubmit={() => handleOtpSubmit(value)}
               >
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
+               <ul className="last:rounded-r-2xl flex"
+               > 
+                {Array.from({ length: 6 }, (_, i) => (
+                  <InputOTPSlot key={i} index={i}  />
+                ))}
+             </ul>
               </InputOTP>
             </span>
           )}
           <div className="flex justify-center">
-            <CtaButton
-              Text="Continue"
-              Color={value.length == 6 ? "bg-primary  " : "bg-gray-400 "}
-              Style={`!px-40 !py-4 ease-in-out duration-400 ${value.length != 6 && "!cursor-not-allowed"}`}
-            />
+            <Button
+              className={`button-field !px-40 !py-4 ease-in-out duration-400 ${value.length != 6 && "!cursor-not-allowed"} ${value.length == 6 ? "bg-primary  " : "bg-gray-400 "}`}
+            >
+              Continue
+              </Button>
           </div>
         </form>
       </Form>

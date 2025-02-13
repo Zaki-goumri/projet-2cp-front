@@ -1,6 +1,3 @@
-import SignForm from "../signin/components/signinForm";
-import Google from "../signin/components/googleButton";
-import Linkedin from "../signin/components/linkedinButtton";
 import SignUpForm from "./components/signUpForm";
 import { Link } from "react-router";
 const SignUp = () => {
@@ -9,7 +6,11 @@ const SignUp = () => {
       <section className="flex flex-col items-center justify-center gap-y-6 ">
         <img src="/assets/logo.svg" alt="hero" className="w-[70%] h-[70%]" />
         <p className="text-3xl font-bold text-center"> Sign Up</p>
-        <h3 className="text-kg flex font-thin gap-2">By continuing, you agree to our <p className="font-semilgld text-lg text-primary">terms of use </p>and <p className="text-primary font-semibold text-lg">Privacy Policy.</p></h3>
+        <h3 className="text-kg flex font-thin gap-2">
+          By continuing, you agree to our{" "}
+          <p className="font-semilgld text-lg text-primary">terms of use </p>and{" "}
+          <p className="text-primary font-semibold text-lg">Privacy Policy.</p>
+        </h3>
       </section>
       <section className=" flex justify-evenly items-center w-screen">
         <aside>
@@ -32,7 +33,10 @@ const SignUp = () => {
         <section className="flex justify-center items-center gap-5 w-full md:flex-col flex-col">
           <span className="flex flex-col items-center justify-center gap-2">
             <h3 className="opacity-55">Already have an account ?</h3>
-            <Link to="/auth/signin" className="text-primary underline font-bold">
+            <Link
+              to="/auth/signin"
+              className="text-primary underline font-bold"
+            >
               Sign In
             </Link>
           </span>
