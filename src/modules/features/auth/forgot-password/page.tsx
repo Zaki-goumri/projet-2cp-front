@@ -34,7 +34,7 @@ export const ForgotPassword = (props: {}) => {
 
         <aside>
           <img
-            src="assets/forgotPasswordHero.svg"
+            src="/assets/forgotPasswordHero.svg"
             alt="hero"
             className="hidden lg:block xl:bloc"
           />

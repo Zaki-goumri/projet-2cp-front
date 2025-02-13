@@ -1,17 +1,17 @@
 "use client";
-
-import { Alert } from "@mui/material";
 import SignForm from "@/modules/features/auth/signin/components/signinForm";
 import Google from "./components/googleButton";
 import React from "react";
 import { Link } from "react-router";
+import { ToastContainer } from "react-toastify";
 const Linkedin = React.lazy(
-  () => import("@/modules/features/auth/signin/components/linkedinButtton"),
+  () => import("@/modules/features/auth/signin/components/linkedinButtton")
 );
 
 const Signin = () => {
   return (
     <main className="flex flex-col h-screen items-center justify-center gap-5 overflow-hidden ">
+      <ToastContainer />
       <section className="flex flex-col items-center justify-center gap-y-6 ">
         <img src="/assets/logo.svg" alt="hero" className="w-[70%] h-[70%]" />
         <p className="text-3xl font-bold text-center"> Sign in</p>
@@ -38,7 +38,6 @@ const Signin = () => {
           <Google />
           <Linkedin />
           <span className="flex flex-col items-center justify-center gap-2">
-
             <h3 className="opacity-55">Don&apos;t you have an account ?</h3>
             <Link
               to="/auth/signup"
@@ -46,7 +45,6 @@ const Signin = () => {
             >
               Sign up
             </Link>
-
           </span>
         </section>
       </section>
