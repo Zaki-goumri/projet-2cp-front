@@ -5,6 +5,7 @@ import "./index.css";
 import React, { Suspense } from "react";
 import { ForgotPassword } from "./modules/features/auth/forgot-password/page";
 import SignUp from "./modules/features/auth/signup/page";
+import Loading from "./loading";
 const App = React.lazy(() => import("./App"));
 const Signin = React.lazy(() => import("./modules/features/auth/signin/page"));
 const Footer = React.lazy(() => import("./modules/shared/components/footer"));
@@ -15,7 +16,7 @@ if (root) {
   ReactDOM.createRoot(root).render(
 
   <StrictMode>
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading/>}>
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
