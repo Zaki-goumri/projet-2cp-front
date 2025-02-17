@@ -75,7 +75,6 @@ export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
           <div className="flex">
-            {" "}
             <FormField
               control={form.control}
               name="email"
@@ -129,21 +128,22 @@ export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
                 value={value}
                 onSubmit={() => handleOtpSubmit(value)}
               >
-               <ul className="last:rounded-r-2xl flex"
+               <ul className=" rounded-xl  flex space-x-2"
                > 
                 {Array.from({ length: 6 }, (_, i) => (
-                  <InputOTPSlot key={i} index={i}  />
+                  <InputOTPSlot key={i} index={i}  className="w-12 h-12 rounded-md border" />
                 ))}
              </ul>
               </InputOTP>
             </span>
           )}
           <div className="flex justify-center">
-            <Button
-              className={`button-field !px-40 !py-4 ease-in-out duration-400 ${value.length != 6 && "!cursor-not-allowed"} ${value.length == 6 ? "bg-primary  " : "bg-gray-400 "}`}
+            <button
+              className={`rounded-lg text-white !px-40 !py-4 ease-in-out duration-400 ${(value.length !== 6 || ableToReqEmail) ? "cursor-not-allowed bg-gray-400" : "bg-primary"}`}
+              disabled={value.length !== 6}
             >
               Continue
-              </Button>
+              </button>
           </div>
         </form>
       </Form>

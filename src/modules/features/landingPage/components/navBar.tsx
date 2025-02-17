@@ -12,7 +12,13 @@ function NavBar() {
     { to: "/", label: "Q&A" },
     { to: "/", label: "Contact us" },
   ];
-
+  const navItemsPhone = [
+      { to: "/", label: "Home" },
+      { to: "/", label: "Q&A" },
+      { to: "/", label: "Contact us" },
+      { to: "/aut/signin", label: "Sign in" },
+      {to: "/auth/signup", label: "Sign up"}
+    ];
   return (
     <nav className=" top-0 left-0 right-0 z-50 bg-background/80 mt-5">
       <div className="  px-4 sm:px-6 md:px-8  ">
@@ -71,7 +77,7 @@ function NavBar() {
       {isOpen && (
         <div className="lg:hidden  bg-background/80">
           <ul className="px-2 pt-2 pb-3 space-y-1 sm:px-3 h-screen overflow-y-auto z-50 flex flex-col items-center justify-start gap-y-7 mt-4">
-            {navItems.map((item) => (
+            {navItemsPhone.map((item) => (
               <li key={item.to}>
                 <Link
                   to={item.to}
