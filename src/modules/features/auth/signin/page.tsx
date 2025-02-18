@@ -1,6 +1,6 @@
 "use client";
 import SignForm from "@/modules/features/auth/signin/components/signinForm";
-import Google from "./components/googleButton";
+const Google = React.lazy(() => import("./components/googleButton"));
 import React from "react";
 import { Link } from "react-router";
 import { ToastContainer } from "react-toastify";
