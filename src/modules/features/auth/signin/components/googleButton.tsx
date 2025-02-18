@@ -2,14 +2,14 @@ import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { FcGoogle } from "react-icons/fc";
 
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; // Replace with your actual Google Client ID
+const GOOGLE_CLIENT_ID = "241487075785-ca4eq6d3642e5qasusc2342ndckimnar.apps.googleusercontent.com"; // Replace with your actual Google Client ID
 
 const GoogleSignInButton = () => {
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       const accessToken = tokenResponse.access_token;
-
-      // Decode user info from the access token
+      
+      console.log("Access Token:", tokenResponse);
       fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
         headers: { Authorization: `Bearer ${accessToken}` },
       })

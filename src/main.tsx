@@ -8,14 +8,15 @@ import SignUp from "./modules/features/auth/signup/page";
 import Loading from "./loading";
 const App = React.lazy(() => import("./App"));
 const Signin = React.lazy(() => import("./modules/features/auth/signin/page"));
-const Footer = React.lazy(() => import("./modules/shared/components/footer"));
+const Footer = React.lazy(() => import("@/modules/shared/components/footer"));
+const Home = React.lazy(() => import("./modules/features/home/page"));
 
 const root = document.getElementById("root");
 
 if (root) {
   ReactDOM.createRoot(root).render(
 
-  <StrictMode>
+  // <StrictMode>
     <Suspense fallback={<Loading/>}>
       <Router>
         <Routes>
@@ -23,12 +24,15 @@ if (root) {
           <Route path="auth">
             <Route index element={<div>Auth Home</div>} />
             <Route path="signin" element={<Signin />} />
-            <Route path="password/forgot" element={<ForgotPassword />} />
+            <Route path="password/forgot" element={<ForgotPassword/>} />
             <Route path="signup" element={<SignUp />} />
-          </Route>
+          </Route>          
+          <Route path="/home" element={<Home />} />
         </Routes>
+        <Footer />
       </Router>
+      {/* <Footer /> */}
     </Suspense>
-  </StrictMode>
+   // </StrictMode> 
   );
 }
