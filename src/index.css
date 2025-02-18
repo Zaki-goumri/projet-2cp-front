@@ -6,8 +6,12 @@ body {
   font-family: var(--font-family-poppins);
 }
 .zoom-in{
-  /* zoom:80% */
+  zoom:80%
 }
+.bg-opacity{
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 
 @theme {
   --color-primary: #92e3a9;

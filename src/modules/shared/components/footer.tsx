@@ -1,6 +1,9 @@
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Link } from "react-router";
+
+
 const Footer = () => {
+
   const links = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
