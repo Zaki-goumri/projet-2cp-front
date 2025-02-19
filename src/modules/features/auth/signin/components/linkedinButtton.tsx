@@ -14,12 +14,12 @@ const LinkedInAuthButton = () => {
 
   return (
     <LinkedIn
-      clientId="YOUR_LINKEDIN_CLIENT_ID"
-      redirectUri="http://localhost:3000/auth/linkedin/callback"
+      clientId="77fzfa1dhch0j9"
+      redirectUri="http://localhost:8080"
       onSuccess={handleSuccess}
       onError={handleError}
-      scope="r_liteprofile r_emailaddress"
-      state="123456" // A random state value for security
+      scope="email"
+      state="124313" // A random state value for security
     >
       {({ linkedInLogin }) => (
         <button
