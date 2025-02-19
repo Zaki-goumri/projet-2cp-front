@@ -151,6 +151,14 @@ const SignUpForm = () => {
   // Array of field definitions
   const fields: CustomInputFieldProps[] = [
     {
+      name: "email",
+      placeholder: "E-mail",
+      icon: <Mail className="h-5 w-auto opacity-45" />,
+      control: form.control,
+      type: "text",
+      toggle: false,
+    }
+    ,{
       name: "name",
       placeholder: "Full Name",
       icon: <User className="h-5 w-auto opacity-45" />,
@@ -189,14 +197,7 @@ const SignUpForm = () => {
       toggle: false,
       items: ["student", "company"],
     },
-    {
-      name: "email",
-      placeholder: "E-mail",
-      icon: <Mail className="h-5 w-auto opacity-45" />,
-      control: form.control,
-      type: "text",
-      toggle: false,
-    },
+    
   ]
 
   return (
