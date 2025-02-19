@@ -23,7 +23,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
-    console.log("Login with:", { email, password });
+    console.log("Login attempt made");
   };
 
   return (
