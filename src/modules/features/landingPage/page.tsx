@@ -19,7 +19,6 @@ const LandingPage = () => {
       <Discovering />
       <Signup />
       <AppSection />
-      <Footer />
     </div>
   );
 };

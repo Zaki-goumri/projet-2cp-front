@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useState } from "react";
+import {MoveRight,MoveLeft} from "lucide-react"
 
 const NavBar = React.lazy(
   () => import("@/modules/features/landingPage/components/navBar"),
@@ -18,7 +19,54 @@ const ProductModel = React.lazy(
 );
 
 
-const cardData = [
+
+
+
+const internships = [
+  {
+    logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
+    title: "Software Development Intern",
+    description: "Join TechCorp as a software development intern and work on cutting-edge projects using modern technologies.",
+    views: 245,
+    daysLeft: 15
+  },
+  {
+    logo: "https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g",
+    title: "Marketing Intern", 
+    description: "BrandCo is looking for a creative marketing intern to help drive our social media and content strategy.",
+    views: 189,
+    daysLeft: 20
+  },
+  {
+    logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31",
+    title: "Data Science Intern",
+    description: "DataTech offers an exciting internship opportunity in data science and machine learning applications.",
+    views: 312,
+    daysLeft: 30
+  },
+  {
+    logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
+    title: "Software Development Intern",
+    description: "Join TechCorp as a software development intern and work on cutting-edge projects using modern technologies.",
+    views: 245,
+    daysLeft: 15
+  },
+  {
+    logo: "https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g",
+    title: "Marketing Intern", 
+    description: "BrandCo is looking for a creative marketing intern to help drive our social media and content strategy.",
+    views: 189,
+    daysLeft: 20
+  },
+  {
+    logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31",
+    title: "Data Science Intern",
+    description: "DataTech offers an exciting internship opportunity in data science and machine learning applications.",
+    views: 312,
+    daysLeft: 30
+  }
+];
+const problems = [
   {
     logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
     title: "Software Development Intern",
@@ -70,8 +118,8 @@ const UnAuthedhome = () => {
   }
 
   const sliderSettings = {
-    dots: false,
-    arrows: true,
+    nextArrow: <NextArrow />, // Use the custom next arrow component
+      prevArrow: <PrevArrow />,
     infinite: false,
     speed: 500,
     slidesToShow: 3,
@@ -128,9 +176,9 @@ const UnAuthedhome = () => {
           </h2>
         </div>
         <Slider {...sliderSettings}>
-          {cardData.map((card, index) => (
-            <div key={index} className="px-2 h-full">
-              <OppCard {...card} />
+          {internships.map((internship, index) => (
+            <div key={index} className="px-2 h-full" onClick={() => setIsModalOpen(true)}>
+              <OppCard {...internship} />
             </div>
           ))}
         </Slider>
@@ -152,13 +200,13 @@ const UnAuthedhome = () => {
                   <span className="text-black"> to solve </span>
                 </h2>
               </div>
-              <Slider {...sliderSettings}>
-                {cardData.map((card, index) => (
-                  <div key={index} className="px-4 h-full"  onClick={() => setIsModalOpen(true)} >
-                    <OppCard {...card}  />
-                  </div>
-                ))}
-              </Slider>
+               <Slider {...sliderSettings} >
+                 {problems.map((problem, index) => (
+                   <div key={index} className="px-2 " onClick={() => setIsModalOpen(true)} >
+                     <OppCard {...problem}  />
+                   </div>
+                 ))}
+               </Slider>
             </section>
             <span className="flex flex-col items-center space-y-3 mt-3 mb-20">
               <button
@@ -171,10 +219,39 @@ const UnAuthedhome = () => {
             <ProductModel
                   isOpen={isModalOpen}
                   onClose={() => setIsModalOpen(false)}
-                  onSubmit={handleSubmit}
                 />
     </main>
   );
 };
 
 export default UnAuthedhome;
+
+
+
+
+const NextArrow = (props:any) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "transparent" }}
+      onClick={onClick}
+    >
+      <MoveRight className="text-primary hover:text-primary/90" size={24} />
+    </div>
+  );
+};
+
+// Custom Previous Arrow Component
+const PrevArrow = (props:any) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "transparent" }}
+      onClick={onClick}
+    >
+      <MoveLeft className="text-primary hover:text-primary/90" size={24} />
+    </div>
+  );
+};
