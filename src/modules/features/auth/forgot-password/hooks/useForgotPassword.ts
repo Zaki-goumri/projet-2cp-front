@@ -20,7 +20,7 @@ export default function  useSendResetEmail({onSuccess}:useSendResetEmailProps){
      toast.error("Unknown Error");
     },
     onSuccess:(data:ResetEmailDtoRes)=>{
-      //WARNING:this is just to test since the backend is not sending the otp to the amil guelma m3a9
+      //WARNING:this is just to test since the backend is not sending the otp to the email guelma m3a9
       console.log(data.otp);
       setOpt(data.otp);
       onSuccess();
