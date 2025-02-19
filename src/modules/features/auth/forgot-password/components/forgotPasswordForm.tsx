@@ -13,42 +13,47 @@ import {
 } from "@/components/ui/input-otp";
 import CtaButton from "@/modules/shared/components/CtaButton";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, SendHorizonal } from "lucide-react";
+import { Eye, EyeClosed, EyeOff, Mail, SendHorizonal } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-const formSchema = z.object({
+import useForgotPassword from "../hooks/useForgotPassword";
+import { toast } from "react-toastify";
+
+
+export const ForgotPasswordForm = () => {
+      const formSchema=  z.object({
   email: z
     .string()
     .min(1, "Email is required")
     .email("Invalid email address")
     .max(50),
-});
-export type forgotPassformValues = z.infer<typeof formSchema>;
+ password: z.string().optional()
+}).refine((data)=> !isOtpShown || (data.password?.length ?? 0) >= 6, "Password is required");
 
-interface ForgotPasswordFormProps {
-  submit: (values: forgotPassformValues) => void;
-}
-
-export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  async function handleHorizontalClick() {
+    async function handleHorizontalClick() {
+    if (!ableToReqEmail) return toast.error('Please wait until the timer ends');
     const isValid = await form.trigger();
-    if (!isValid) return;
+    if (!isValid) return
+
     setAbleToReqEmail(false);
-    console.log("Resend OTP");
+    SendEmailMutation.mutate({email:form.getValues('email')},);
+  
   }
-  async function handleOtpSubmit(Otp: string) {
-    console.log("OTP is " + Otp);
+  async function submit(values: z.infer<typeof formSchema>) {
+    if (!isOtpShown) {
+      return toast.error("Please submit your email first");
+    }
+    resetPasswordMutation.mutate({email:values.email,password:values.password??"",otp:value});
   }
-  // NOTE: this is changed based on whether we got an ok req from the backend
-  const [counter, setCounter] = useState<number>(30);
-  const [isOtpShown, setIsOtpShown] = useState<boolean>(true);
-  // The Current value of the OTP doesn't matter to much
+    // NOTE: this is changed based on whether we got an ok req from the backend
+  // TODO:make the counter exponential instead of fixed 
+  const [counter, setCounter] = useState<number>(15);
+  const [isOtpShown, setIsOtpShown] = useState<boolean>(false);
   const [value, setValue] = useState<string>("");
-  // NOTE: this to be changed based on the counter to resend again a request to get the OTP
   const [ableToReqEmail, setAbleToReqEmail] = useState<boolean>(true);
+  const [showPass,setShowPass]=useState<boolean>(false)
   useEffect(() => {
     if (ableToReqEmail) {
       return;
@@ -67,14 +72,18 @@ export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
+       password:"",
     },
+    
   });
-
+ const {SendEmailMutation,resetPasswordMutation} =useForgotPassword({onSuccess:()=> setIsOtpShown(true) })
+  
+  
   return (
     <div className="">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
-          <div className="flex">
+        <form onSubmit={form.handleSubmit((val)=>submit(val))} className="space-y-6">
+          <div className="flex ">
             <FormField
               control={form.control}
               name="email"
@@ -105,8 +114,39 @@ export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
                 </FormItem>
               )}
             />
+                      </div>
+          {isOtpShown&&(   <div>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+
+                        type={showPass?"text":"password"}
+                        placeholder="Password"
+                        {...field}
+                        className=" h-12 p-7  pl-10 pr-20 text-lg focus:outline-none rounded-xl opacity-50  w-full   "
+                      />
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+
+                        {showPass?<EyeOff className="h-5 w-auto opacity-45" onClick={()=>setShowPass(false)}  /> :<Eye className="h-5 w-auto opacity-45"  onClick={()=>setShowPass(true)}/>
+                        }                         </span>
+                      <span className="absolu
+                        te inset-y-0 right-0 flex items-center pr-3">
+                      </span>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
           </div>
-          {!ableToReqEmail && (
+          )          }          {!ableToReqEmail && (
             <div>
               <p className="text-red-500 text-sm">
                 You can request a new OTP in {counter} seconds
@@ -126,8 +166,7 @@ export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
                   setValue(e);
                 }}
                 value={value}
-                onSubmit={() => handleOtpSubmit(value)}
-              >
+                              >
                <ul className=" rounded-xl  flex space-x-2"
                > 
                 {Array.from({ length: 6 }, (_, i) => (
@@ -139,13 +178,15 @@ export const ForgotPasswordForm = ({ submit }: ForgotPasswordFormProps) => {
           )}
           <div className="flex justify-center">
             <button
-              className={`rounded-lg text-white !px-40 !py-4 ease-in-out duration-400 ${(value.length !== 6 || ableToReqEmail) ? "cursor-not-allowed bg-gray-400" : "bg-primary"}`}
+              type="submit"
+              className={`rounded-lg text-white !px-40 !py-4 ease-in-out duration-400 ${(value.length !== 6 ) ? "cursor-not-allowed bg-gray-400" : "bg-primary"}`}
               disabled={value.length !== 6}
             >
               Continue
               </button>
           </div>
         </form>
+        
       </Form>
     </div>
   );
