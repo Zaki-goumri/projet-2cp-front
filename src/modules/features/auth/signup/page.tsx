@@ -12,7 +12,7 @@ const SignUp = () => {
           <img src="/assets/logo.svg" alt="hero" className="w-[30%] " />
           <h3 className=" inline-block text-lg  text-center font-thin gap-2">
             By continuing, you agree to our
-            <span className="font-semibold text-primary">terms of use </span>and{" "}
+            <span className="font-semibold text-primary">&nbsp;terms of use </span>and{" "}
             <span className="text-primary font-semibold t">Privacy Policy.</span>
           </h3>
         </section>
