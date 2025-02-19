@@ -4,14 +4,18 @@ import {
   ForgotPasswordForm,
 } from "./components/forgotPasswordForm";
 import { Link } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastContainer } from "react-toastify";
 
+const queryClient = new QueryClient();
 export const ForgotPassword = (props: {}) => {
   async function onSubmit(values: forgotPassformValues) {
     console.log("Reset password link sent to your email" + values.email);
   }
 
   return (
-    <main className="flex flex-col justify-around h-[100vh]   md:px-10">
+    <QueryClientProvider client={queryClient}>    <main className="flex flex-col justify-around h-[100vh]   md:px-10">
+      <ToastContainer/>
       <div className=" mt-32 flex justify-center  ">
         <Link to={"/"}>
           {" "}
@@ -41,5 +45,5 @@ export const ForgotPassword = (props: {}) => {
         </aside>
       </section>
     </main>
-  );
+    </QueryClientProvider>  );
 };
