@@ -15,24 +15,24 @@ const root = document.getElementById("root");
 
 if (root) {
   ReactDOM.createRoot(root).render(
-
-  // <StrictMode>
-    <Suspense fallback={<Loading/>}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="auth">
-            <Route index element={<div>Auth Home</div>} />
-            <Route path="signin" element={<Signin />} />
-            <Route path="password/forgot" element={<ForgotPassword/>} />
-            <Route path="signup" element={<SignUp />} />
-          </Route>          
-          <Route path="/home" element={<Home />} />
-        </Routes>
-        <Footer />
-      </Router>
-      {/* <Footer /> */}
-    </Suspense>
-   // </StrictMode> 
+    <StrictMode>
+      <main>
+        <Suspense fallback={<Loading />}>
+          <Router>
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="auth">
+                <Route index element={<div>Auth Home</div>} />
+                <Route path="signin" element={<Signin />} />
+                <Route path="password/forgot" element={<ForgotPassword />} />
+                <Route path="signup" element={<SignUp />} />
+              </Route>
+              <Route path="/home" element={<Home />} />
+            </Routes>
+            <Footer />
+          </Router>
+        </Suspense>
+      </main>
+    </StrictMode>,
   );
 }
