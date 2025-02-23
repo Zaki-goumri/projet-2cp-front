@@ -33,7 +33,6 @@ if (root) {
           </Router>
         </Suspense>
       </main>
-
     </StrictMode>
   );
 }
