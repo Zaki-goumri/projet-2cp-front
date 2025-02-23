@@ -23,7 +23,7 @@ if (root) {
           <Route path="/" element={<App />} />
           <Route path="auth">
             <Route index element={<div>Auth Home</div>} />
-            <Route path="signin" element={<Signin />} />
+            <Route path="signin" element={<Signin/>} />
             <Route path="password/forgot" element={<ForgotPassword/>} />
             <Route path="signup" element={<SignUp />} />
           </Route>          
