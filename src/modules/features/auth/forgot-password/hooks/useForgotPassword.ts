@@ -12,7 +12,7 @@ interface useSendResetEmailProps{
 }
 export default function  useSendResetEmail({onSuccess}:useSendResetEmailProps){
   const navigator=useNavigate();
-  const [otp,setOpt]=useState<ResetEmailDtoRes>() 
+  const [payload,setPayload]=useState<ResetEmailDtoRes>() 
  const SendEmailMutation= useMutation({
   mutationFn: (values: ResetEmailDtoReq) => forgotPassword(values),
     onError: (error:unknown) => {
@@ -23,7 +23,7 @@ export default function  useSendResetEmail({onSuccess}:useSendResetEmailProps){
     },
     onSuccess:(data:ResetEmailDtoRes)=>{
       //WARNING:this is just to test since the backend is not sending the otp to the email guelma m3a9
-      setOpt(data);
+      setPayload(data);
       onSuccess();
       toast.success("Email Sent Successfully");
      
@@ -31,7 +31,7 @@ export default function  useSendResetEmail({onSuccess}:useSendResetEmailProps){
     }
   });
    const resetPasswordMutation=useMutation({
-    mutationFn: (values: Omit<ResetPasswordReq,"expectedDto">) => resetPassword({...values,expectedDto:otp!?.otp,iat:otp!?.iat}),
+    mutationFn: (values: Omit<ResetPasswordReq,"expectedDto"|"iat">) => resetPassword({...values,expectedDto:payload!?.otp,iat:payload!?.iat}),
     onError: (error:unknown) => {
       if (isError(error)){
        return toast.error(error.message);
