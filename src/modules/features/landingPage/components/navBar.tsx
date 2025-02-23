@@ -16,7 +16,7 @@ function NavBar() {
       { to: "/", label: "Home" },
       { to: "/", label: "Q&A" },
       { to: "/", label: "Contact us" },
-      { to: "/aut/signin", label: "Sign in" },
+      { to: "/auth/signin", label: "Sign in" },
       {to: "/auth/signup", label: "Sign up"}
     ];
   return (
@@ -43,7 +43,7 @@ function NavBar() {
                 </Link>
               ))}
               <Link
-                to="/signin"
+                to="auth/signin"
                 className="text-2xl/70 text-primary hover:scale-110 px-3 py-2 rounded-md font-bold transition-colors"
               >
                 Sign in
