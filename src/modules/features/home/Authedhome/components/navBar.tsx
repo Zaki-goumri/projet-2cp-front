@@ -28,7 +28,7 @@ function NavBar() {
       { to: "/", label: "Home" },
       { to: "/", label: "Q&A" },
       { to: "/", label: "Contact us" },
-      { to: "/aut/signin", label: "Sign in" },
+      { to: "/auth/signin", label: "Sign in" },
       {to: "/auth/signup", label: "Sign up"}
     ];
   return (

@@ -17,8 +17,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Serve the app with NGINX
-FROM nginx:alpine
-
+FROM nginxinc/nginx-unprivileged:latest
 # Copy NGINX config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
