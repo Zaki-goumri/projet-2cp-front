@@ -34,6 +34,7 @@
     "localforage": "^1.10.0",
     "lucide-react": "^0.474.0",
     "match-sorter": "^8.0.0",
+    "motion": "^12.4.7",
     "npm": "^11.1.0",
     "postcss": "^8.5.1",
     "react": "^18.3.1",
