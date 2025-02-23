@@ -120,12 +120,7 @@ const Opportunities = () => {
 
         </div>
       </div>
-      <Slider 
-        items={problems} 
-        title="Internships"
-        subtitle="for you"
-        buttonText="Load More"
-      />
+      <Slider />
     </main>
   )
 }
