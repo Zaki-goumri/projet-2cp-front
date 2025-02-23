@@ -1,18 +1,20 @@
 interface ResetEmailDtoRes{
-  opt:String
+  otp:string
+  iat:string
 
 }
 interface ResetEmailDtoReq{
-  email:String  
+  email:string  
 }
 interface ResetPasswordReq{
-  email:String,
-  otp:String,
-  expectedDto:String,
-  password:String,
+  email:string,
+  otp:string,
+  expectedDto:string,
+  iat:string,
+  password:string,
 }
 interface ResetPasswordResDto{
-  message:String[]
+  message:string[]
 }
 
 
