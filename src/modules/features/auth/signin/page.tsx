@@ -1,9 +1,9 @@
 "use client";
 import SignForm from "@/modules/features/auth/signin/components/signinForm";
-const Google = React.lazy(() => import("./components/googleButton"));
-import React from "react";
+import React, { Suspense } from "react";
 import { Link } from "react-router";
 import { ToastContainer } from "react-toastify";
+const Google = React.lazy(() => import("./components/googleButton"));
 const Linkedin = React.lazy(
   () => import("@/modules/features/auth/signin/components/linkedinButtton")
 );
@@ -35,8 +35,12 @@ const Signin = () => {
           <hr className="w-1/6 opacity-47 " />
         </span>
         <section className="flex justify-center items-center gap-5 w-full md:flex-col flex-col">
-          <Google />
-          <Linkedin />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Google />
+          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Linkedin />
+          </Suspense>
           <span className="flex flex-col items-center justify-center gap-2">
             <h3 className="opacity-55">Don&apos;t you have an account ?</h3>
             <Link
