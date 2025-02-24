@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 body {
   --font-family-poppins: "Poppins", sans-serif;
   overflow-x: hidden;
