@@ -10,6 +10,7 @@ const App = React.lazy(() => import("./App"));
 const Signin = React.lazy(() => import("./modules/features/auth/signin/page"));
 const Footer = React.lazy(() => import("@/modules/shared/components/footer"));
 const Home = React.lazy(() => import("./modules/features/home/page"));
+const Oppertunity = React.lazy(() => import("./modules/features/oppertunity/page"))
 
 const root = document.getElementById("root");
 
@@ -28,6 +29,7 @@ if (root) {
                 <Route path="signup" element={<SignUp />} />
               </Route>
               <Route path="/home" element={<Home />} />
+              <Route path="/oppertunities" element={<Oppertunity/>} />
             </Routes>
             <Footer />
           </Router>
