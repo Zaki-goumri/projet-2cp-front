@@ -41,8 +41,6 @@ const SignForm = () => {
     },
   });
   
-  
-  
   const [showPassword, setShowPassword] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -67,7 +65,6 @@ const SignForm = () => {
         }
       );
   }
-  // --------------------
 
   return (
     <div className="flex justify-center items-center">
