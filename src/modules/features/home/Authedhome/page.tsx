@@ -1,6 +1,6 @@
 import React from "react";
 const NavBar = React.lazy(
-  () => import("@/modules/features/home/Authedhome/components/navBar"),
+  () => import("@/modules/features/landingPage/components/navBar"),
 );
 const SearchSection = React.lazy(
   () => import("@/modules/features/home/Authedhome/components/searchSection"),
@@ -12,7 +12,7 @@ const Oppertunities = React.lazy(
 const AuthedHome = () => {
   return (
     <main  >
-  <NavBar />
+      <NavBar  isAuthenticated={true}/>
   <SearchSection />
   <Oppertunities />
   </main>

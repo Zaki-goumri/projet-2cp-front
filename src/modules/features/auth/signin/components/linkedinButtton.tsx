@@ -1,36 +1,66 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaLinkedin } from "react-icons/fa";
-import { LinkedIn } from "react-linkedin-login-oauth2";
+import { useNavigate } from "react-router";
+
+const linkedinClientId = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
+const REDIRECT_URI = encodeURIComponent(`${window.location.origin}/linkedin/callback`);
 
 const LinkedInAuthButton = () => {
-  const handleSuccess = (response: any) => {
-    console.log("LinkedIn Auth Success:", response);
-    // You can send this authorization code to your backend for further processing
+  const navigate = useNavigate();
+  
+  // Generate secure random state
+  const generateState = () => {
+    const array = new Uint32Array(10);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, dec => dec.toString(16)).join('');
   };
 
-  const handleError = (error: any) => {
-    console.error("LinkedIn Auth Failed:", error);
+  const handleLogin = () => {
+    const state = generateState();
+    localStorage.setItem("linkedin_oauth_state", state);
+    
+    const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${linkedinClientId}&redirect_uri=${REDIRECT_URI}&state=${state}&scope=openid%20profile%20email`;
+    window.location.href = authUrl;
   };
+
+  // Handle callback logic in your router component
+  useEffect(() => {
+    if (window.location.pathname === "/linkedin/callback") {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      const state = params.get("state");
+      const error = params.get("error");
+
+      if (error) {
+        navigate("/login?error=linkedin_failed");
+        return;
+      }
+
+      if (code && state === localStorage.getItem("linkedin_oauth_state")) {
+        // Send code to backend
+        fetch("/api/auth/linkedin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            localStorage.setItem("authToken", data.access_token);
+            navigate("/dashboard");
+          })
+          .catch(() => navigate("/login?error=auth_failed"));
+      }
+    }
+  }, [navigate]);
 
   return (
-    <LinkedIn
-      clientId="77fzfa1dhch0j9"
-      redirectUri="http://localhost:8080"
-      onSuccess={handleSuccess}
-      onError={handleError}
-      scope="email"
-      state="124313" // A random state value for security
+    <button
+      onClick={handleLogin}
+      className="flex items-center justify-center w-64 h-10 border border-gray-300 rounded-full shadow-sm bg-white hover:bg-gray-100 transition"
     >
-      {({ linkedInLogin }) => (
-        <button
-          onClick={linkedInLogin}
-          className="flex items-center justify-center w-64 h-10 border border-gray-300 rounded-full shadow-sm bg-white hover:bg-gray-100 transition"
-        >
-          <FaLinkedin className="text-blue-600 text-xl mr-2" />
-          Sign in with LinkedIn
-        </button>
-      )}
-    </LinkedIn>
+      <FaLinkedin className="text-blue-600 text-xl mr-2" />
+      <span className="text-gray-700 font-medium">Sign in with LinkedIn</span>
+    </button>
   );
 };
 
