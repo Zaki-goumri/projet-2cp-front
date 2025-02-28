@@ -17,6 +17,7 @@ import {
   Eye,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea"
 
 const NavBar = React.lazy(
   () => import("@/modules/features/home/Authedhome/components/navBar"),
@@ -26,7 +27,7 @@ const OverView = React.lazy(() => import("@/modules/features/oppertunity/compone
 
 export default function InternshipListing() {
   return (
-    <div className="max-w-6xl mx-auto p-4 space-y-6 bg-[#2D81940A]">
+    <div className="max-w-6xl mx-auto  p-4 space-y-6 bg-[#2D81940A]">
       <NavBar />
 
       <OverView/>
@@ -34,7 +35,7 @@ export default function InternshipListing() {
       {/* Tabs */}
       <Tabs defaultValue="details" className="w-full">
         {/* <TabsList className="w-full justify-start border-b rounded-full h-16  px- bg-white"> */}
-        <TabsList className="w-full justify-start border-b rounded-full h-16 px-4 bg-white overflow-x-auto">
+        <TabsList className="w-full justify-start  rounded-full h-16 px-4 bg-white overflow-x-auto shadow">
           {[
             { value: "details", label: "Details & Description" },
             { value: "reviews", label: "Reviews" },
@@ -53,7 +54,7 @@ export default function InternshipListing() {
 
         <TabsContent value="details" className="space-y-6">
           {/* Details Section */}
-          <div className="space-y-4">
+          <div className="space-y-4 mx-5">
             <h2 className="font-semibold text-lg">Details</h2>
             <p className="text-muted-foreground">
               Huawei is hiring for the Internship Program!
@@ -73,7 +74,7 @@ export default function InternshipListing() {
               </ul>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2" id="apply">
               <h3 className="font-medium">Requirements:</h3>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                 <li>
@@ -88,20 +89,32 @@ export default function InternshipListing() {
             </div>
           </div>
 
-          {/* Contact Form */}
-          <Card className="p-4">
-            <h3 className="font-semibold mb-4">Contact the organisers</h3>
-            <div className="flex gap-2">
-              <Input placeholder="Send queries to organizers" />
-              <Button>
-                <Send className="w-4 h-4 mr-2" />
-                Send
+          <Card className="p-4 space-y-4 mt-5">
+            <h3 className="font-semibold">Contact the Organisers</h3>
+            <form className="space-y-4" >
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input placeholder="Enter your email" />
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-medium">Proposal Submission</h4>
+                  <p className="text-muted-foreground text-sm">
+                    If you have any proposals or suggestions, feel free to share them with us.
+                  </p>
+                  <div className="flex gap-2">
+                    <Textarea placeholder="Enter your proposal" className="h-[10vh]" />
+                  </div>
+                </div>
+              </div>
+              <Button type="submit" className="flex items-center gap-2 place-self-center bg-gray-400 hover:bg-primary">
+                <Send className="w-4 h-4" />
+                Apply
               </Button>
-            </div>
+            </form>
           </Card>
 
           {/* Additional Information */}
-          <div className="space-y-4">
+          <div className="space-y-4 mb-10">
             <h3 className="font-semibold">Additional Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <Card className="p-4 flex items-center gap-3">
@@ -173,10 +186,10 @@ export default function InternshipListing() {
           </div>
 
           {/* Feedback Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h3 className="font-semibold">Feedback & rating</h3>
             <div className="text-muted-foreground">Write a feedback...</div>
-          </div>
+          </div> */}
         </TabsContent>
 
         <TabsContent value="reviews">

@@ -2,8 +2,11 @@
 import axios from 'axios';
 import { serialize } from 'cookie';
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
+
 const instance = axios.create({
-  baseURL: "http://0.0.0.0:8000",
+  baseURL: baseUrl,
   headers: {
     'Content-Type': 'application/json',
   }

@@ -1,39 +1,74 @@
-import { Link } from "react-router";
+"use client"
+
+import { motion } from "framer-motion"
+import {Link} from "react-router"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+}
+
+const staggerChildren = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+}
+
 const Discovering = () => {
   return (
-    <main className="flex flex-col items-center mt-10 md:mx-24 mx-1">
-      <div className="flex  flex-col tems-center xl:mt-10  ">
-        <aside className="flex xl:flex-row flex-col items-center ">
-          <section className="flex flex-col xl:justify-between justify-center xl:items-start items-center">
-            <h1 className="2xl:text-6xl/normal xl:text-5xl/normal font-extrabold xl:text-left text-center md:text-3xl/normal text-2xl/normal lg:text-4xl/normal ">
-              {" "}
-              That one <span className="text-primary">opportunity</span>{" "}
-              feeling.
-              <br />
-              <span className="text-primary">Opportunity</span> Done.
-            </h1>
-            <p className="mt-10 md:text-2xl/relaxed xl:text-left text-center sm:text-96/normal text-80 max-w-[80%]">
-              Discover internships that match your passion, skills, and future
-              goals. Your next big opportunity is just a click away.
-            </p>
-          </section>
+    <section className="py-16 md:py-24 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto">
+      <motion.div
+        className="grid lg:grid-cols-2 gap-12 items-center"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerChildren}
+      >
+        <motion.div className="flex flex-col space-y-8" variants={fadeIn}>
+          <h1 className="text-3xl font-extrabold leading-normal sm:text-4xl md:text-5xl">
+            That one <span className="text-primary">opportunity</span> feeling.
+          </h1>
+
+          <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
+            Discover internships that match your passion, skills, and future goals. Your next big opportunity is just a
+            click away.
+          </p>
+
+          <div>
+            <Button asChild size="lg" className="rounded-full text-base hover:!bg-primary hover:!text-white transition-colors duration-00 ease-in-out  px-8 group">
+              <Link to="/home">
+                Get started
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
+          </div>
+        </motion.div>
+
+        <motion.div variants={fadeIn} className="flex justify-center lg:justify-end">
           <img
             src="/assets/discoveringHero.svg"
-            alt="Discovering"
-            className=" mt-5  lg:w-[55%] xs:p-0 p-[20%] "
+            alt="Discovering opportunities"
+            className="w-full max-w-md lg:max-w-lg xl:max-w-xl"
           />
-        </aside>
-        <aside className="flex xl:justify-start justify-center w-full items-center ">
-          <Link
-            to="/home"
-            className="bg-primary text-white font-bold py-4 px-6 rounded-full text-center cursor-pointer mt-12"
-          >
-            Get started!
-          </Link>
-        </aside>
+        </motion.div>
+      </motion.div>
+
+      <div className="mt-24">
+        <hr className="w-full max-w-3xl mx-auto opacity-20" />
       </div>
-      <hr className="w-3/4 my-10 opacity-20 text-center" />
-    </main>
-  );
-};
-export default Discovering;
+    </section>
+  )
+}
+
+export default Discovering
+
