@@ -4,7 +4,8 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Calendar, Heart, Share2, Users, Eye } from "lucide-react"
+import { MapPin, Calendar, Heart, Share2, Users } from "lucide-react"
+import { Link } from "react-router"
 
 const NavBar = React.lazy(() => import("@/modules/features/home/Authedhome/components/navBar"))
 
@@ -69,8 +70,10 @@ export default function InternshipListing() {
             </Button>
           </div>
 
-          <Button className="w-full bg-gray-400 hover:bg-primary hover:text-white text-white" variant="ghost">
+          <Button className="w-full bg-gray-400 hover:bg-primary hover:text-white text-white">
+            <a href="#apply" onClick={(e) => { e.preventDefault(); const applySection = document.querySelector('#apply'); if (applySection) { applySection.scrollIntoView({ behavior: 'smooth' }); } }}>
             Quick Apply
+            </a>
           </Button>
 
           <div className="grid grid-cols-2 gap-4 pt-2">
@@ -84,13 +87,7 @@ export default function InternshipListing() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-slate-100 rounded-md">
-                <Eye className="h-4 w-4 text-slate-600" />
-              </div>
-              <div>
-                <div className="font-semibold">1,284</div>
-                <div className="text-sm text-muted-foreground">Impressions</div>
-              </div>
+              {/* Placeholder for future content */}
             </div>
           </div>
         </Card>

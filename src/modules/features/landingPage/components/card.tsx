@@ -1,20 +1,26 @@
+"use client"
+
 interface CardProps {
-  title: string;
-  description: string;
-  image: string;
+  title: string
+  description: string
+  image: string
 }
 
 const Card = ({ title, description, image }: CardProps) => {
   return (
-    <div className="flex flex-col items-start border-gray-600 w-[80%] sm:h-72 h-fit rounded-4xl m-3 p-5 shadow-[0_5px_8px_rgba(0,0,0,0.4)] ">
-      <img
-        src={image}
-        alt={title}
-        className="bg-[#92E3A938] rounded-full p-2.5 mb-3"
-      />
-      <h3 className="font-bold text-xl mb-10">{title}</h3>
-      <p className="text-">{description}</p>
+    <div className="bg-card hover:bg-accent/50 shadow-lg rounded-xl p-6 transition-all duration-300 hover:shadow-lg group min-h-80 hover:scale-105">
+      <div className="flex flex-col space-y-4">
+        <div className="bg-primary/10 p-4 rounded-full w-16 h-16 flex items-center justify-center group-hover:bg-primary/20 transition-colors hover:rotate-6">
+          <img src={image || "/placeholder.svg"} alt={title} className="w-8 h-8" />
+        </div>
+
+        <h3 className="text-xl font-bold group-hover:text-primary transition-colors">{title}</h3>
+
+        <p className="text-muted-foreground group-hover:text-primary transition-colors">{description}</p>
+      </div>
     </div>
-  );
-};
-export default Card;
+  )
+}
+
+export default Card
+
