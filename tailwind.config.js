@@ -16,6 +16,9 @@ export default {
       '2xl': '1536px',
     },
     extend: {
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+      },
       keyframes: {
         "caret-blink": {
           "0%,70%,100%": { opacity: "1" },

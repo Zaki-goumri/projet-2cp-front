@@ -23,16 +23,13 @@ export type RegisterResponse = {
   access: string
 };
   
-   
 export interface RegisterRequest {
   name: string;
   email: string;
-  type: string;
-  company: {
-    category: string;
-    education: string;
-  };
+  type: "company" | "student";
   password: string;
+  confirmPassword: string;
+  phoneNumber: string;
 }
 
     
