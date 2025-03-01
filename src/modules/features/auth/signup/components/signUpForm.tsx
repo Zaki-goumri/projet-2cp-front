@@ -1,122 +1,52 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import  useSignup  from "@/modules/features/auth/signup/hooks/useSignup"
-import type { RegisterRequest }  from "../types/signup"
-// Zod schema for form validation
+import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
+import useSignup from "@/modules/features/auth/signup/hooks/useSignup";
+import { RegisterRequest } from "../types/signup";
+import { toast } from "react-toastify";
+
 const formSchema = z
   .object({
-    email: z.string().min(1, "Email is required").email("Invalid email address").max(50),
-    password: z.string().min(1, "Password is required").min(8, "Password must be at least 8 characters long").max(50),
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .email("Invalid email address")
+      .max(50),
+    password: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, "Password must be at least 8 characters long")
+      .max(50),
     confirmPassword: z.string().min(1, "Confirm Password is required"),
     name: z.string().min(1, "Full Name is required").max(50),
     phoneNumber: z.string().min(1, "Phone Number is required").max(50),
-    //NOTE: maybe add admin later on
     type: z.enum(["company", "student"]),
   })
   .refine((val) => val.password === val.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-  })
-
-// Custom input field component
-
-type BaseProps = {
-  name: string
-  placeholder: string
-  icon: React.ReactNode
-  control: any // Replace 'any' with the appropriate react-hook-form type (e.g., Control<FieldValues>)
-  toggle?: boolean
-}
-
-type TextOrPasswordInputProps = BaseProps & {
-  type?: "text" | "password"
-}
-
-type OptionsInputProps = BaseProps & {
-  type: "options"
-  items: string[]
-}
-
-type CustomInputFieldProps = TextOrPasswordInputProps | OptionsInputProps
-
-const CustomInputField: React.FC<CustomInputFieldProps> = ({
-  name,
-  placeholder,
-  icon,
-  control,
-  type = "text",
-  toggle = false,
-  ...rest
-}) => {
-  const [show, setShow] = useState(false)
-  const inputType = toggle ? (show ? "text" : "password") : type
-
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormControl>
-            {type === "options" ? (
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 z-10">{icon}</span>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger className="h-12  pl-10 text-sm opacity-40 focus:outline-none rounded-xl bg-white border border-black w-full">
-                    <SelectValue placeholder={placeholder} />
-                  </SelectTrigger>
-                  <SelectContent className="
-                    bg-white rounded-xl border-none [&>*]:bg-white">
-                    {"items" in rest &&
-                      rest.items.map((val: string, idx: number) => (
-                        <SelectItem
-                          value={val}
-                          key={idx}
-                          className="text-black opacity-50"
-                        >
-                          {val}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            ) : (
-              <div className="relative">
-                <Input
-                  type={inputType}
-                  placeholder={placeholder}
-                  {...field}
-                  className="h-12 p-7 pl-10 text-lg focus:outline-none rounded-xl opacity-50 w-full"
-                />
-                {/* Left icon */}
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3">{icon}</span>
-                {/* Toggle icon for password fields */}
-                {toggle && (
-                  <span
-                    onClick={() => setShow(!show)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-4 bg-transparent hover:opacity-45 cursor-pointer"
-                  >
-                    {!show ? <EyeOff size={24} className="opacity-50" /> : <Eye size={24} className="opacity-50" />}
-                  </span>
-                )}
-              </div>
-            )}
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
+  });
 
 const SignUpForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -129,104 +59,196 @@ const SignUpForm = () => {
       phoneNumber: "",
       type: "student",
     },
-  })
+  });
 
-  
-  
-  const { mutate, isLoading, error } = useSignup()
-  
-    // onSubmit handler calls the mutation with form values
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-      // Remove the confirmPassword field since it's only for validation
-      const { confirmPassword, phoneNumber,...rest } = values
-      let test = {
-        ...rest,
-              
-      }
-      
-      mutate(test as RegisterRequest)
-    }
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const { mutate, isLoading, error } = useSignup();
 
-  // Array of field definitions
-  const fields: CustomInputFieldProps[] = [
-    {
-      name: "email",
-      placeholder: "E-mail",
-      icon: <Mail className="h-5 w-auto opacity-45" />,
-      control: form.control,
-      type: "text",
-      toggle: false,
-    }
-    ,{
-      name: "name",
-      placeholder: "Full Name",
-      icon: <User className="h-5 w-auto opacity-45" />,
-      control: form.control,
-      type: "text",
-      toggle: false,
-    },
-    {
-      name: "phoneNumber",
-      placeholder: "Phone Number",
-      icon: <Phone className="h-5 w-auto opacity-45" />,
-      control: form.control,
-      type: "text",
-      toggle: false,
-    },
-    {
-      name: "password",
-      placeholder: "Password",
-      icon: <Lock className="h-5 w-5 opacity-45" />,
-      control: form.control,
-      toggle: true,
-    },
-    {
-      name: "confirmPassword",
-      placeholder: "Confirm Password",
-      icon: <Lock className="h-5 w-5 opacity-45" />,
-      control: form.control,
-      toggle: true,
-    },
-    {
-      name: "type",
-      type: "options",
-      placeholder: "Type",
-      icon: <User className="h-5 w-auto opacity-45" />,
-      control: form.control,
-      toggle: false,
-      items: ["student", "company"],
-    },
-    
-  ]
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const { confirmPassword, phoneNumber, ...registrationData } = values;
+    mutate(registrationData as RegisterRequest);
+  };
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="bg-white p-5 sm:p-10 md:p-12 rounded-lg shadow-lg h-md mx-4">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(async (values) => {
-       onSubmit(values)
-            })}
-            className="space-y-6"
-          >
-            {/* Map over the fields array to render each input */}
-            {fields.map((field) => (
-              <CustomInputField key={field.name} {...field} />
-            ))}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/10 p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="p-8">
+            <div className="mb-6 flex justify-center">
+              <img src="/assets/logo.svg" alt="Logo" className="h-8" />
+            </div>
 
-            <button
-              type="submit"
-              disabled={form.formState.isSubmitting}
-              className="w-full bg-[#98E9AB] rounded-full py-4 text-white hover:opacity-85 hover:ease-in-out disabled:opacity-50"
-            >
-              Sign Up
-            </button>
-          </form>
-        </Form>
+            <h1 className="text-2xl font-semibold text-center mb-2">Sign up</h1>
+            <p className="text-gray-500 text-center text-sm mb-6">
+              Create an account to start posting jobs and build your remote team
+            </p>
+
+            <div className="flex items-center my-4">
+              <div className="flex-grow h-px bg-gray-200"></div>
+              <span className="px-3 text-sm text-gray-500">
+                or sign up with email
+              </span>
+              <div className="flex-grow h-px bg-gray-200"></div>
+            </div>
+
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                {[
+                  {
+                    name: "email",
+                    placeholder: "Email",
+                    icon: Mail,
+                    type: "text",
+                  },
+                  {
+                    name: "name",
+                    placeholder: "Full Name",
+                    icon: User,
+                    type: "text",
+                  },
+                  {
+                    name: "phoneNumber",
+                    placeholder: "Phone Number",
+                    icon: Phone,
+                    type: "text",
+                  },
+                  {
+                    name: "password",
+                    placeholder: "Password",
+                    icon: Lock,
+                    type: showPassword ? "text" : "password",
+                    toggle: () => setShowPassword(!showPassword),
+                    show: showPassword,
+                  },
+                  {
+                    name: "confirmPassword",
+                    placeholder: "Confirm Password",
+                    icon: Lock,
+                    type: showConfirmPassword ? "text" : "password",
+                    toggle: () => setShowConfirmPassword(!showConfirmPassword),
+                    show: showConfirmPassword,
+                  },
+                ].map((field, index) => (
+                  <FormField
+                    key={index}
+                    control={form.control}
+                    name={
+                      field.name as
+                        | "email"
+                        | "password"
+                        | "confirmPassword"
+                        | "name"
+                        | "phoneNumber"
+                        | "type"
+                    }
+                    render={({ field: formField }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                            <Input
+                              type={field.type}
+                              placeholder={field.placeholder}
+                              className="!pl-10 !py-6 !rounded-lg !border-gray-200"
+                              {...formField}
+                            />
+                            {field.toggle && (
+                              <button
+                                type="button"
+                                onClick={field.toggle}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                              >
+                                {field.show ? (
+                                  <EyeOff className="h-5 w-5" />
+                                ) : (
+                                  <Eye className="h-5 w-5" />
+                                )}
+                              </button>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="!pl-10 !py-6 !rounded-lg !border-gray-200 !text-black/40">
+                              <SelectValue placeholder="Account Type" />
+                            </SelectTrigger>
+                            <SelectContent className="!bg-white !border-none">
+                              {["student", "company"].map((type) => (
+                                <SelectItem
+                                  key={type}
+                                  value={type}
+                                  className="!bg-white !border-0 hover:!bg-gray-200 !text-black/40"
+                                >
+                                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-6 bg-[#98E9AB] hover:bg-[#7ad98e] text-white font-medium rounded-lg transition-colors"
+                >
+                  {isLoading ? "Creating account..." : "Continue"}
+                </Button>
+              </form>
+            </Form>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-500">
+                Already have an account?{" "}
+                <Link
+                  to="/auth/signin"
+                  className="text-[#98E9AB] font-medium hover:underline"
+                >
+                  Sign in
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-xs text-center mt-6 text-gray-500">
+          By continuing, you agree to our{" "}
+          <a href="#" className="text-[#98E9AB] hover:underline">
+            Terms of Use
+          </a>{" "}
+          and{" "}
+          <a href="#" className="text-[#98E9AB] hover:underline">
+            Privacy Policy
+          </a>
+          .
+        </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignUpForm
+export default SignUpForm;
