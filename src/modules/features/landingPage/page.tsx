@@ -1,7 +1,8 @@
 import React from "react";
 const NavBar = React.lazy(
-  () => import("@/modules/features/landingPage/components/navBar"),
+  () => import("@/modules/shared/components/navBar")
 );
+
 const Signup = React.lazy(
   () => import("@/modules/features/landingPage/components/signup"),
 );
@@ -14,11 +15,12 @@ const AppSection = React.lazy(
 const Footer = React.lazy(() => import("@/modules/shared/components/footer"));
 const LandingPage = () => {
   return (
-    <div className="overflow-x-hidden zoom-in">
+    <div className="overflow-x-hidden">
       <NavBar />
       <Discovering />
       <Signup />
       <AppSection />
+      <Footer />
     </div>
   );
 };
