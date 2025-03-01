@@ -5,6 +5,7 @@ import { registerUser } from "../services/signup";
 import { User, RegisterRequest } from "../types/signup";
 import { useUserStore } from "@/modules/shared/store/userStore";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const useSignup = () => {
   const setUser = useUserStore((state) => state.setUser);
@@ -14,11 +15,18 @@ const useSignup = () => {
     mutationFn: (values: RegisterRequest) => registerUser(values),
     onSuccess: (data: User) => {
       setUser({ ...data });
-      navigate("/");
+      toast.success("Account created successfully! Redirecting...", {
+        position: "top-right",
+        autoClose: 3000,
+      })
+      navigate("/home");
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error) && error.response) {
-        console.log((error.response.data as { error?: string }).error);
+        toast.error(error.response.data.email[0], {
+       position: "top-right",
+       autoClose: 5000,
+     })
       } else {
         console.error("Unknown error");
       }

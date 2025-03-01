@@ -6,7 +6,7 @@ import { useState } from "react";
 import { MoveRight, MoveLeft } from "lucide-react";
 
 const NavBar = React.lazy(
-  () => import("@/modules/features/landingPage/components/navBar"),
+  () => import("@/modules/shared/components/navBar"),
 );
 const OppCard = React.lazy(
   () => import("@/modules/features/home/unAuthedhome/components/card"),
