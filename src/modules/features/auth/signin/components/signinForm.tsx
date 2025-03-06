@@ -52,7 +52,7 @@ const SignForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-[#e8f5e9]">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/50">
       <div className="bg-white p-8 rounded-xl shadow-lg mx-4 w-full max-w-md">
         <div className="text-center mb-8">
           <div className="mb-6 flex justify-center">
