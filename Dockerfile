@@ -6,22 +6,14 @@ WORKDIR /app
 # Copy package files for dependency installation
 COPY package*.json ./
 # COPY .npmrc ./
-
+# Copy .env.production
+COPY .env.production .env
 # Install dependencies
+
 RUN npm install
 
 # Copy source code
 COPY . .
-
-# Set environment variables from a file
-ARG VITE_GOOGLE_OAUTH_ID
-ARG VITE_LINKEDIN_CLIENT_ID
-ARG VITE_BASE_URL
-
-ENV VITE_GOOGLE_OAUTH_ID=$VITE_GOOGLE_OAUTH_ID
-ENV VITE_LINKEDIN_CLIENT_ID=$VITE_LINKEDIN_CLIENT_ID
-ENV VITE_BASE_URL=$VITE_BASE_URL
-
 
 # Build the app
 RUN npm run build

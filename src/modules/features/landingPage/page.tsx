@@ -2,7 +2,6 @@ import React from "react";
 const NavBar = React.lazy(
   () => import("@/modules/shared/components/navBar")
 );
-
 const Signup = React.lazy(
   () => import("@/modules/features/landingPage/components/signup"),
 );

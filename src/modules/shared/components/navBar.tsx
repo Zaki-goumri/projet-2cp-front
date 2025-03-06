@@ -97,7 +97,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold flex items-center">
-              <img src="/assets/logo.svg" alt="logo" className="h-7 w-auto" />
+              <img src="/assets/logo.svg" alt="logo" className="h-7 w-auto" loading="lazy"/>
             </Link>
           </div>
 
