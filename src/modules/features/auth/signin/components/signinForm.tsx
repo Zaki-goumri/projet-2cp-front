@@ -1,27 +1,28 @@
 "use client";
 import React, { useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "@/api/axios.config";
-import { setTokens } from "../services/singinServices";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Link } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {errorMessages} from "@/modules/features/auth/signin/services/singinServices";
-
-
-// Local components
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+const Google = React.lazy(() => import("./googleButton"));
+const Linkedin = React.lazy(
+  () => import("@/modules/features/auth/signin/components/linkedinButtton"),
+);
+import useSignin from "@/modules/features/auth/signin/hooks/useSignin";
+import type { LoginRequest } from "../types/signin.types";
 
 const formSchema = z.object({
   email: z
@@ -40,110 +41,158 @@ const SignForm = () => {
       password: "",
     },
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-      const response = await toast.promise(
-        axios.post(`/Auth/Login`, values),
-        {
-          pending: 'Signing in...',
-          success: {
-            render({data})
-            {
-              setTokens(data?.data?.access, data?.data?.refresh);
-              return "Signed in successfully";
-            }
+  const { mutate, isLoading } = useSignin();
 
-          },
-          error: {
-            render({data}: any) {
-              const statusCode = data?.status;
-              return errorMessages[statusCode] || "An error occured Check your network.";
-            }
-          }
-        }
-      );
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const loginData = values;
+    mutate(loginData as unknown as LoginRequest);
+  };
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="bg-white p-5 sm:p-10 md:p-12 rounded-lg shadow-lg  h-md mx-4">
+    <div className="min-h-screen flex justify-center items-center bg-[#e8f5e9]">
+      <div className="bg-white p-8 rounded-xl shadow-lg mx-4 w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="mb-6 flex justify-center">
+            <img src="/assets/logo.svg" alt="Logo" className="h-8" />
+          </div>
+          <h2 className="text-2xl font-semibold mt-4 mb-2">Sign in</h2>
+          <p className="text-gray-500 text-sm">
+            Sign in to access your account and continue your work
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-gray-200 w-full"></div>
+            <span className="bg-white px-3 text-sm text-gray-500 absolute">
+              sign in with email
+            </span>
+          </div>
+        </div>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="E-mail"
-                        {...field}
-                        className=" h-12 p-7 pl-10 text-lg focus:outline-none rounded-xl opacity-50  w-full  "
-                      />
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <Mail className="h-5 w-auto opacity-45" />
-                      </span>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        {...field}
-                        className=" h-12 p-7 pl-10 text-lg focus:outline-none rounded-xl opacity-50 w-full"
-                      />
-                      <button
-                        onClick={() => {
-                          setShowPassword(!showPassword);
-                        }}
-                        aria-label={
-                          showPassword ? "Hide password" : "Show password"
-                        }
-                        className="absolute inset-y-0 right-0 flex items-center pr-4 bg-transparent hover:opacity-45 hover:ease-out duration-500"
-                      >
-                        {!showPassword ? (
-                          <EyeOff size={24} className="opacity-50 " />
-                        ) : (
-                          <Eye size={24} className="opacity-50" />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            {[
+              {
+                name: "email",
+                placeholder: "Email",
+                type: "text",
+                icon: <Mail className="h-5 w-5 text-gray-400" />,
+              },
+              {
+                name: "password",
+                placeholder: "Password",
+                type: showPassword ? "text" : "password",
+                icon: <Lock className="h-5 w-5 text-gray-400" />,
+                toggleIcon: showPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400" />
+                ),
+              },
+            ].map(({ name, placeholder, type, icon, toggleIcon }) => (
+              <FormField
+                key={name}
+                control={form.control}
+                name={name as "email" | "password"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={type}
+                          placeholder={placeholder}
+                          {...field}
+                          className="!pl-10 !py-6 !rounded-lg !border-gray-200"
+                        />
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                          {icon}
+                        </span>
+                        {name === "password" && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setShowPassword(!showPassword);
+                            }}
+                            aria-label={
+                              showPassword ? "Hide password" : "Show password"
+                            }
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                          >
+                            {toggleIcon}
+                          </button>
                         )}
-                      </button>
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <Lock className="h-5 w-5 opacity-45" />
-                      </span>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />            
-            <button
-              type="submit"
-              className="w-full bg-primary rounded-full border-transparent py-4 text-white hover:opacity-85 hover:ease-in-out"
-            >
-              Sign In
-            </button>
-            <FormLabel className="text-center justify-center flex">
-              <Link to="/signup" className="text-primary hover:underline">
-                forgot password ?
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-xs mt-1" />
+                  </FormItem>
+                )}
+              />
+            ))}
+
+            <div className="pt-2">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={`!w-full !py-6 !text-white !font-medium !rounded-lg !transition-colors ${
+                  isLoading ? "!bg-gray-400" : "!bg-[#98E9AB] hover:!bg-[#7ad98e]"
+                }`}
+              >
+                {isLoading ? "Creating account..." : "Continue"}
+              </Button>
+            </div>
+
+            <div className="text-center text-sm mt-4">
+              <Link
+                to="/auth/password/forget"
+                className="text-green-500 hover:underline"
+              >
+                Forgot password?
               </Link>
-            </FormLabel>
+            </div>
           </form>
         </Form>
+
+        {/* Social Login Section */}
+        <div className="mt-8">
+          <div className="relative flex items-center justify-center mb-6">
+            <div className="border-t border-gray-200 w-full"></div>
+            <span className="bg-white px-3 text-sm text-gray-500 absolute">
+              or continue with
+            </span>
+            <div className="border-t border-gray-200 w-full"></div>
+          </div>
+
+          <div className="place-self-center space-y-3 w-full">
+            <Google />
+            <Linkedin />
+          </div>
+        </div>
+
+        <div className="text-center text-sm text-gray-500 mt-6">
+          Don't have an account?{" "}
+          <Link to="/auth/signup" className="text-green-500 hover:underline">
+            Sign up
+          </Link>
+        </div>
+
+        <div className="text-xs text-center text-gray-400 mt-8">
+          By continuing, you agree to our{" "}
+          <Link to="/terms" className="text-green-500 hover:underline">
+            Terms of Use
+          </Link>{" "}
+          and{" "}
+          <Link to="/privacy" className="text-green-500 hover:underline">
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </div>
   );
 };
+
 export default SignForm;

@@ -23,7 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import useSignup from "@/modules/features/auth/signup/hooks/useSignup";
-import { RegisterRequest } from "../types/signup";
+import { RegisterRequest } from "../types/signup.types";
 import { toast } from "react-toastify";
 
 const formSchema = z
@@ -214,7 +214,7 @@ const SignUpForm = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-6 bg-[#98E9AB] hover:bg-[#7ad98e] text-white font-medium rounded-lg transition-colors"
+                  className="!w-full !py-6 !bg-[#98E9AB] hover:!bg-[#7ad98e] !text-white !font-medium !rounded-lg !transition-colors"
                 >
                   {isLoading ? "Creating account..." : "Continue"}
                 </Button>

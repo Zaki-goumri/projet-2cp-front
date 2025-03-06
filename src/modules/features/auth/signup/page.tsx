@@ -1,5 +1,5 @@
 import { lazy } from "react";
-const SignUpForm = lazy(() => import("./components/signUpForm"));
+const SignUpForm = lazy(() => import("./components/signupForm"));
 import { ToastContainer } from "react-toastify";
 const QueryClient = lazy(
   () => import("@/modules/shared/components/ReactQueryProvider"),
