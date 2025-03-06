@@ -1,18 +1,18 @@
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { registerUser } from "../services/signup.services";
-import { User, RegisterRequest } from "../types/signup.types";
+import { loginUser } from "../services/singin.services";
+import { User, LoginRequest } from "../types/signin.types";
 import { useUserStore } from "@/modules/shared/store/userStore";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
-const useSignup = () => {
+const useSignin = () => {
   const setUser = useUserStore((state) => state.setUser);
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (values: RegisterRequest) => registerUser(values),
+    mutationFn: (values: LoginRequest) => loginUser(values),
     onSuccess: (data: User) => {
       setUser({ ...data });
       navigate("/home");
@@ -30,4 +30,4 @@ const useSignup = () => {
   });
 };
 
-export default useSignup;
+export default useSignin;
