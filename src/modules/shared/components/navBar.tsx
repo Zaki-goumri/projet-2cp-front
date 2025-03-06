@@ -92,12 +92,12 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
   ]
 
   return (
-    <nav className="sticky top-0 left-0 right-0 z-50 bg-background py-4 px-4 sm:px-6 md:px-8 shadow bg-white" >
+    <nav className="sticky top-0 left-0 right-0 z-50 bg-background py-2 px-4 sm:px-6 md:px-8 shadow bg-white" >
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold flex items-center">
-              <img src="/assets/logo.svg" alt="logo" className="h-8 w-auto" />
+              <img src="/assets/logo.svg" alt="logo" className="h-7 w-auto" />
             </Link>
           </div>
 
@@ -138,7 +138,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                 {/* Notification Bell */}
                 <div className="flex items-center gap-4">
                   {/* Notification Bell */}
-                  <div className="relative">
+                  <div className="relative ">
                     <DropdownMenu>
                       <DropdownMenuTrigger className="focus:outline-none">
                         <div className="relative">
@@ -187,10 +187,10 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
 
                 {/* User Profile Dropdown */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="focus:outline-none">
+                  <DropdownMenuTrigger className="focus:outline-none mb-2">
                     <Avatar className="cursor-pointer hover:bg-gray-100 rounded-full transition-colors duration-200">
                       <AvatarImage
-                        src="https://media.licdn.com/dms/image/v2/D4D03AQHXpJebXN8V6g/profile-displayphoto-shrink_100_100/B4DZP3_UD_GUAU-/0/1735032392292?e=1745452800&v=beta&t=TYg-UNOHOVb41qEFarBT1yBdPnyj_RnwDGmesxbLcXg"
+                        src="" //to do
                         className="!bg-white"
                       />
                       <AvatarFallback className="!bg-neutral-200">CN</AvatarFallback>
@@ -232,7 +232,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden">
-              <Button onClick={() => setIsOpen(true)} variant="ghost" size="icon" className="rounded-full">
+              <Button onClick={() => setIsOpen(true)}  size="icon" className="rounded-full !bg-transparent !shadow-none hover:!bg-gray-200 ">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Open menu</span>
               </Button>

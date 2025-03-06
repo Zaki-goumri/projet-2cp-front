@@ -1,6 +1,6 @@
 import axios from '@/api/axios.config';
 import { serialize } from 'cookie';
-import { RegisterRequest, User, RegisterResponse } from '../types/signup'
+import { RegisterRequest, User, RegisterResponse } from '../types/signup.types'
 
 export const registerUser = async (data: RegisterRequest): Promise<User> => {
   try {
