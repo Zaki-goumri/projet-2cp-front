@@ -9,10 +9,9 @@ import ForgotPassword from "./modules/features/auth/forgot-password/page";
 const App = React.lazy(() => import("./App"));
 const Signin = React.lazy(() => import("./modules/features/auth/signin/page"));
 const Home = React.lazy(() => import("./modules/features/home/page"));
-const Oppertunity = React.lazy(() => import("./modules/features/oppertunity/page"))
+const Opportunity = React.lazy(() => import("./modules/features/opportunity/page"))
 const OAuthCallback = React.lazy(() => import("./modules/features/auth/signin/components/googleCallback"));
 const LinkedInCallback = React.lazy(() => import("./modules/features/auth/signin/components/linkedinCallback"));
-const QueryClient = React.lazy(() => import("@/modules/shared/components/ReactQueryProvider"));
 
 const root = document.getElementById("root");
 
@@ -22,7 +21,7 @@ if (root) {
         <Suspense fallback={<Loading />}>
             <Router>
               <Routes>
-                <Route path="/oauth/callback" element={<OAuthCallback />} />
+                <Route path="/google/callback" element={<OAuthCallback />} />
                 <Route path="/linkedin/callback" element={<LinkedInCallback />} />
                 <Route path="/" element={<App />} />
                 <Route path="auth">
@@ -32,7 +31,7 @@ if (root) {
                   <Route path="signup" element={<SignUp />} />
                 </Route>
                 <Route path="/home" element={<Home />} />
-                <Route path="/oppertunities/*" element={<Oppertunity/>} />
+                <Route path="/opportunities/:id" element={<Opportunity/>} />
               </Routes>
             </Router>
         </Suspense>

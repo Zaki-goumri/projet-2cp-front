@@ -6,17 +6,25 @@ const OAuthCallback = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    for (const [key, value] of params.entries()) {
-      console.log(`${key}: ${value}`);
-    }
     const code = params.get('code');
     if (code) {
       navigate("/home");
     } else {
       navigate("/auth/signin?error=google_failed");
     }
-  }, []);
+  }, [navigate]);
 
+  const handleAuthentication = async (code: string) => {
+    try {
+      console.log(code) //to do send it to the backend
+      navigate("/home");
+    } catch (err) {
+      console.error("Authentication failed:", err);
+      navigate("/auth/signin?error=auth_failed");
+    }
+  };
+
+  
   return <div className='h-screen w-screen bg-white'/>;
 };
 

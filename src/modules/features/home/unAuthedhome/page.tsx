@@ -6,7 +6,7 @@ import { useState } from "react";
 import {MoveRight,MoveLeft} from "lucide-react"
 
 const NavBar = React.lazy(
-  () => import("@/modules/features/landingPage/components/navBar"),
+  () => import("@/modules/shared/components/navBar"),
 );
 const OppCard = React.lazy(
   () => import("@/modules/features/home/unAuthedhome/components/card"),
@@ -166,7 +166,7 @@ const UnAuthedhome = () => {
   };
   return (
     <main>
-      <NavBar />
+      <NavBar  />
       <Introduction />
       <section className="mx-4 sm:mx-8 md:mx-12 lg:mx-20">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8">
