@@ -14,7 +14,7 @@ interface InternshipCardProps {
 
 export default function InternshipCard({ logo, title, description, views, daysLeft }: InternshipCardProps) {
   return (
-    <main className="w-full max-w-md min-w-2 h-full overflow-hidden group cursor-pointer rounded-3xl shadow-lg border-transparent my-10 mx-auto sm:mx-0 flex flex-col">
+    <main className="w-full max-w-md min-w-2 h-full overflow-hidden group cursor-pointer rounded-3xl shadow-lg border-transparent my-10 mx-auto sm:mx-0 flex flex-col hover:scale-110 ease-in-out duration-300">
       {/* Green Section */}
       <div className="relative bg-primary h-28 p-5 pb-12 flex-shrink-0">
         <div className="flex justify-between items-start">
