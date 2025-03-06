@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { X, Mail, ArrowRight } from "lucide-react";
+import { Link } from "react-router";
 const Linkedin = React.lazy(
   () => import("@/modules/features/auth/signin/components/linkedinButtton"),
 );
@@ -65,11 +66,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <Linkedin />
                 <Google />
                 <button
-                  className="flex items-center justify-center w-64 h-10 border border-gray-300 rounded-full shadow-sm bg-white hover:bg-gray-100 transition"
+                  className="w-full h-11 flex items-center justify-center gap-2 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsEmailView(true)}
                 >
                   <Mail className="text-xl mr-2" />
-                  <p className="text-gray-700 font-medium">Continue with Email</p>
+                  <p className="text-gray-700 font-medium"
+                  >Continue with Email</p>
                 </button>
               </div>
             </>
@@ -151,6 +153,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <a href="#" className="text-primary hover:underline">
               Privacy Policy
             </a>
+          </p>
+          <p className="text-xs text-gray-500 text-center mt-4">
+            Don't have an account?{" "}
+            <Link to="/auth/signin" className="text-primary hover:underline">
+              Sign Up
+            </Link>
           </p>
         </div>
       </div>

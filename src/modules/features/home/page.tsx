@@ -8,8 +8,8 @@ const UnAuthedHome = React.lazy(
 const HomaPage = () => {
   return (
     <div className='flex flex-col'>
-      {/* <UnAuthedHome /> */}
-      <AuthedHome />
+      <UnAuthedHome />
+      {/* <AuthedHome /> */}
     </div>
   );
 }

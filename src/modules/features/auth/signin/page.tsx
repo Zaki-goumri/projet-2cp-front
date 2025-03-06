@@ -1,9 +1,7 @@
 import { lazy } from "react";
 const SigninForm = lazy(() => import("@/modules/features/auth/signin/components/signinForm"));
 import { ToastContainer } from "react-toastify";
-const QueryClient = lazy(
-  () => import("@/modules/shared/components/ReactQueryProvider"),
-);
+import QueryClient from "@/modules/shared/components/ReactQueryProvider";
 
 export default function SignUp() {
   return (
