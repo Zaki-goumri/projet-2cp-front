@@ -10,6 +10,7 @@ import { Axios, isAxiosError } from "axios"
     } catch (error:unknown) {
       if (isAxiosError(error)){
          if (error.response?.status==404){
+            console.log(error.response);
             return Promise.reject(new Error("User Doesn't Exist"));
       }
       if (error.response?.status==500){

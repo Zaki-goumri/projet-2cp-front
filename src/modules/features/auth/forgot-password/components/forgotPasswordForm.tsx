@@ -22,7 +22,7 @@ import useForgotPassword from "../hooks/useForgotPassword";
 import { toast } from "react-toastify";
 
 
-export const ForgotPasswordForm = () => {
+ const ForgotPasswordForm = () => {
       const formSchema=  z.object({
   email: z
     .string()
@@ -80,18 +80,19 @@ export const ForgotPasswordForm = () => {
   
   
   return (
-    <div className="">
+    <div className="flex justify-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit((val)=>submit(val))} className="space-y-6">
-          <div className="flex ">
+          <div className="flex justify-center ">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormControl>
                     <div className="relative">
                       <Input
+
                         placeholder="E-mail"
                         {...field}
                         className=" h-12 p-7  pl-10 pr-20 text-lg focus:outline-none rounded-xl opacity-50  w-full   "
@@ -116,13 +117,13 @@ export const ForgotPasswordForm = () => {
             />
                       </div>
           {isOtpShown&&(   <div>
-            <FormField
+            <FormField 
               control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="relative">
+                    <div className="relative flex justify-center">
                       <Input
 
                         type={showPass?"text":"password"}
@@ -159,7 +160,7 @@ export const ForgotPasswordForm = () => {
           {isOtpShown && (
             <span className="w-full flex justify-center px-10 lg:justify-start lg:px-0">
               {" "}
-              <InputOTP
+              <InputOTP 
                 maxLength={6}
                 pattern={REGEXP_ONLY_DIGITS}
                 onChange={(e) => {
@@ -167,7 +168,7 @@ export const ForgotPasswordForm = () => {
                 }}
                 value={value}
                               >
-               <ul className=" rounded-xl  flex space-x-2"
+               <ul className=" rounded-xl  flex space-x-2 justify-center"
                > 
                 {Array.from({ length: 6 }, (_, i) => (
                   <InputOTPSlot key={i} index={i}  className="w-12 h-12 rounded-md border" />
@@ -191,3 +192,4 @@ export const ForgotPasswordForm = () => {
     </div>
   );
 };
+export default ForgotPasswordForm;
