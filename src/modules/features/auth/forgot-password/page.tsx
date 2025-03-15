@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     <QueryClientProvider client={queryClient}>
       <main className="flex flex-col justify-around">
         <ToastContainer />
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/50">
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/50 p-0 min-sm:p-10">
           <div className="mx-4 flex w-full max-w-md flex-col items-center justify-evenly gap-10 rounded-xl bg-white p-8 shadow-lg">
             <img src="/assets/logo.svg" alt="Logo" className="h-8" />
             <div className="flex flex-col items-center justify-center gap-2">
