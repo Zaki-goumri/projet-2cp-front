@@ -34,7 +34,7 @@ if (root) {
             <Route path="auth">
               <Route index element={<div>Auth Home</div>} />
               <Route path="signin" element={<Signin />} />
-              <Route path="password/forgot" element={<ForgotPassword />} />
+              <Route path="password/forget" element={<ForgotPassword />} />
               <Route path="signup" element={<SignUp />} />
             </Route>
             <Route path="/home" element={<Home />} />

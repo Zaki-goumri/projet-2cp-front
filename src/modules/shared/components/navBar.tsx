@@ -38,7 +38,7 @@ type NavBarProps = {
   isAuthenticated?: boolean;
 };
 
-export default function NavBar({ isAuthenticated = true }: NavBarProps) {
+export default function NavBar({ isAuthenticated = false }: NavBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnread] = useState(true);
 
