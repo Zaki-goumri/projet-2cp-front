@@ -1,63 +1,63 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
-import useSignup from "@/modules/features/auth/signup/hooks/useSignup";
-import { RegisterRequest } from "../types/signup.types";
-import { toast } from "react-toastify";
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router';
+import useSignup from '@/modules/features/auth/signup/hooks/useSignup';
+import { RegisterRequest } from '../types/signup.types';
+import { toast } from 'react-toastify';
 
 const formSchema = z
   .object({
     email: z
       .string()
-      .min(1, "Email is required")
-      .email("Invalid email address")
+      .min(1, 'Email is required')
+      .email('Invalid email address')
       .max(50),
     password: z
       .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be at least 8 characters long")
+      .min(1, 'Password is required')
+      .min(8, 'Password must be at least 8 characters long')
       .max(50),
-    confirmPassword: z.string().min(1, "Confirm Password is required"),
-    name: z.string().min(1, "Full Name is required").max(50),
-    phoneNumber: z.string().min(1, "Phone Number is required").max(50),
-    type: z.enum(["company", "student"]),
+    confirmPassword: z.string().min(1, 'Confirm Password is required'),
+    name: z.string().min(1, 'Full Name is required').max(50),
+    phoneNumber: z.string().min(1, 'Phone Number is required').max(50),
+    type: z.enum(['company', 'student']),
   })
   .refine((val) => val.password === val.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
   });
 
 const SignUpForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      name: "",
-      phoneNumber: "",
-      type: "student",
+      email: '',
+      password: '',
+      confirmPassword: '',
+      name: '',
+      phoneNumber: '',
+      type: 'student',
     },
   });
 
@@ -72,25 +72,25 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/10 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/10 p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="overflow-hidden rounded-xl bg-white shadow-lg">
           <div className="p-8">
             <div className="mb-6 flex justify-center">
               <img src="/assets/logo.svg" alt="Logo" className="h-8" />
             </div>
 
-            <h1 className="text-2xl font-semibold text-center mb-2">Sign up</h1>
-            <p className="text-gray-500 text-center text-sm mb-6">
+            <h1 className="mb-2 text-center text-2xl font-semibold">Sign up</h1>
+            <p className="mb-6 text-center text-sm text-gray-500">
               Create an account to start posting jobs and build your remote team
             </p>
 
-            <div className="flex items-center my-4">
-              <div className="flex-grow h-px bg-gray-200"></div>
+            <div className="my-4 flex items-center">
+              <div className="h-px flex-grow bg-gray-200"></div>
               <span className="px-3 text-sm text-gray-500">
                 or sign up with email
               </span>
-              <div className="flex-grow h-px bg-gray-200"></div>
+              <div className="h-px flex-grow bg-gray-200"></div>
             </div>
 
             <Form {...form}>
@@ -100,36 +100,36 @@ const SignUpForm = () => {
               >
                 {[
                   {
-                    name: "email",
-                    placeholder: "Email",
+                    name: 'email',
+                    placeholder: 'Email',
                     icon: Mail,
-                    type: "text",
+                    type: 'text',
                   },
                   {
-                    name: "name",
-                    placeholder: "Full Name",
+                    name: 'name',
+                    placeholder: 'Full Name',
                     icon: User,
-                    type: "text",
+                    type: 'text',
                   },
                   {
-                    name: "phoneNumber",
-                    placeholder: "Phone Number",
+                    name: 'phoneNumber',
+                    placeholder: 'Phone Number',
                     icon: Phone,
-                    type: "text",
+                    type: 'text',
                   },
                   {
-                    name: "password",
-                    placeholder: "Password",
+                    name: 'password',
+                    placeholder: 'Password',
                     icon: Lock,
-                    type: showPassword ? "text" : "password",
+                    type: showPassword ? 'text' : 'password',
                     toggle: () => setShowPassword(!showPassword),
                     show: showPassword,
                   },
                   {
-                    name: "confirmPassword",
-                    placeholder: "Confirm Password",
+                    name: 'confirmPassword',
+                    placeholder: 'Confirm Password',
                     icon: Lock,
-                    type: showConfirmPassword ? "text" : "password",
+                    type: showConfirmPassword ? 'text' : 'password',
                     toggle: () => setShowConfirmPassword(!showConfirmPassword),
                     show: showConfirmPassword,
                   },
@@ -139,29 +139,29 @@ const SignUpForm = () => {
                     control={form.control}
                     name={
                       field.name as
-                        | "email"
-                        | "password"
-                        | "confirmPassword"
-                        | "name"
-                        | "phoneNumber"
-                        | "type"
+                        | 'email'
+                        | 'password'
+                        | 'confirmPassword'
+                        | 'name'
+                        | 'phoneNumber'
+                        | 'type'
                     }
                     render={({ field: formField }) => (
                       <FormItem>
                         <FormControl>
                           <div className="relative">
-                            <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                            <field.icon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                             <Input
                               type={field.type}
                               placeholder={field.placeholder}
-                              className="!pl-10 !py-6 !rounded-lg !border-gray-200"
+                              className="!rounded-lg !border-gray-200 !py-6 !pl-10"
                               {...formField}
                             />
                             {field.toggle && (
                               <button
                                 type="button"
                                 onClick={field.toggle}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                                className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
                               >
                                 {field.show ? (
                                   <EyeOff className="h-5 w-5" />
@@ -185,20 +185,20 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
+                          <User className="absolute top-1/2 left-3 z-10 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
-                            <SelectTrigger className="!pl-10 !py-6 !rounded-lg !border-gray-200 !text-black/40">
+                            <SelectTrigger className="!rounded-lg !border-gray-200 !py-6 !pl-10 !text-black/40">
                               <SelectValue placeholder="Account Type" />
                             </SelectTrigger>
-                            <SelectContent className="!bg-white !border-none">
-                              {["student", "company"].map((type) => (
+                            <SelectContent className="!border-none !bg-white">
+                              {['student', 'company'].map((type) => (
                                 <SelectItem
                                   key={type}
                                   value={type}
-                                  className="!bg-white !border-0 hover:!bg-gray-200 !text-black/40"
+                                  className="!border-0 !bg-white !text-black/40 hover:!bg-gray-200"
                                 >
                                   {type.charAt(0).toUpperCase() + type.slice(1)}
                                 </SelectItem>
@@ -214,19 +214,19 @@ const SignUpForm = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="!w-full !py-6 !bg-[#98E9AB] hover:!bg-[#7ad98e] !text-white !font-medium !rounded-lg !transition-colors"
+                  className="!w-full !rounded-lg !bg-[#98E9AB] !py-6 !font-medium !text-white !transition-colors hover:!bg-[#7ad98e]"
                 >
-                  {isLoading ? "Creating account..." : "Continue"}
+                  {isLoading ? 'Creating account...' : 'Continue'}
                 </Button>
               </form>
             </Form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-500">
-                Already have an account?{" "}
+                Already have an account?{' '}
                 <Link
                   to="/auth/signin"
-                  className="text-[#98E9AB] font-medium hover:underline"
+                  className="font-medium text-[#98E9AB] hover:underline"
                 >
                   Sign in
                 </Link>
@@ -235,12 +235,12 @@ const SignUpForm = () => {
           </div>
         </div>
 
-        <p className="text-xs text-center mt-6 text-gray-500">
-          By continuing, you agree to our{" "}
+        <p className="mt-6 text-center text-xs text-gray-500">
+          By continuing, you agree to our{' '}
           <a href="#" className="text-[#98E9AB] hover:underline">
             Terms of Use
-          </a>{" "}
-          and{" "}
+          </a>{' '}
+          and{' '}
           <a href="#" className="text-[#98E9AB] hover:underline">
             Privacy Policy
           </a>

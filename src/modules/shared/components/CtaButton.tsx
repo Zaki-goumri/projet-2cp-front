@@ -3,14 +3,14 @@ interface CtaButtonProps {
   onClick?: (input: any) => void;
   Color?: string;
   Style?: string;
-  type?: "submit" | "button" | "reset";
+  type?: 'submit' | 'button' | 'reset';
 }
 const CtaButton = ({ Color, Text, onClick, Style, type }: CtaButtonProps) => {
   return (
     <div className="w-fit">
       <button
         type={type}
-        className={`${Color} text-white font-bold py-4 px-6 rounded-lg text-center cursor-pointer  ${Style}`}
+        className={`${Color} cursor-pointer rounded-lg px-6 py-4 text-center font-bold text-white ${Style}`}
       >
         {Text}
       </button>
