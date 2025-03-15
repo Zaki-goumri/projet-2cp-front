@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export interface User {
-  id: number,
+  id: number;
   email: string;
   name: string;
 }
@@ -14,8 +14,8 @@ interface UserStore {
 export const useUserStore = create<UserStore>((set) => ({
   user: null,
   setUser: (user) => {
-    console.log("Setting user:", user); 
-    set({ user }); 
-    console.log("Updated state:", useUserStore.getState()); // Log the updated state
+    console.log('Setting user:', user);
+    set({ user });
+    console.log('Updated state:', useUserStore.getState()); // Log the updated state
   },
 }));
