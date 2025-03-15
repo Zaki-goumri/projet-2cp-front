@@ -12,6 +12,7 @@ const Home = React.lazy(() => import("./modules/features/home/page"));
 const Opportunity = React.lazy(() => import("./modules/features/opportunity/page"))
 const OAuthCallback = React.lazy(() => import("./modules/features/auth/signin/components/googleCallback"));
 const LinkedInCallback = React.lazy(() => import("./modules/features/auth/signin/components/linkedinCallback"));
+const Dashboard = React.lazy(() => import("./modules/features/Dashborad/page"));
 
 const root = document.getElementById("root");
 
@@ -22,6 +23,7 @@ if (root) {
             <Router>
               <Routes>
                 <Route path="/google/callback" element={<OAuthCallback />} />
+                <Route path="/dashboard" element={< Dashboard/>} />
                 <Route path="/linkedin/callback" element={<LinkedInCallback />} />
                 <Route path="/" element={<App />} />
                 <Route path="auth">

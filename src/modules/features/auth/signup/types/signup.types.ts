@@ -9,16 +9,7 @@ export interface User {
       category: string
 }
 export type RegisterResponse = {
-  user: {
-    id: number,
-    name: string,
-    email: string,
-    number: null,
-    type: string,
-    profilepic: null,
-    date_joined: string,
-    category: string
-  },
+  user: User,
   refresh: string,
   access: string
 };
