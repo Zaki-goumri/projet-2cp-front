@@ -2,21 +2,15 @@
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, Plus } from "lucide-react"
 
 export default function Dashboard() {
-  
-  const [timeframe, setTimeframe] = useState("weekly")
-
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fcf8]">
       <div className="p-6 space-y-6">
-       
-
         <h1 className="text-3xl font-semibold text-primary">Main Dashboard</h1>
 
         {/* Stats Cards */}
@@ -44,7 +38,7 @@ export default function Dashboard() {
                     <path d="m9 16 2 2 4-4" />
                   </svg>
                 </div>
-                <div >
+                <div>
                   <p className="text-sm font-medium text-black/40">Applied</p>
                   <h2 className="text-3xl font-bold text-primary">64</h2>
                 </div>
@@ -260,189 +254,127 @@ export default function Dashboard() {
         </div>
 
         {/* Bottom Row */}
-        {/* Internship Track Table */}
-
-         {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="border-none shadow-sm lg:col-span-1">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-medium text-primary">Internship Track</CardTitle>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs text-muted-foreground">COMPANY NAME</TableHead>
-                    <TableHead className="text-xs text-muted-foreground">STATUS</TableHead>
-                    <TableHead className="text-xs text-muted-foreground">APPLICATION DATE</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="text-sm text-primary">Huawei</TableCell>
-                    <TableCell>
-                      <span className="text-xs bg-[#e8f5e9] text-primary px-2 py-1 rounded-full">Accepted</span>
-                    </TableCell>
-                    <TableCell className="text-sm">24 Jan 2025</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="text-sm text-primary">Oppo</TableCell>
-                    <TableCell>
-                      <span className="text-xs bg-[#fff8e1] text-[#ffa000] px-2 py-1 rounded-full">On Hold</span>
-                    </TableCell>
-                    <TableCell className="text-sm">12 Jun 2025</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="text-sm text-primary">Ooredoo</TableCell>
-                    <TableCell>
-                      <span className="text-xs bg-[#ffebee] text-[#f44336] px-2 py-1 rounded-full">Refused</span>
-                    </TableCell>
-                    <TableCell className="text-sm">5 Jan 2025</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="text-sm text-primary">Yassir</TableCell>
-                    <TableCell>
-                      <span className="text-xs bg-[#fff8e1] text-[#ffa000] px-2 py-1 rounded-full">On Hold</span>
-                    </TableCell>
-                    <TableCell className="text-sm">7 Mar 2025</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="text-sm text-primary">Sonatrach</TableCell>
-                    <TableCell>
-                      <span className="text-xs bg-[#e8f5e9] text-primary px-2 py-1 rounded-full">Accepted</span>
-                    </TableCell>
-                    <TableCell className="text-sm">17 Dec 2025</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>  */}
-
-          {/* Pie Chart */}
-          <Card className="border-none shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-medium">Your Pic</CardTitle>
-              <Select defaultValue="monthly">
-                <SelectTrigger className="w-[100px] h-8 text-xs">
-                  <SelectValue placeholder="Monthly" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                  <SelectItem value="yearly">Yearly</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardHeader>
-            <CardContent className="pt-0 flex flex-col items-center">
-              <div className="h-[150px] w-[150px] relative">
-                {/* Pie Chart Placeholder */}
-                <svg viewBox="0 0 100 100" width="100%" height="100%">
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    stroke="#f44336"
-                    strokeWidth="20"
-                    strokeDasharray="25 100"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    // stroke=primary
-                    strokeWidth="20"
-                    strokeDasharray="75 100"
-                    strokeDashoffset="-25"
-                  />
-                </svg>
-                <Avatar className="h-12 w-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <AvatarImage src="/placeholder-user.jpg" />
-                  <AvatarFallback>Pic</AvatarFallback>
-                </Avatar>
+        {/* Pie Chart */}
+        <Card className="border-none shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-lg font-medium">Your Pic</CardTitle>
+            <Select defaultValue="monthly">
+              <SelectTrigger className="w-[100px] h-8 text-xs">
+                <SelectValue placeholder="Monthly" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="weekly">Weekly</SelectItem>
+                <SelectItem value="monthly">Monthly</SelectItem>
+                <SelectItem value="yearly">Yearly</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardHeader>
+          <CardContent className="pt-0 flex flex-col items-center">
+            <div className="h-[150px] w-[150px] relative">
+              {/* Pie Chart Placeholder */}
+              <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="transparent"
+                  stroke="#f44336"
+                  strokeWidth="20"
+                  strokeDasharray="25 100"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="transparent"
+                  stroke="currentColor"
+                  strokeWidth="20"
+                  strokeDasharray="75 100"
+                  strokeDashoffset="-25"
+                />
+              </svg>
+              <Avatar className="h-12 w-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <AvatarImage src="/placeholder-user.jpg" />
+                <AvatarFallback>Pic</AvatarFallback>
+              </Avatar>
+            </div>
+            <div className="flex justify-center space-x-8 mt-4">
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-primary mr-2"></div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Acceptance</p>
+                  <p className="text-sm font-medium text-primary">83%</p>
+                </div>
               </div>
-              <div className="flex justify-center space-x-8 mt-4">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 rounded-full bg-primary mr-2"></div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-[#f44336] mr-2"></div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Refunds</p>
+                  <p className="text-sm font-medium text-[#f44336]">25%</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Teams */}
+        <Card className="border-none shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-lg font-medium text-primary">Teams</CardTitle>
+            <Button variant="outline" size="icon" className="rounded-full h-8 w-8">
+              <Plus className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-10 w-10 bg-slate-100">
+                    <AvatarFallback>Pic</AvatarFallback>
+                  </Avatar>
                   <div>
-                    <p className="text-xs text-muted-foreground">Acceptance</p>
-                    <p className="text-sm font-medium text-primary">83%</p>
+                    <p className="text-sm font-medium text-primary">The Hackers</p>
+                    <p className="text-xs text-muted-foreground">5 Members</p>
                   </div>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 rounded-full bg-[#f44336] mr-2"></div>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-10 w-10 bg-slate-100">
+                    <AvatarFallback>Pic</AvatarFallback>
+                  </Avatar>
                   <div>
-                    <p className="text-xs text-muted-foreground">Refunds</p>
-                    <p className="text-sm font-medium text-[#f44336]">25%</p>
+                    <p className="text-sm font-medium text-primary">Beta Pro</p>
+                    <p className="text-xs text-muted-foreground">3 Members</p>
                   </div>
                 </div>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Teams */}
-          <Card className="border-none shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-medium text-primary">Teams</CardTitle>
-              <Button variant="outline" size="icon" className="rounded-full h-8 w-8">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-10 w-10 bg-slate-100">
-                      <AvatarFallback>Pic</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-medium text-primary">The Hackers</p>
-                      <p className="text-xs text-muted-foreground">5 Members</p>
-                    </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-10 w-10 bg-slate-100">
+                    <AvatarFallback>Pic</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium text-primary">Creators</p>
+                    <p className="text-xs text-muted-foreground">7 Members</p>
                   </div>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-10 w-10 bg-slate-100">
-                      <AvatarFallback>Pic</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-medium text-primary">Beta Pro</p>
-                      <p className="text-xs text-muted-foreground">3 Members</p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-10 w-10 bg-slate-100">
-                      <AvatarFallback>Pic</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-medium text-primary">Creators</p>
-                      <p className="text-xs text-muted-foreground">7 Members</p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
 }
-
