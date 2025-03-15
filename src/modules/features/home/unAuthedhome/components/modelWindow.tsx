@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { X, Mail, ArrowRight } from "lucide-react";
-import { Link } from "react-router";
+import React, { useState } from 'react';
+import { X, Mail, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router';
 const Linkedin = React.lazy(
-  () => import("@/modules/features/auth/signin/components/linkedinButtton"),
+  () => import('@/modules/features/auth/signin/components/linkedinButtton')
 );
 
 const Google = React.lazy(
-  () => import("@/modules/features/auth/signin/components/googleButton"),
+  () => import('@/modules/features/auth/signin/components/googleButton')
 );
 
 interface AuthModalProps {
@@ -16,26 +16,26 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [isEmailView, setIsEmailView] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
-    console.log("Login attempt made");
+    console.log('Login attempt made');
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-      <div className="bg-white rounded-3xl w-full max-w-md relative animate-fadeIn overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/60 p-4 backdrop-blur-sm">
+      <div className="animate-fadeIn relative w-full max-w-md overflow-hidden rounded-3xl bg-white">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-6 top-6 text-gray-400 hover:text-gray-600 transition-colors z-10"
+          className="absolute top-6 right-6 z-10 text-gray-400 transition-colors hover:text-gray-600"
         >
-          <X className="w-6 h-6" />
+          <X className="h-6 w-6" />
         </button>
 
         {/* Green Header */}
@@ -44,17 +44,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         </div> */}
 
         {/* Content Section */}
-        <div className="px-8 pb-8 -mt-16">
+        <div className="-mt-16 px-8 pb-8">
           {/* Logo or Icon */}
-          <div className="w-20 h-20 bg-white rounded-2xl mt-28 shadow-md flex items-center justify-center mb-6 mx-auto">
-            <Mail className="w-10 h-10 text-primary" />
+          <div className="mx-auto mt-28 mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-md">
+            <Mail className="text-primary h-10 w-10" />
           </div>
 
           {!isEmailView ? (
             <>
               {/* Initial View */}
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <div className="mb-8 text-center">
+                <h2 className="mb-2 text-2xl font-bold text-gray-900">
                   Welcome Back
                 </h2>
                 <p className="text-gray-600">
@@ -62,24 +62,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 </p>
               </div>
 
-              <div className="space-y-4 flex flex-col justify-center items-center">
+              <div className="flex flex-col items-center justify-center space-y-4">
                 <Linkedin />
                 <Google />
                 <button
-                  className="w-full h-11 flex items-center justify-center gap-2 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-md border border-gray-200 transition-colors hover:bg-gray-50"
                   onClick={() => setIsEmailView(true)}
                 >
-                  <Mail className="text-xl mr-2" />
-                  <p className="text-gray-700 font-medium"
-                  >Continue with Email</p>
+                  <Mail className="mr-2 text-xl" />
+                  <p className="font-medium text-gray-700">
+                    Continue with Email
+                  </p>
                 </button>
               </div>
             </>
           ) : (
             <>
               {/* Email Login View */}
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <div className="mb-8 text-center">
+                <h2 className="mb-2 text-2xl font-bold text-gray-900">
                   Sign in with Email
                 </h2>
                 <p className="text-gray-600">
@@ -91,7 +92,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1.5"
+                    className="mb-1.5 block text-sm font-medium text-gray-700"
                   >
                     Email
                   </label>
@@ -100,7 +101,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                    className="focus:border-primary focus:ring-primary w-full rounded-xl border border-gray-300 px-4 py-3 transition-colors focus:ring-1"
                     placeholder="Enter your email"
                     required
                   />
@@ -109,7 +110,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-1.5"
+                    className="mb-1.5 block text-sm font-medium text-gray-700"
                   >
                     Password
                   </label>
@@ -118,7 +119,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                    className="focus:border-primary focus:ring-primary w-full rounded-xl border border-gray-300 px-4 py-3 transition-colors focus:ring-1"
                     placeholder="Enter your password"
                     required
                   />
@@ -126,16 +127,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                 <button
                   type="submit"
-                  className="w-full bg-primary text-white py-3.5 px-4 rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 mt-6"
+                  className="bg-primary hover:bg-primary/90 mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-white transition-colors"
                 >
                   Sign In
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="h-5 w-5" />
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setIsEmailView(false)}
-                  className="w-full text-center text-sm text-gray-600 hover:text-gray-900 mt-4"
+                  className="mt-4 w-full text-center text-sm text-gray-600 hover:text-gray-900"
                 >
                   ← Back to all options
                 </button>
@@ -144,18 +145,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           )}
 
           {/* Terms */}
-          <p className="text-xs text-gray-500 text-center mt-8">
-            By continuing, you agree to our{" "}
+          <p className="mt-8 text-center text-xs text-gray-500">
+            By continuing, you agree to our{' '}
             <a href="#" className="text-primary hover:underline">
               Terms of Service
-            </a>{" "}
-            and{" "}
+            </a>{' '}
+            and{' '}
             <a href="#" className="text-primary hover:underline">
               Privacy Policy
             </a>
           </p>
-          <p className="text-xs text-gray-500 text-center mt-4">
-            Don't have an account?{" "}
+          <p className="mt-4 text-center text-xs text-gray-500">
+            Don't have an account?{' '}
             <Link to="/auth/signin" className="text-primary hover:underline">
               Sign Up
             </Link>
