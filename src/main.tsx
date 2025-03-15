@@ -23,7 +23,7 @@ const LinkedInCallback = React.lazy(
 const root = document.getElementById('root');
 
 if (root) {
-  ReactDOM.createRoot(root).render(
+  ReactDOM.createRoot(root).render
     <main>
       <Suspense fallback={<Loading />}>
         <Router>
