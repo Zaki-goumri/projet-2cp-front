@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Link } from "react-router"
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router';
 import {
   X,
   Bell,
@@ -13,10 +13,10 @@ import {
   Users,
   Clock,
   CheckCircle2,
-  Menu
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+  Menu,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,80 +24,85 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 
 type Notification = {
-  id: number
-  title: string
-  description: string
-  time: string
-  unread: boolean
-}
+  id: number;
+  title: string;
+  description: string;
+  time: string;
+  unread: boolean;
+};
 
 type NavBarProps = {
-  isAuthenticated?: boolean
-}
+  isAuthenticated?: boolean;
+};
 
 export default function NavBar({ isAuthenticated = false }: NavBarProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [hasUnread] = useState(true)
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasUnread] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const publicNavItems = [
-    { to: "/home", label: "Home" },
-    { to: "/qa", label: "Q&A" },
-    { to: "/contact", label: "Contact us" },
-  ]
+    { to: '/home', label: 'Home' },
+    { to: '/qa', label: 'Q&A' },
+    { to: '/contact', label: 'Contact us' },
+  ];
 
   const privateNavItems = [
-    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/internships", label: "Internships", icon: Briefcase },
-    { to: "/enterprises", label: "Enterprises", icon: Building2 },
-    { to: "/problems", label: "Problems", icon: Code },
-    { to: "/teams", label: "Teams", icon: Users },
-  ]
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/internships', label: 'Internships', icon: Briefcase },
+    { to: '/enterprises', label: 'Enterprises', icon: Building2 },
+    { to: '/problems', label: 'Problems', icon: Code },
+    { to: '/teams', label: 'Teams', icon: Users },
+  ];
 
   const notifications: Notification[] = [
     {
       id: 1,
-      title: "New Problem Added",
-      description: "A new coding challenge has been added to your queue.",
-      time: "2 min ago",
+      title: 'New Problem Added',
+      description: 'A new coding challenge has been added to your queue.',
+      time: '2 min ago',
       unread: false,
     },
     {
       id: 2,
-      title: "Team Invitation",
+      title: 'Team Invitation',
       description: "You've been invited to join Team Alpha.",
-      time: "1 hour ago",
+      time: '1 hour ago',
       unread: true,
     },
     {
       id: 3,
-      title: "Internship Update",
-      description: "Your application status has been updated.",
-      time: "3 hours ago",
+      title: 'Internship Update',
+      description: 'Your application status has been updated.',
+      time: '3 hours ago',
       unread: false,
     },
-  ]
+  ];
 
   return (
-    <nav className="sticky top-0 left-0 right-0 z-50 bg-background py-2 px-4 sm:px-6 md:px-8 shadow bg-white" >
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between h-16">
+    <nav className="bg-background sticky top-0 right-0 left-0 z-50 bg-white px-4 py-2 shadow sm:px-6 md:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link to="/" className="text-xl font-bold flex items-center">
-              <img src="/assets/logo.svg" alt="logo" className="h-7 w-auto" loading="lazy"/>
+            <Link to="/" className="flex items-center text-xl font-bold">
+              <img
+                src="/assets/logo.svg"
+                alt="logo"
+                className="h-7 w-auto"
+                loading="lazy"
+              />
             </Link>
           </div>
 
@@ -108,9 +113,9 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900  hover:scale-105 rounded-lg transition-all duration-300"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-300 hover:scale-105 hover:text-gray-900"
                 >
-                  {item.icon && <item.icon className="w-4 h-4" />}
+                  {item.icon && <item.icon className="h-4 w-4" />}
                   {item.label}
                 </Link>
               ))}
@@ -122,7 +127,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="text-gray-700 hover:text-gray-900 hover:scale-105 px-3 py-2 rounded-md font-medium transition-all duration-200"
+                    className="rounded-md px-3 py-2 font-medium text-gray-700 transition-all duration-200 hover:scale-105 hover:text-gray-900"
                   >
                     {item.label}
                   </Link>
@@ -138,35 +143,46 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                 {/* Notification Bell */}
                 <div className="flex items-center gap-4">
                   {/* Notification Bell */}
-                  <div className="relative ">
+                  <div className="relative">
                     <DropdownMenu>
                       <DropdownMenuTrigger className="focus:outline-none">
                         <div className="relative">
-                          <Bell className="w-10 h-10 hover:bg-gray-100 p-2 rounded-full cursor-pointer transition-colors duration-200" />
-                          {hasUnread && <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full" />}
+                          <Bell className="h-10 w-10 cursor-pointer rounded-full p-2 transition-colors duration-200 hover:bg-gray-100" />
+                          {hasUnread && (
+                            <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red-500" />
+                          )}
                         </div>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="!w-80 !p-2 !max-w-[calc(100vw-2rem)] !sm:max-w-sm !bg-white !border-gray-100">
-                        <DropdownMenuLabel className="!text-lg !text-black !font-semibold !px-2">Notifications</DropdownMenuLabel>
-                        <DropdownMenuSeparator className="!bg-gray-200"/>
+                      <DropdownMenuContent
+                        align="end"
+                        className="!sm:max-w-sm !w-80 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white !p-2"
+                      >
+                        <DropdownMenuLabel className="!px-2 !text-lg !font-semibold !text-black">
+                          Notifications
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator className="!bg-gray-200" />
                         <div className="!max-h-[300px] !overflow-auto">
                           {notifications.length > 0 ? (
                             notifications.map((notification) => (
                               <DropdownMenuItem
                                 key={notification.id}
-                                className="!flex !flex-col !items-start !gap-1 !p-3 !cursor-pointer hover:!bg-gray-100 !rounded-lg"
+                                className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100"
                               >
-                                <div className="!flex !items-start !justify-between !w-full">
-                                  <span className="!font-medium !flex !items-center !gap-2 !text-black">
-                                    {notification.unread && <span className="!w-2 !h-2 !bg-blue-500 !rounded-full" />}
+                                <div className="!flex !w-full !items-start !justify-between">
+                                  <span className="!flex !items-center !gap-2 !font-medium !text-black">
+                                    {notification.unread && (
+                                      <span className="!h-2 !w-2 !rounded-full !bg-blue-500" />
+                                    )}
                                     {notification.title}
                                   </span>
-                                  <span className="!text-xs !text-gray-500 !flex !items-center !gap-1">
-                                    <Clock className="!w-3 !h-3" />
+                                  <span className="!flex !items-center !gap-1 !text-xs !text-gray-500">
+                                    <Clock className="!h-3 !w-3" />
                                     {notification.time}
                                   </span>
                                 </div>
-                                <p className="!text-sm !text-black">{notification.description}</p>
+                                <p className="!text-sm !text-black">
+                                  {notification.description}
+                                </p>
                               </DropdownMenuItem>
                             ))
                           ) : (
@@ -175,9 +191,9 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                             </div>
                           )}
                         </div>
-                        <DropdownMenuSeparator className="!bg-gray-200"/>
-                        <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !text-blue-600 hover:!text-blue-700 hover:!bg-blue-50 !rounded-lg p-2">
-                          <CheckCircle2 className="w-4 h-4" />
+                        <DropdownMenuSeparator className="!bg-gray-200" />
+                        <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700">
+                          <CheckCircle2 className="h-4 w-4" />
                           Mark all as read
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -187,40 +203,49 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
 
                 {/* User Profile Dropdown */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="focus:outline-none mb-2">
-                    <Avatar className="cursor-pointer hover:bg-gray-100 rounded-full transition-colors duration-200">
+                  <DropdownMenuTrigger className="mb-2 focus:outline-none">
+                    <Avatar className="cursor-pointer rounded-full transition-colors duration-200 hover:bg-gray-100">
                       <AvatarImage
                         src="" //to do
                         className="!bg-white"
                       />
-                      <AvatarFallback className="!bg-neutral-200">CN</AvatarFallback>
+                      <AvatarFallback className="!bg-neutral-200">
+                        CN
+                      </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="!w-56 !p-2 !max-w-[calc(100vw-2rem)] !bg-white !border-gray-100">
-                    <DropdownMenuLabel className="!text-lg !text-black !font-semibold !px-2">My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator className="!bg-gray-200"/>
-                    <DropdownMenuItem className="!flex !items-center !gap-2 !p-3 !cursor-pointer hover:!bg-gray-100 !rounded-lg !text-black">
-                      <User className="w-4 h-4" />
-                      Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="!flex !items-center !gap-2 !p-3 !cursor-pointer hover:!bg-gray-100 !rounded-lg !text-black">
-                      <Users className="w-4 h-4" />
+                  <DropdownMenuContent
+                    align="end"
+                    className="!w-56 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white !p-2"
+                  >
+                    <DropdownMenuLabel className="!px-2 !text-lg !font-semibold !text-black">
+                      My Account
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator className="!bg-gray-200" />
+                    <Link to={'/profile'}>
+                      {' '}
+                      <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                        <User className="h-4 w-4" />
+                        Profile
+                      </DropdownMenuItem>
+                    </Link>{' '}
+                    <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                      <Users className="h-4 w-4" />
                       Team Settings
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="!bg-gray-200"/>
-                    <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !text-red-600 hover:!text-red-700 hover:!bg-red-50 !rounded-lg !p-3">
+                    <DropdownMenuSeparator className="!bg-gray-200" />
+                    <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 hover:!bg-red-50 hover:!text-red-700">
                       Sign out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-
               </>
             ) : (
               // Unauthenticated Right Section
-              <div className="hidden lg:flex items-center space-x-4">
+              <div className="hidden items-center space-x-4 lg:flex">
                 <Link
                   to="/auth/signin"
-                  className="text-base text-primary hover:text-primary/80 hover:scale-105 px-3 py-2 rounded-md font-medium transition-all duration-200"
+                  className="text-primary hover:text-primary/80 rounded-md px-3 py-2 text-base font-medium transition-all duration-200 hover:scale-105"
                 >
                   Sign in
                 </Link>
@@ -232,26 +257,33 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden">
-              <Button onClick={() => setIsOpen(true)}  size="icon" className="rounded-full !bg-transparent !shadow-none hover:!bg-gray-200 ">
+              <Button
+                onClick={() => setIsOpen(true)}
+                size="icon"
+                className="rounded-full !bg-transparent !shadow-none hover:!bg-gray-200"
+              >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </div>
             <div
-              className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
-                isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+              className={`fixed inset-0 z-50 transition-opacity duration-300 lg:hidden ${
+                isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
               }`}
             >
-              <div className="absolute inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
               <div
-                className={`absolute top-0 right-0 w-64 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-                  isOpen ? "translate-x-0" : "translate-x-full"
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setIsOpen(false)}
+              />
+              <div
+                className={`absolute top-0 right-0 h-full w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+                  isOpen ? 'translate-x-0' : 'translate-x-full'
                 }`}
               >
                 <div className="p-4">
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg"
+                    className="absolute top-4 right-4 rounded-lg p-2 hover:bg-gray-100"
                     aria-label="Close menu"
                   >
                     <X className="h-6 w-6" />
@@ -262,10 +294,10 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                         <a
                           key={item.to}
                           href={item.to}
-                          className="flex items-center gap-3 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                           onClick={() => setIsOpen(false)}
                         >
-                          <item.icon className="w-5 h-5" />
+                          <item.icon className="h-5 w-5" />
                           {item.label}
                         </a>
                       ))
@@ -275,7 +307,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                           <Link
                             key={item.to}
                             to={item.to}
-                            className="flex items-center gap-3 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             onClick={() => setIsOpen(false)}
                           >
                             {item.label}
@@ -283,14 +315,14 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                         ))}
                         <a
                           href="/auth/signin"
-                          className="flex items-center gap-3 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                           onClick={() => setIsOpen(false)}
                         >
                           Sign in
                         </a>
                         <a
                           href="/auth/signup"
-                          className="flex items-center gap-3 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                           onClick={() => setIsOpen(false)}
                         >
                           Sign up
@@ -305,5 +337,5 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
         </div>
       </div>
     </nav>
-  )
+  );
 }

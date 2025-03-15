@@ -1,11 +1,8 @@
-
-import { lazy } from "react";
-import "./index.css";
-const LandingPage = lazy(() => import("./modules/features/landingPage/page"));
+import { lazy } from 'react';
+import './index.css';
+const LandingPage = lazy(() => import('./modules/features/landingPage/page'));
 const App = () => {
-  return (
-      <LandingPage />
-  );
+  return <LandingPage />;
 };
 
-export default App; 
+export default App;
