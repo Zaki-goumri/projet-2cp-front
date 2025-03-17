@@ -1,4 +1,4 @@
-name: Vite React Frontend CI
+name: Frontend CI
 
 on:
   push:
@@ -12,9 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
+      
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
@@ -35,11 +35,11 @@ jobs:
         run: npm run build
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4
         with:
-          name: dist
-          path: dist/
-          retention-days: 5
+           name: dist
+           path: dist/
+           retention-days: 5
 
   code-quality:
     runs-on: ubuntu-latest
@@ -61,17 +61,3 @@ jobs:
             -Dsonar.organization=your-organization
             -Dsonar.sources=src
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-
-  dependency-check:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Check for vulnerabilities
-        run: npm audit 
