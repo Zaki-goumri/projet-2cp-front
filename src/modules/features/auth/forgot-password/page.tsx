@@ -5,32 +5,54 @@ import { ToastContainer } from 'react-toastify';
 import React, { lazy } from 'react';
 
 const ForgotPasswordForm = lazy(
-  () =>
-    import(
-      '@/modules/features/auth/forgot-password/components/forgotPasswordForm'
-    )
+  () => import('@/modules/features/auth/forgot-password/components/forgotPasswordForm')
 );
 const queryClient = new QueryClient();
 
 const ForgotPassword = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <main className="flex flex-col justify-around">
+      <main className="min-h-screen w-full">
         <ToastContainer />
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/50 p-0 min-sm:p-10">
-          <div className="mx-4 flex w-full max-w-md flex-col items-center justify-evenly gap-10 rounded-xl bg-white p-8 shadow-lg">
-            <img src="/assets/logo.svg" alt="Logo" className="h-8" />
-            <div className="flex flex-col items-center justify-center gap-2">
-              <h1 className="text-3xl font-bold">Forgot Password</h1>
-              <div className="text-center text-lg text-gray-500">
-                Type Your Email Address To change the password
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#98E9AB]/20 via-[#98E9AB]/30 to-[#98E9AB]/40 px-4 py-8 sm:px-6 lg:px-8">
+          <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all">
+            <div className="relative p-6 sm:p-8">
+              {/* Logo and decorative elements */}
+              <div className="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-[#98E9AB] to-[#7ED196]"></div>
+              <div className="mb-8 flex justify-center">
+                <img src="/assets/logo.svg" alt="Logo" className="h-8 w-auto" />
               </div>
-            </div>{' '}
-            <ForgotPasswordForm />
+
+              {/* Header */}
+              <div className="mb-8 text-center">
+                <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                  Forgot Password?
+                </h1>
+                <p className="mt-2 text-center text-sm text-gray-600 sm:text-base">
+                  Enter your email address and we'll send you a code to reset your password
+                </p>
+              </div>
+
+              {/* Form */}
+              <div className="mt-8">
+                <ForgotPasswordForm />
+              </div>
+
+              {/* Back to login link */}
+              <div className="mt-6 flex items-center justify-center">
+                <Link 
+                  to="/auth/signin"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                >
+                  ← Back to Sign In
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </main>
     </QueryClientProvider>
   );
 };
+
 export default ForgotPassword;
