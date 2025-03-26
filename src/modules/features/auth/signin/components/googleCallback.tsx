@@ -14,15 +14,15 @@ const OAuthCallback = () => {
     }
   }, [navigate]);
 
-  const handleAuthentication = async (code: string) => {
-    try {
-      console.log(code); //to do send it to the backend
-      navigate('/home');
-    } catch (err) {
-      console.error('Authentication failed:', err);
-      navigate('/auth/signin?error=auth_failed');
-    }
-  };
+  // const handleAuthentication = async (code: string) => {
+  //   try {
+  //     console.log(code); //to do send it to the backend
+  //     navigate('/home');
+  //   } catch (err) {
+  //     console.error('Authentication failed:', err);
+  //     navigate('/auth/signin?error=auth_failed');
+  //   }
+  // };
 
   return <div className="h-screen w-screen bg-white" />;
 };

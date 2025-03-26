@@ -8,13 +8,11 @@ import {
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPSlot } from '@/components/ui/input-otp';
-import CtaButton from '@/modules/shared/components/CtaButton';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeClosed, EyeOff, Mail, SendHorizonal } from 'lucide-react';
+import { Eye, EyeOff, Mail, SendHorizonal } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
 import useForgotPassword from '../hooks/useForgotPassword';
 import { toast } from 'react-toastify';
 
@@ -74,10 +72,7 @@ const ForgotPasswordForm = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
   });
   const { SendEmailMutation, resetPasswordMutation } = useForgotPassword({
     onSuccess: () => setIsOtpShown(true),

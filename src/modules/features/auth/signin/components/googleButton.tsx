@@ -1,11 +1,9 @@
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { FcGoogle } from 'react-icons/fc';
-import { useNavigate } from 'react-router';
 
 const googleOAuthId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
 const GoogleSignInButton = () => {
-  const navigate = useNavigate();
   const login = useGoogleLogin({
     flow: 'auth-code',
     redirect_uri: window.location.origin + '/google/callback',

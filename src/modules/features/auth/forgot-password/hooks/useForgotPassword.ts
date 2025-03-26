@@ -37,8 +37,8 @@ export default function useSendResetEmail({
     mutationFn: (values: Omit<ResetPasswordReq, 'expectedDto' | 'iat'>) =>
       resetPassword({
         ...values,
-        expectedDto: payload!?.otp,
-        iat: payload!?.iat,
+        expectedDto: payload?.otp,
+        iat: payload?.iat,
       }),
     onError: (error: unknown) => {
       if (isError(error)) {
@@ -47,7 +47,7 @@ export default function useSendResetEmail({
 
       toast.error('Unknown error');
     },
-    onSuccess: (data: ResetPasswordResDto) => {
+    onSuccess: () => {
       toast.success('Password Reset Successfully');
       setTimeout(() => {
         navigator('/');
