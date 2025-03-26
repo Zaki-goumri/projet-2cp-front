@@ -1,54 +1,27 @@
 import { lazy } from 'react';
-import InfoCard, { infoCardProps } from './components/InfoCard';
-import { Info } from 'lucide-react';
 import ProfileCard from './components/profileCard';
 import ProfileInfo from './components/profileInfo';
+import AboutMe from './components/sections/AboutMe';
+import Experience from './components/sections/Experience';
+import Education from './components/sections/Education';
+import Resume from './components/sections/Resume';
+
 const NavBar = lazy(() => import('@/modules/shared/components/navBar'));
 
 const ProfilePage = () => {
   return (
-    <main>
+    <main className="min-h-screen bg-gray-50">
       <NavBar />
-      <section className="mx-60 bg-[#92E3A91A] p-0.5">
-        <ProfileInfo />
-        <InfoCard
-          icon={'assets/profile.svg'}
-          name={'About Me'}
-          isAddeable={false}
-        >
-          <div>
-            <p>
-              UI/UX designer and mobile developer passionate about creating
-              intuitive and visually engaging digital experiences.
-            </p>
+      <section className="w-full px-4 md:px-6 lg:px-8 py-4">
+        <div className="mx-auto max-w-[90rem] bg-[#92E3A91A] rounded-xl p-3 md:p-4">
+          <ProfileInfo />
+          <div className="mt-3 space-y-3 md:space-y-4">
+            <AboutMe />
+            <Experience />
+            <Education />
+            <Resume />
           </div>
-        </InfoCard>
-        <InfoCard
-          icon={'assets/bag.svg'}
-          name={'Internship experience'}
-          isAddeable={true}
-        >
-          <p>
-            I am a cool guy Experiecde in lorum ipsum dolor sit amet,
-            consectetur adipiscing elit.
-          </p>
-        </InfoCard>
-        <InfoCard
-          icon={'assets/education.svg'}
-          name={'Education'}
-          isAddeable={true}
-        >
-          <p>
-            I am a cool guy Experiecde in lorum ipsum dolor sit amet,
-            consectetur adipiscing elit. STUDY in ESI BTW
-          </p>
-        </InfoCard>
-        <InfoCard icon={'assets/resume.svg'} name={'Resume'} isAddeable={true}>
-          <p>
-            I am a cool guy Experiecde in lorum ipsum dolor sit amet,
-            consectetur adipiscing elit. STUDY in ESI BTW
-          </p>
-        </InfoCard>
+        </div>
       </section>
     </main>
   );
