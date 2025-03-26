@@ -11,7 +11,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (request: any) => {
+  (request) => {
     const accessToken = document.cookie
       .split(';')
       .find((cookie: string) => cookie.includes('accessToken'))
@@ -21,7 +21,7 @@ instance.interceptors.request.use(
     }
     return request;
   },
-  (error: any) => {
+  (error) => {
     return Promise.reject(error);
   }
 );

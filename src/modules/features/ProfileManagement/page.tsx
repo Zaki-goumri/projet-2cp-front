@@ -1,7 +1,4 @@
 import { lazy } from 'react';
-import InfoCard, { infoCardProps } from './components/InfoCard';
-import { Info } from 'lucide-react';
-import ProfileCard from './components/profileCard';
 import ProfileInfo from './components/profileInfo';
 const NavBar = lazy(() => import('@/modules/shared/components/navBar'));
 

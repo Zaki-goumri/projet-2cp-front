@@ -38,7 +38,7 @@ const LinkedInAuthButton = () => {
         try {
           navigate('/dashboard');
         } catch (error) {
-          navigate('/auth/signin?error=auth_failed');
+          navigate(`/auth/signin?error=auth_failed:${error}`);
         }
       }
     }
