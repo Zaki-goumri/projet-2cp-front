@@ -6,6 +6,7 @@ import SignUp from './modules/features/auth/signup/page';
 import Loading from './loading';
 import ForgotPassword from './modules/features/auth/forgot-password/page';
 import ProfilePage from './modules/features/ProfileManagement/page';
+const Dashboard = React.lazy(() => import('./modules/features/Dashborad/page'));
 const App = React.lazy(() => import('./App'));
 const Signin = React.lazy(() => import('./modules/features/auth/signin/page'));
 const Home = React.lazy(() => import('./modules/features/home/page'));
@@ -39,6 +40,8 @@ if (root) {
             <Route path="/home" element={<Home />} />
             <Route path="/opportunities/:id" element={<Opportunity />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="*" element={<div>Not Found</div>} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </Router>
       </Suspense>

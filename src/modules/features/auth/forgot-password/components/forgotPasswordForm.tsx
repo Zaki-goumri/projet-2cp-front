@@ -28,20 +28,41 @@ const ForgotPasswordForm = () => {
     })
     .refine(
       (data) => !isOtpShown || (data.password?.length ?? 0) >= 6,
-      'Password is required'
+      'Password must be at least 6 characters'
     );
 
-  async function handleHorizontalClick() {
-    if (!ableToReqEmail) return toast.error('Please wait until the timer ends');
-    const isValid = await form.trigger();
+  const [counter, setCounter] = useState<number>(15);
+  const [isOtpShown, setIsOtpShown] = useState<boolean>(false);
+  const [value, setValue] = useState<string>('');
+  const [ableToReqEmail, setAbleToReqEmail] = useState<boolean>(true);
+  const [showPass, setShowPass] = useState<boolean>(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { email: '', password: '' },
+  });
+
+  const { SendEmailMutation, resetPasswordMutation } = useForgotPassword({
+    onSuccess: () => setIsOtpShown(true),
+  });
+
+  async function handleEmailSubmit() {
+    if (!ableToReqEmail) {
+      toast.error('Please wait until the timer ends');
+      return;
+    }
+    
+    const isValid = await form.trigger('email');
     if (!isValid) return;
 
     setAbleToReqEmail(false);
     SendEmailMutation.mutate({ email: form.getValues('email') });
   }
-  async function submit(values: z.infer<typeof formSchema>) {
+
+  async function handleFormSubmit(values: z.infer<typeof formSchema>) {
     if (!isOtpShown) {
-      return toast.error('Please submit your email first');
+      toast.error('Please submit your email first');
+      return;
     }
     resetPasswordMutation.mutate({
       email: values.email,
@@ -49,154 +70,136 @@ const ForgotPasswordForm = () => {
       otp: value,
     });
   }
-  // NOTE: this is changed based on whether we got an ok req from the backend
-  // TODO:make the counter exponential instead of fixed
-  const [counter, setCounter] = useState<number>(15);
-  const [isOtpShown, setIsOtpShown] = useState<boolean>(false);
-  const [value, setValue] = useState<string>('');
-  const [ableToReqEmail, setAbleToReqEmail] = useState<boolean>(true);
-  const [showPass, setShowPass] = useState<boolean>(false);
+
   useEffect(() => {
-    if (ableToReqEmail) {
-      return;
-    }
+    if (ableToReqEmail) return;
+
     const timer = setTimeout(() => {
       setCounter((prev) => prev - 1);
     }, 1000);
-    if (counter == 0) {
+
+    if (counter === 0) {
       setCounter(30);
       setAbleToReqEmail(true);
     }
+
     return () => clearTimeout(timer);
   }, [counter, ableToReqEmail]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { email: '', password: '' },
-  });
-  const { SendEmailMutation, resetPasswordMutation } = useForgotPassword({
-    onSuccess: () => setIsOtpShown(true),
-  });
-
   return (
-    <div className="flex justify-center">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit((val) => submit(val))}
-          className="space-y-6"
-        >
-          <div className="flex justify-center">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className="relative group">
+                  <Input
+                    placeholder="Enter your email"
+                    {...field}
+                    className="h-12 w-full rounded-xl border-gray-200 bg-gray-50/50 px-11 text-base placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-[#98E9AB] transition-all duration-200"
+                  />
+                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 group-focus-within:text-[#98E9AB] transition-colors duration-200" />
+                  <button
+                    type="button"
+                    onClick={handleEmailSubmit}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                      ableToReqEmail 
+                        ? 'text-[#98E9AB] hover:text-[#7ED196] cursor-pointer' 
+                        : 'text-gray-400 cursor-not-allowed'
+                    } transition-colors duration-200`}
+                  >
+                    <SendHorizonal className="h-5 w-5" />
+                  </button>
+                </div>
+              </FormControl>
+              <FormMessage className="mt-2 text-sm" />
+            </FormItem>
+          )}
+        />
+
+        {isOtpShown && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
             <FormField
               control={form.control}
-              name="email"
+              name="password"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem>
                   <FormControl>
-                    <div className="relative">
+                    <div className="relative group">
                       <Input
-                        placeholder="E-mail"
+                        type={showPass ? 'text' : 'password'}
+                        placeholder="New password"
                         {...field}
-                        className="h-12 w-full rounded-xl p-7 pr-20 pl-10 text-lg opacity-50 focus:outline-none"
+                        className="h-12 w-full rounded-xl border-gray-200 bg-gray-50/50 px-11 text-base placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-[#98E9AB] transition-all duration-200"
                       />
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <Mail className="h-5 w-auto opacity-45" />
-                      </span>
-                      <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                        <SendHorizonal
-                          type="submit"
-                          className={
-                            ableToReqEmail ? 'text-primary' : 'opacity-45'
-                          }
-                          onClick={handleHorizontalClick}
-                        />
-                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setShowPass(!showPass)}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                      >
+                        {showPass ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
                     </div>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="mt-2 text-sm" />
                 </FormItem>
               )}
             />
-          </div>
-          {isOtpShown && (
-            <div>
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="relative flex justify-center">
-                        <Input
-                          type={showPass ? 'text' : 'password'}
-                          placeholder="Password"
-                          {...field}
-                          className="h-12 w-full rounded-xl p-7 pr-20 pl-10 text-lg opacity-50 focus:outline-none"
-                        />
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          {showPass ? (
-                            <EyeOff
-                              className="h-5 w-auto opacity-45"
-                              onClick={() => setShowPass(false)}
-                            />
-                          ) : (
-                            <Eye
-                              className="h-5 w-auto opacity-45"
-                              onClick={() => setShowPass(true)}
-                            />
-                          )}{' '}
-                        </span>
-                        <span className="absolu te inset-y-0 right-0 flex items-center pr-3"></span>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
+            <div className="space-y-3">
+              <p className="text-sm text-gray-600 text-center">Enter the verification code sent to your email</p>
+              <div className="flex justify-center w-full">
+                <InputOTP
+                  maxLength={6}
+                  pattern={REGEXP_ONLY_DIGITS}
+                  value={value}
+                  onChange={(val) => setValue(val)}
+                  className="flex items-center justify-center"
+                >
+                  <div className="flex items-center justify-center gap-3 sm:gap-4">
+                    {Array.from({ length: 6 }, (_, i) => (
+                      <InputOTPSlot
+                        key={i}
+                        index={i}
+                        className="h-12 w-12 rounded-lg border-gray-200 bg-gray-50/50 text-center text-lg font-semibold focus:bg-white focus:ring-2 focus:ring-[#98E9AB] transition-all duration-200"
+                      />
+                    ))}
+                  </div>
+                </InputOTP>
+              </div>
             </div>
-          )}{' '}
-          {!ableToReqEmail && (
-            <div>
-              <p className="text-sm text-red-500">
-                You can request a new OTP in {counter} seconds
-              </p>
-            </div>
-          )}
-          {/* NOTE: change pattern in case change in OTP input */}
-          {isOtpShown && (
-            <span className="flex w-full justify-center px-10 lg:justify-start lg:px-0">
-              {' '}
-              <InputOTP
-                maxLength={6}
-                pattern={REGEXP_ONLY_DIGITS}
-                onChange={(e) => {
-                  setValue(e);
-                }}
-                value={value}
-              >
-                <ul className="flex justify-center space-x-2 rounded-xl">
-                  {Array.from({ length: 6 }, (_, i) => (
-                    <InputOTPSlot
-                      key={i}
-                      index={i}
-                      className="h-12 w-12 rounded-md border"
-                    />
-                  ))}
-                </ul>
-              </InputOTP>
-            </span>
-          )}
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className={`rounded-lg !px-40 !py-4 text-white duration-400 ease-in-out ${value.length !== 6 ? 'cursor-not-allowed bg-gray-400' : 'bg-primary'}`}
-              disabled={value.length !== 6}
-            >
-              Continue
-            </button>
           </div>
-        </form>
-      </Form>
-    </div>
+        )}
+
+        {!ableToReqEmail && (
+          <p className="text-sm text-gray-600 text-center animate-in fade-in slide-in-from-bottom-4 duration-300">
+            You can request a new code in <span className="font-semibold text-[#98E9AB]">{counter}</span> seconds
+          </p>
+        )}
+
+        {isOtpShown && (
+          <button
+            type="submit"
+            disabled={value.length !== 6}
+            className={`w-full py-3 px-4 rounded-xl text-white font-semibold transition-all duration-200 ${
+              value.length === 6
+                ? 'bg-[#98E9AB] hover:bg-[#7ED196] shadow-lg shadow-[#98E9AB]/20'
+                : 'bg-gray-300 cursor-not-allowed'
+            } animate-in fade-in slide-in-from-bottom-4 duration-300`}
+          >
+            Reset Password
+          </button>
+        )}
+      </form>
+    </Form>
   );
 };
+
 export default ForgotPasswordForm;

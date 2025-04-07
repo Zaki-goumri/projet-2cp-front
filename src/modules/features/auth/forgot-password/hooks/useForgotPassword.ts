@@ -37,8 +37,8 @@ export default function useSendResetEmail({
     mutationFn: (values: Omit<ResetPasswordReq, 'expectedDto' | 'iat'>) =>
       resetPassword({
         ...values,
-        expectedDto: payload?.otp,
-        iat: payload?.iat,
+        expectedDto: payload?.otp as string,
+        iat: payload?.iat as string,
       }),
     onError: (error: unknown) => {
       if (isError(error)) {
