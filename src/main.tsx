@@ -2,23 +2,21 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router';
 import './index.css';
 import React, { Suspense } from 'react';
-import SignUp from './modules/features/auth/signup/page';
+import SignUp from './modules/auth/signup/page';
 import Loading from './loading';
-import ForgotPassword from './modules/features/auth/forgot-password/page';
-import ProfilePage from './modules/features/ProfileManagement/page';
-const Dashboard = React.lazy(() => import('./modules/features/Dashborad/page'));
+import ForgotPassword from './modules/auth/forgot-password/page';
+import ProfilePage from './modules/ProfileManagement/page';
+import NavBar from './modules/shared/components/navBar';
+const Dashboard = React.lazy(() => import('./modules/Dashboard/page'));
 const App = React.lazy(() => import('./App'));
-const Signin = React.lazy(() => import('./modules/features/auth/signin/page'));
-const Home = React.lazy(() => import('./modules/features/home/page'));
-const Opportunity = React.lazy(
-  () => import('./modules/features/opportunity/page')
-);
-const OAuthCallback = React.lazy(
-  () => import('./modules/features/auth/signin/components/googleCallback')
-);
-const LinkedInCallback = React.lazy(
-  () => import('./modules/features/auth/signin/components/linkedinCallback')
-);
+const Signin = React.lazy(() => import('./modules/auth/signin/page'));
+const Home = React.lazy(() => import('./modules/home/page'));
+const Opportunity = React.lazy(() => import('./modules/opportunity/page'));
+const OAuthCallback = React.lazy(() => import('./modules/auth/signin/components/googleCallback'));
+const LinkedInCallback = React.lazy(() => import('./modules/auth/signin/components/linkedinCallback'));
+const Teams = React.lazy(() => import('./modules/teams/components/TeamsOverview'));
+const TeamPage = React.lazy(() => import('./modules/Dashboard/components/team_page'));
+import CreateTeamCard  from './modules/teams/components/CreateTeamCard';
 
 const root = document.getElementById('root');
 
@@ -42,6 +40,10 @@ if (root) {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<div>Not Found</div>} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/teams">
+              <Route index element={<Teams />} />
+              <Route path="create" element={<CreateTeamCard />} />
+            </Route>
           </Routes>
         </Router>
       </Suspense>

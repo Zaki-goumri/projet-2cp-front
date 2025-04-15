@@ -14,7 +14,7 @@ import {
   Clock,
   CheckCircle2,
   Menu,
-} from 'lucide-react';
+  MessageSquare} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -65,6 +65,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
     { to: '/enterprises', label: 'Enterprises', icon: Building2 },
     { to: '/problems', label: 'Problems', icon: Code },
     { to: '/teams', label: 'Teams', icon: Users },
+    { to: '/chat', label: 'chat', icon: MessageSquare },
   ];
 
   const notifications: Notification[] = [
