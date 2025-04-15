@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
 const useSignin = () => {
-  const setUser = useUserStore((state) => state.setUser);
+  const setUser = useUserStore((state) => state.login);
   const navigate = useNavigate();
 
   return useMutation({

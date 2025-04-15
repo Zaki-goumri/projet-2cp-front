@@ -1,7 +1,26 @@
 import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { lazy, useState ,useEffect} from 'react';
+const SearchPop = lazy(()=> import('@/modules/home/Authedhome/components/search-popup')) 
+
 
 export default function SearchSection() {
+  const [isPopupOpen , setIsPopupOpen] = useState(false)
+
+  useEffect(() => {
+    const handleKeyPress = (event :any) => {
+      if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault(); 
+        setIsPopupOpen((prev) => !prev); 
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    // Cleanup listener on component unmount
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+// }
   return (
     <section className="mt-8 w-full py-12 md:py-16 lg:py-20">
       <div className="container mx-auto place-self-center px-4 md:px-6">
@@ -16,12 +35,13 @@ export default function SearchSection() {
             </p>
             <div className="mx-auto w-full max-w-sm space-y-2 lg:mx-0">
               <div className="relative">
-                <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-gray-500" />
-                <Input
-                  className="w-full bg-white pl-9 placeholder:text-gray-500"
-                  placeholder="Search active opportunities"
-                  type="search"
-                />
+                <button
+                  onClick={() => setIsPopupOpen(true)}
+                  className="flex w-full items-center gap-2 rounded-md border bg-white px-3 py-2 text-left text-gray-500 hover:bg-gray-50"
+                >
+                  <Search className="h-4 w-4" />
+                  <span>Search active opportunities</span>
+                </button>
               </div>
             </div>
           </div>
@@ -42,6 +62,10 @@ export default function SearchSection() {
         </div>
       </div>
       <hr className="mx-auto mt-32 w-3/4 place-self-center opacity-30" />
+      <SearchPop  isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        />
     </section>
+
   );
 }

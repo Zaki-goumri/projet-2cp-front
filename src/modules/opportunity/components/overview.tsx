@@ -1,13 +1,8 @@
 'use client';
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { MapPin, Calendar, Heart, Share2, Users } from 'lucide-react';
-
-const NavBar = React.lazy(
-  () => import('@/modules/home/Authedhome/components/navBar')
-);
 
 interface InternshipListingProps {
   logoSrc?: string;

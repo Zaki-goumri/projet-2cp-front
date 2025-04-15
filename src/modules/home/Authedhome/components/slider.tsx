@@ -7,13 +7,13 @@ import { MoveRight, MoveLeft } from 'lucide-react';
 
 const NavBar = React.lazy(() => import('@/modules/shared/components/navBar'));
 const OppCard = React.lazy(
-  () => import('@/modules/features/home/unAuthedhome/components/card')
+  () => import('@/modules/home/unAuthedhome/components/card')
 );
 const Introduction = React.lazy(
-  () => import('@/modules/features/home/unAuthedhome/components/introduction')
+  () => import('@/modules/home/unAuthedhome/components/introduction')
 );
 const ProductModel = React.lazy(
-  () => import('@/modules/features/home/unAuthedhome/components/modelWindow')
+  () => import('@/modules/home/unAuthedhome/components/singin-popup')
 );
 
 const internships = [

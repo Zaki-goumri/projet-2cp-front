@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import {
@@ -14,7 +15,8 @@ import {
   Clock,
   CheckCircle2,
   Menu,
-  MessageSquare} from 'lucide-react';
+  MessageCircle
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -25,6 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUserStore } from '../store/userStore';
 
 type Notification = {
   id: number;
@@ -34,13 +37,25 @@ type Notification = {
   unread: boolean;
 };
 
-type NavBarProps = {
-  isAuthenticated?: boolean;
+type BaseNavItem = {
+  to: string;
+  label: string;
 };
 
-export default function NavBar({ isAuthenticated = false }: NavBarProps) {
+type NavItemWithIcon = BaseNavItem & {
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+type NavItem = {
+  to: string;
+  label: string;
+  icon?: React.ComponentType<{ className?: string }>;
+};
+
+export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnread] = useState(true);
+  const user = useUserStore((state)=> state.user)
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,19 +68,19 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const publicNavItems = [
+  const publicNavItems: NavItem[] = [
     { to: '/home', label: 'Home' },
     { to: '/qa', label: 'Q&A' },
     { to: '/contact', label: 'Contact us' },
   ];
 
-  const privateNavItems = [
+  const privateNavItems: NavItem[] = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/internships', label: 'Internships', icon: Briefcase },
     { to: '/enterprises', label: 'Enterprises', icon: Building2 },
     { to: '/problems', label: 'Problems', icon: Code },
     { to: '/teams', label: 'Teams', icon: Users },
-    { to: '/chat', label: 'chat', icon: MessageSquare },
+    { to: '/message', label: 'Chat', icon: MessageCircle }
   ];
 
   const notifications: Notification[] = [
@@ -108,7 +123,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
           </div>
 
           {/* Desktop Navigation */}
-          {isAuthenticated ? (
+          {user ? (
             <div className="hidden lg:flex lg:items-center lg:gap-6">
               {privateNavItems.map((item) => (
                 <Link
@@ -139,7 +154,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
-            {isAuthenticated ? (
+            {user ? (
               <>
                 {/* Notification Bell */}
                 <div className="flex items-center gap-4">
@@ -290,7 +305,8 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                     <X className="h-6 w-6" />
                   </button>
                   <div className="mt-8 space-y-3">
-                    {isAuthenticated ? (
+                    {user ? (
+                      
                       privateNavItems.map((item) => (
                         <a
                           key={item.to}
@@ -298,7 +314,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                           className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                           onClick={() => setIsOpen(false)}
                         >
-                          <item.icon className="h-5 w-5" />
+                          {item.icon && <item.icon className="h-5 w-5" />}
                           {item.label}
                         </a>
                       ))

@@ -4,7 +4,6 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Users, Code, Paintbrush, Terminal, Shield, Plus } from 'lucide-react';
-import NavBar from '@/modules/shared/components/navBar';
 
 interface TeamCardProps {
   icon: React.ReactNode;
@@ -159,7 +158,6 @@ export default function TeamsOverview() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavBar isAuthenticated={true}/>
       <div className="max-w-6xl mx-auto p-6 space-y-8">
         {/* Your Teams Section */}
         <div>
