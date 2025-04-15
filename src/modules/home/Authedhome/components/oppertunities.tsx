@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import React from 'react';
 
 const Slider = React.lazy(
-  () => import('@/modules/features/home/Authedhome/components/slider')
+  () => import('@/modules/home/Authedhome/components/slider')
 );
 const problems = [
   {

@@ -2,7 +2,6 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Dashboard } from './components/dashboard';
-import NavBar from '@/modules/shared/components/navBar';
 
 // Create a client with optimized settings for dashboard data
 const queryClient = new QueryClient({
@@ -19,7 +18,6 @@ const queryClient = new QueryClient({
 const DashboardPage = () => {
   return (
     <div className="h-fit bg-gray-50 shadow-md border-2 border-gray-200">
-      <NavBar isAuthenticated={true} />
       <div className="py-4 sm:py-6 md:py-8">
         <QueryClientProvider client={queryClient}>
           <Dashboard />

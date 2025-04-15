@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const NavBar = React.lazy(() => import('@/modules/shared/components/navBar'));
 const OverView = React.lazy(
   () => import('@/modules/opportunity/components/overview')
 );
@@ -26,7 +25,6 @@ export default function InternshipListing() {
 
   return (
     <main>
-      <NavBar isAuthenticated={true} />
       <div className="mx-auto h-full max-w-6xl bg-[#2D81940A] p-6">
         <OverView />
         <Tabs defaultValue="details" className="w-full">
