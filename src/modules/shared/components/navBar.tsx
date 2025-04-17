@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import {
@@ -14,6 +15,8 @@ import {
   Clock,
   CheckCircle2,
   Menu,
+  MessageCircle,
+  Search
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -25,6 +28,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUserStore } from '../store/userStore';
+import { useNotifications } from '@/modules/notifications/context/NotificationContext';
+import { format, formatDistanceToNow } from 'date-fns';
 
 type Notification = {
   id: number;
@@ -34,13 +40,25 @@ type Notification = {
   unread: boolean;
 };
 
-type NavBarProps = {
-  isAuthenticated?: boolean;
+type BaseNavItem = {
+  to: string;
+  label: string;
 };
 
-export default function NavBar({ isAuthenticated = false }: NavBarProps) {
+type NavItemWithIcon = BaseNavItem & {
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+type NavItem = {
+  to: string;
+  label: string;
+  icon?: React.ComponentType<{ className?: string }>;
+};
+
+export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [hasUnread] = useState(true);
+  const user = useUserStore((state)=> state.user);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,42 +71,19 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const publicNavItems = [
+  const publicNavItems: NavItem[] = [
     { to: '/home', label: 'Home' },
     { to: '/qa', label: 'Q&A' },
     { to: '/contact', label: 'Contact us' },
   ];
 
-  const privateNavItems = [
+  const privateNavItems: NavItem[] = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/internships', label: 'Internships', icon: Briefcase },
     { to: '/enterprises', label: 'Enterprises', icon: Building2 },
     { to: '/problems', label: 'Problems', icon: Code },
     { to: '/teams', label: 'Teams', icon: Users },
-  ];
-
-  const notifications: Notification[] = [
-    {
-      id: 1,
-      title: 'New Problem Added',
-      description: 'A new coding challenge has been added to your queue.',
-      time: '2 min ago',
-      unread: false,
-    },
-    {
-      id: 2,
-      title: 'Team Invitation',
-      description: "You've been invited to join Team Alpha.",
-      time: '1 hour ago',
-      unread: true,
-    },
-    {
-      id: 3,
-      title: 'Internship Update',
-      description: 'Your application status has been updated.',
-      time: '3 hours ago',
-      unread: false,
-    },
+    { to: '/chat', label: 'Chat', icon: MessageCircle },
+    { to: '/search', label: 'Search', icon: Search },
   ];
 
   return (
@@ -107,7 +102,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
           </div>
 
           {/* Desktop Navigation */}
-          {isAuthenticated ? (
+          {user ? (
             <div className="hidden lg:flex lg:items-center lg:gap-6">
               {privateNavItems.map((item) => (
                 <Link
@@ -138,7 +133,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
-            {isAuthenticated ? (
+            {user ? (
               <>
                 {/* Notification Bell */}
                 <div className="flex items-center gap-4">
@@ -148,7 +143,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                       <DropdownMenuTrigger className="focus:outline-none">
                         <div className="relative">
                           <Bell className="h-10 w-10 cursor-pointer rounded-full p-2 transition-colors duration-200 hover:bg-gray-100" />
-                          {hasUnread && (
+                          {unreadCount > 0 && (
                             <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red-500" />
                           )}
                         </div>
@@ -163,25 +158,26 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                         <DropdownMenuSeparator className="!bg-gray-200" />
                         <div className="!max-h-[300px] !overflow-auto">
                           {notifications.length > 0 ? (
-                            notifications.map((notification) => (
+                            notifications.slice(0, 5).map((notification) => (
                               <DropdownMenuItem
                                 key={notification.id}
                                 className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100"
+                                onClick={() => !notification.read && markAsRead(notification.id)}
                               >
                                 <div className="!flex !w-full !items-start !justify-between">
                                   <span className="!flex !items-center !gap-2 !font-medium !text-black">
-                                    {notification.unread && (
+                                    {!notification.read && (
                                       <span className="!h-2 !w-2 !rounded-full !bg-blue-500" />
                                     )}
                                     {notification.title}
                                   </span>
                                   <span className="!flex !items-center !gap-1 !text-xs !text-gray-500">
                                     <Clock className="!h-3 !w-3" />
-                                    {notification.time}
+                                    {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
                                   </span>
                                 </div>
                                 <p className="!text-sm !text-black">
-                                  {notification.description}
+                                  {notification.message}
                                 </p>
                               </DropdownMenuItem>
                             ))
@@ -192,10 +188,20 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                           )}
                         </div>
                         <DropdownMenuSeparator className="!bg-gray-200" />
-                        <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700">
-                          <CheckCircle2 className="h-4 w-4" />
-                          Mark all as read
-                        </DropdownMenuItem>
+                        <Link to="/notifications" className="block w-full">
+                          <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700">
+                            View all notifications
+                          </DropdownMenuItem>
+                        </Link>
+                        {unreadCount > 0 && (
+                          <DropdownMenuItem 
+                            className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700"
+                            onClick={() => markAllAsRead()}
+                          >
+                            <CheckCircle2 className="h-4 w-4" />
+                            Mark all as read
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -289,7 +295,8 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                     <X className="h-6 w-6" />
                   </button>
                   <div className="mt-8 space-y-3">
-                    {isAuthenticated ? (
+                    {user ? (
+                      
                       privateNavItems.map((item) => (
                         <a
                           key={item.to}
@@ -297,7 +304,7 @@ export default function NavBar({ isAuthenticated = false }: NavBarProps) {
                           className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                           onClick={() => setIsOpen(false)}
                         >
-                          <item.icon className="h-5 w-5" />
+                          {item.icon && <item.icon className="h-5 w-5" />}
                           {item.label}
                         </a>
                       ))
