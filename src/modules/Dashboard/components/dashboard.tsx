@@ -24,7 +24,7 @@ export const Dashboard: React.FC = () => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center text-red-500">
           <h2 className="text-2xl font-bold">Error</h2>
-          <p>{error.message}</p>
+          <p>{error instanceof Error ? error.message : 'An unknown error occurred'}</p>
         </div>
       </div>
     );
@@ -105,7 +105,7 @@ export const Dashboard: React.FC = () => {
       {/* Internship Track, Yearly Overview, and Teams */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div>
-          <InternshipTrack internships={dashboardData.internships} />
+          <InternshipTrack internships={dashboardData.internships as any} />
         </div>
         <div>
           <YearlyOverview data={dashboardData.yearlyOverview} />

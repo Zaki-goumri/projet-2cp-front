@@ -26,37 +26,11 @@ export default function InternshipListing() {
   return (
     <main>
       <div className="mx-auto h-full max-w-6xl bg-[#2D81940A] p-6">
-        <OverView />
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="h-16 w-full justify-start overflow-x-auto rounded-full !bg-white px-4 shadow">
-            {[
-              { value: 'details', label: 'Details & Description' },
-              { value: 'reviews', label: 'Reviews' },
-              { value: 'faq', label: 'FAQs & Miscellaneous' },
-            ].map((tab) => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="data-[state=active]:!text-primary rounded-full !bg-transparent px-2 text-sm hover:!bg-gray-200/30 data-[state=active]:shadow-none sm:px-4 sm:text-base"
-              >
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabsContent value="details" className="space-y-6">
-            <InternshipDetails />
-            <AdditionalInformation />
-            <Contact />
-          </TabsContent>
+        <OverView  />
+        <InternshipDetails />
+        <AdditionalInformation />
+        <Contact />
 
-          <TabsContent value="reviews">
-            <div className="h-full py-4 text-center">No reviews yet</div>
-          </TabsContent>
-
-          <TabsContent value="faq">
-            <div className="h-max py-4 text-center">No FAQs available</div>
-          </TabsContent>
-        </Tabs>
       </div>
     </main>
   );

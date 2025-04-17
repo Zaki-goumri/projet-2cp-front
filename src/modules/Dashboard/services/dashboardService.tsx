@@ -8,7 +8,7 @@ export type TimeRange = 'weekly' | 'monthly' | 'yearly';
 
 export const fetchDashboardData = async (
   timeRange: TimeRange = 'weekly'
-): Promise<DashboardData> => {
+) => {
   try {
     // In a real application, this would be an API call
     // const response = await fetch(`${API_BASE_URL}?timeRange=${timeRange}`);

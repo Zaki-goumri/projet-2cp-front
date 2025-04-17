@@ -1,11 +1,11 @@
 // src/modules/features/dashboards/hooks/useDashboardSettings.ts
 import { useState } from 'react';
-import { DashboardType } from '../services/dashboardService';
+import { DashboardData } from '../types/dashboard.types';
 
 export const useDashboardSettings = () => {
-  const [dashboardType, setDashboardType] = useState<DashboardType>('overview');
+  const [dashboardType, setDashboardType] = useState<DashboardData>();
 
-  const changeDashboardType = (type: DashboardType) => {
+  const changeDashboardType = (type: DashboardData) => {
     setDashboardType(type);
   };
 

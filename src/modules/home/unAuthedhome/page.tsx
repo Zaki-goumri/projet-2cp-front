@@ -5,7 +5,6 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useState } from 'react';
 import { MoveRight, MoveLeft } from 'lucide-react';
 
-const NavBar = React.lazy(() => import('@/modules/shared/components/navBar'));
 const OppCard = React.lazy(
   () => import('@/modules/home/unAuthedhome/components/card')
 );
@@ -170,7 +169,6 @@ const UnAuthedhome = () => {
   };
   return (
     <main>
-      <NavBar />
       <Introduction />
       <section className="mx-4 sm:mx-8 md:mx-12 lg:mx-20">
         <div className="mb-6 flex flex-col items-start justify-between md:mb-8 md:flex-row md:items-center">
