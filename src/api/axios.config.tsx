@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { serialize } from 'cookie';
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
+export const baseUrl = import.meta.env.VITE_BASE_URL;
+
 
 const instance = axios.create({
   baseURL: baseUrl,
@@ -11,7 +12,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (request: any) => {
+  (request) => {
     const accessToken = document.cookie
       .split(';')
       .find((cookie: string) => cookie.includes('accessToken'))
@@ -21,7 +22,7 @@ instance.interceptors.request.use(
     }
     return request;
   },
-  (error: any) => {
+  (error) => {
     return Promise.reject(error);
   }
 );
@@ -74,7 +75,7 @@ instance.interceptors.response.use(
           httpOnly: true,
           expires: new Date(0),
         });
-        return Promise.reject(refreshError);
+        return Promise.reject(`error in refreaching :${refreshError}`);
       }
     }
     return Promise.reject(error);
