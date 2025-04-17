@@ -1,13 +1,16 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router';
 import './index.css';
-import  { Suspense,lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import SignUp from './modules/auth/signup/page';
 import Loading from './loading';
 import ForgotPassword from './modules/auth/forgot-password/page';
 import ProfilePage from './modules/ProfileManagement/page';
-import NavBar from './modules/shared/components/navBar';
 import { NotificationProvider } from './modules/notifications/context/NotificationContext';
+import MainLayout from './components/layouts/MainLayout';
+import LayoutWithoutFooter from './components/layouts/LayoutWithoutFooter';
+import AuthLayout from './components/layouts/AuthLayout';
+import NotFound from './components/ui/NotFound';
 const Dashboard = lazy(() => import('./modules/Dashboard/page'));
 const App = lazy(() => import('./App'));
 const Signin = lazy(() => import('./modules/auth/signin/page'));
@@ -21,53 +24,7 @@ const NotificationsPage = lazy(() => import('./modules/notifications/pages/Notif
 import InternshipsAndProblemsPage from './modules/internships&problems/page';
 import CreateTeamCard from './modules/teams/components/CreateTeamCard';
 import { ToastContainer } from 'react-toastify';
-const Footer = lazy(()=>import('./modules/shared/components/footer'))
-const Chat = lazy(()=>import('./modules/chat/page'))
-
-
-type MainLayoutProps = {
-  children: React.ReactNode;
-};
-
-// eslint-disable-next-line react-refresh/only-export-components
-const MainLayout = ({ children }: MainLayoutProps) => (
-  <>
-    <NavBar />
-    <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-    />
-    {children}
-    <Footer />
-  </>
-);
-
-const LayoutWithoutFooter = ({ children }: MainLayoutProps) => (
-  <>
-    <NavBar />
-    <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-    />
-    {children}
-  </>
-);
+const Chat = lazy(()=>import('./modules/chat/page'));
 
 const root = document.getElementById('root');
 
@@ -78,14 +35,14 @@ if (root) {
         <NotificationProvider>
           <Router>
             <Routes>
-              {/* Auth routes without NavBar and Footer */}
+              {/* Auth routes */}
               <Route path="/google/callback" element={<OAuthCallback />} />
               <Route path="/linkedin/callback" element={<LinkedInCallback />} />
               <Route path="auth">
-                <Route index element={<div>AuthHome</div>} />
-                <Route path="signin" element={<Signin />} />
-                <Route path="password/forget" element={<ForgotPassword />} />
-                <Route path="signup" element={<SignUp />} />
+                <Route index element={<AuthLayout title="Authentication"><div>AuthHome</div></AuthLayout>} />
+                <Route path="signin" element={<AuthLayout title="Sign in" subtitle="Welcome back! Sign in to your account"><Signin /></AuthLayout>} />
+                <Route path="password/forget" element={<AuthLayout title="Reset Password" subtitle="Enter your email to receive a reset link"><ForgotPassword /></AuthLayout>} />
+                <Route path="signup" element={<AuthLayout title="Create an account" subtitle="Join us today"><SignUp /></AuthLayout>} />
               </Route>
               
               <Route path='/chat' element={<LayoutWithoutFooter><Chat/></LayoutWithoutFooter>}/>
@@ -103,7 +60,7 @@ if (root) {
               </Route>
               
               {/* Not found route */}
-              <Route path="*" element={<div>Not Found</div>} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
         </NotificationProvider>
