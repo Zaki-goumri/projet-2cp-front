@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTeams } from '../hooks/useTeams';
-import { ActiveTeams, SuggestedTeams, CreateTeamCard } from '../components';
+import { ActiveTeams, SuggestedTeams } from '../components';
+import CreateTeamCard from '../components/CreateTeamCard';
 
- const TeamsPage: React.FC = () => {
+const TeamsPage: React.FC = () => {
   const { activeTeams, suggestedTeams, isLoading, error } = useTeams();
 
   if (isLoading) {
@@ -28,7 +29,7 @@ import { ActiveTeams, SuggestedTeams, CreateTeamCard } from '../components';
     <div className="min-h-screen bg-white px-6 py-8">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-8 text-2xl font-medium text-[#92E3A9]">Teams</h1>
-        
+
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {activeTeams?.map((team) => (
             <ActiveTeams key={team.id} team={team} />
@@ -49,6 +50,6 @@ import { ActiveTeams, SuggestedTeams, CreateTeamCard } from '../components';
       </div>
     </div>
   );
-}; 
+};
 
 export default TeamsPage;

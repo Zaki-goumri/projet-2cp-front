@@ -7,13 +7,13 @@ interface SuggestedTeamsProps {
 }
 
 export const SuggestedTeams: React.FC<SuggestedTeamsProps> = ({ team }) => {
-  const { joinTeam } = useTeams();
+  // const { joinTeam } = useTeams();
   const [isJoining, setIsJoining] = React.useState(false);
 
   const handleJoin = async () => {
     try {
       setIsJoining(true);
-      await joinTeam(team.id);
+      // await joinTeam(team.id);
     } catch (error) {
       console.error('Failed to join team:', error);
     } finally {

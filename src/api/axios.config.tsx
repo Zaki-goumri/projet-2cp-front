@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { serialize } from 'cookie';
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
+export const baseUrl = import.meta.env.VITE_BASE_URL;
 
 
 const instance = axios.create({

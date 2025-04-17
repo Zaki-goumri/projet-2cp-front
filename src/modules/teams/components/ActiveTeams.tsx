@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { Team } from '../types/teams.types';
 
 interface ActiveTeamsProps {
@@ -24,6 +25,8 @@ export const ActiveTeams: React.FC<ActiveTeamsProps> = ({ team }) => {
         </div>
       </div>
 
+      <h3 className="mb-2 text-lg font-medium">{team.name}</h3>
+
       <div className="mb-6">
         <p className="text-sm text-gray-500">
           {team.members} members • {team.projects} projects
@@ -31,9 +34,12 @@ export const ActiveTeams: React.FC<ActiveTeamsProps> = ({ team }) => {
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-gray-800">
+        <Link 
+          to={`/teams/${team.id}`} 
+          className="flex-1 rounded-md bg-black px-4 py-2 text-center text-sm font-medium text-white transition-colors duration-200 hover:bg-gray-800"
+        >
           View Team
-        </button>
+        </Link>
         <button className="flex-1 rounded-md border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-50">
           Invite
         </button>
