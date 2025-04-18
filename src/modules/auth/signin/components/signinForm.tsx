@@ -51,145 +51,131 @@ const SignForm = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/50">
-      <div className="mx-4 w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
-        <div className="mb-8 text-center">
-          <div className="mb-6 flex justify-center">
-            <img src="/assets/logo.svg" alt="Logo" className="h-8" />
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#98E9AB]/20 via-white to-[#98E9AB]/10 px-4">
+      <div className="mx-auto w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl">
+        <div className="p-8">
+          {/* Logo & Header */}
+          <div className="mb-8 text-center">
+            <div className="mb-6 flex justify-center">
+              <img src="/assets/logo.svg" alt="Logo" className="h-10 w-auto" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Sign in to continue to your account
+            </p>
           </div>
-          <h2 className="mt-4 mb-2 text-2xl font-semibold">Sign in</h2>
-          <p className="text-sm text-gray-500">
-            Sign in to access your account and continue your work
-          </p>
-        </div>
 
-        <div className="mb-6">
-          <div className="relative flex items-center justify-center">
-            <div className="w-full border-t border-gray-200"></div>
-            <span className="absolute bg-white px-3 text-sm text-gray-500">
-              sign in with email
-            </span>
+          {/* Social Login Options */}
+          <div className="mb-6 space-y-3">
+            <Google />
+            <Linkedin />
           </div>
-        </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            {[
-              {
-                name: 'email',
-                placeholder: 'Email',
-                type: 'text',
-                icon: <Mail className="h-5 w-5 text-gray-400" />,
-              },
-              {
-                name: 'password',
-                placeholder: 'Password',
-                type: showPassword ? 'text' : 'password',
-                icon: <Lock className="h-5 w-5 text-gray-400" />,
-                toggleIcon: showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
-                ),
-              },
-            ].map(({ name, placeholder, type, icon, toggleIcon }) => (
+          {/* Divider */}
+          <div className="relative my-6 flex items-center">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="mx-3 flex-shrink text-sm text-gray-500">or continue with email</span>
+            <div className="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          {/* Form */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
-                key={name}
                 control={form.control}
-                name={name as 'email' | 'password'}
+                name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                         <Input
-                          type={type}
-                          placeholder={placeholder}
+                          placeholder="Email"
+                          type="email"
                           {...field}
-                          className="!rounded-lg !border-gray-200 !py-6 !pl-10"
+                          className="h-12 rounded-lg border-gray-200 bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                         />
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          {icon}
-                        </span>
-                        {name === 'password' && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setShowPassword(!showPassword);
-                            }}
-                            aria-label={
-                              showPassword ? 'Hide password' : 'Show password'
-                            }
-                            className="absolute inset-y-0 right-0 flex items-center pr-3"
-                          >
-                            {toggleIcon}
-                          </button>
-                        )}
                       </div>
                     </FormControl>
-                    <FormMessage className="mt-1 text-xs" />
+                    <FormMessage className="text-xs text-red-500" />
                   </FormItem>
                 )}
               />
-            ))}
 
-            <div className="pt-2">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className={`!w-full !rounded-lg !py-6 !font-medium !text-white !transition-colors ${
-                  isLoading
-                    ? '!bg-gray-400'
-                    : '!bg-[#98E9AB] hover:!bg-[#7ad98e]'
-                }`}
-              >
-                {isLoading ? 'Creating account...' : 'Continue'}
-              </Button>
-            </div>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                        <Input
+                          placeholder="Password"
+                          type={showPassword ? "text" : "password"}
+                          {...field}
+                          className="h-12 rounded-lg border-gray-200 bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-xs text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <div className="mt-4 text-center text-sm">
-              <Link
-                to="/auth/password/forget"
-                className="text-green-500 hover:underline"
-              >
-                Forgot password?
+              <div className="flex items-center justify-end">
+                <Link
+                  to="/auth/password/forget"
+                  className="text-sm font-medium text-[#98E9AB] hover:text-[#7ad98e] hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="h-12 w-full rounded-lg bg-[#98E9AB] font-medium text-white shadow-md shadow-[#98E9AB]/20 transition-all hover:bg-[#7ad98e] hover:shadow-lg hover:shadow-[#98E9AB]/30 disabled:bg-gray-300 disabled:shadow-none"
+                >
+                  {isLoading ? "Signing in..." : "Sign in"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+
+          {/* Sign up link */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <Link to="/auth/signup" className="font-medium text-[#98E9AB] hover:text-[#7ad98e] hover:underline">
+                Sign up
               </Link>
-            </div>
-          </form>
-        </Form>
-
-        {/* Social Login Section */}
-        <div className="mt-8">
-          <div className="relative mb-6 flex items-center justify-center">
-            <div className="w-full border-t border-gray-200"></div>
-            <span className="absolute bg-white px-3 text-sm text-gray-500">
-              or continue with
-            </span>
-            <div className="w-full border-t border-gray-200"></div>
+            </p>
           </div>
 
-          <div className="w-full space-y-3 place-self-center">
-            <Google />
-            <Linkedin />
+          {/* Terms */}
+          <div className="mt-8 text-center text-xs text-gray-500">
+            By signing in, you agree to our{' '}
+            <Link to="/terms" className="text-[#98E9AB] hover:underline">
+              Terms of Use
+            </Link>{' '}
+            and{' '}
+            <Link to="/privacy" className="text-[#98E9AB] hover:underline">
+              Privacy Policy
+            </Link>
           </div>
-        </div>
-
-        <div className="mt-6 text-center text-sm text-gray-500">
-          Don't have an account?{' '}
-          <Link to="/auth/signup" className="text-green-500 hover:underline">
-            Sign up
-          </Link>
-        </div>
-
-        <div className="mt-8 text-center text-xs text-gray-400">
-          By continuing, you agree to our{' '}
-          <Link to="/terms" className="text-green-500 hover:underline">
-            Terms of Use
-          </Link>{' '}
-          and{' '}
-          <Link to="/privacy" className="text-green-500 hover:underline">
-            Privacy Policy
-          </Link>
         </div>
       </div>
     </div>

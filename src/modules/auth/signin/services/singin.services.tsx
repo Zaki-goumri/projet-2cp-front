@@ -19,3 +19,26 @@ export const loginUser = async (data: LoginRequest): Promise<User> => {
     throw error;
   }
 };
+
+export const logoutUser = async (): Promise<void> => {
+  try {
+    // Clear the auth cookies by setting them to expire immediately
+    document.cookie = serialize('accessToken', '', {
+      httpOnly: false,
+      expires: new Date(0),
+      path: '/',
+    });
+    document.cookie = serialize('refreshToken', '', {
+      httpOnly: false,
+      expires: new Date(0),
+      path: '/',
+    });
+    
+    // Optional: Call logout endpoint if your API requires it
+    // await axios.post('/Auth/Logout');
+    
+  } catch (error) {
+    console.error('Logout Error:', error);
+    throw error;
+  }
+};

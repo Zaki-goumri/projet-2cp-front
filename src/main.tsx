@@ -9,7 +9,6 @@ import ProfilePage from './modules/ProfileManagement/page';
 import { NotificationProvider } from './modules/notifications/context/NotificationContext';
 import MainLayout from './components/layouts/MainLayout';
 import LayoutWithoutFooter from './components/layouts/LayoutWithoutFooter';
-import AuthLayout from './components/layouts/AuthLayout';
 import NotFound from './components/ui/NotFound';
 const Dashboard = lazy(() => import('./modules/Dashboard/page'));
 const App = lazy(() => import('./App'));
@@ -39,13 +38,14 @@ if (root) {
               <Route path="/google/callback" element={<OAuthCallback />} />
               <Route path="/linkedin/callback" element={<LinkedInCallback />} />
               <Route path="auth">
-                <Route index element={<AuthLayout title="Authentication"><div>AuthHome</div></AuthLayout>} />
-                <Route path="signin" element={<AuthLayout title="Sign in" subtitle="Welcome back! Sign in to your account"><Signin /></AuthLayout>} />
-                <Route path="password/forget" element={<AuthLayout title="Reset Password" subtitle="Enter your email to receive a reset link"><ForgotPassword /></AuthLayout>} />
-                <Route path="signup" element={<AuthLayout title="Create an account" subtitle="Join us today"><SignUp /></AuthLayout>} />
+                <Route index element={<div/>}/>
+                <Route path="signin" element={<Signin />} />
+                <Route path="password/forget" element={<ForgotPassword />} />
+                <Route path="signup" element={<SignUp />}/>
               </Route>
               
               <Route path='/chat' element={<LayoutWithoutFooter><Chat/></LayoutWithoutFooter>}/>
+              <Route path='/chat/:id' element={<LayoutWithoutFooter><Chat/></LayoutWithoutFooter>}/>
               <Route path="/" element={<MainLayout><App /></MainLayout>} />
               <Route path="/home" element={<MainLayout><Home /></MainLayout>} />
               <Route path="/notifications" element={<LayoutWithoutFooter><NotificationsPage /></LayoutWithoutFooter>} />
