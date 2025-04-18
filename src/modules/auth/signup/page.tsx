@@ -20,7 +20,9 @@ export default function SignUp() {
         pauseOnHover
         theme="light"
       />
-      <SignUpForm />
+      <div className="min-h-screen bg-white">
+        <SignUpForm />
+      </div>
     </QueryClient>
   );
 }

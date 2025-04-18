@@ -58,6 +58,7 @@ type NavItem = {
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const user = useUserStore((state)=> state.user);
+  const logout = useUserStore((state) => state.logout);
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   useEffect(() => {
@@ -85,6 +86,11 @@ export default function NavBar() {
     { to: '/chat', label: 'Chat', icon: MessageCircle },
     { to: '/search', label: 'Search', icon: Search },
   ];
+
+  const handleSignOut = () => {
+    logout();
+    window.location.href = '/';
+  };
 
   return (
     <nav className="bg-background sticky top-0 right-0 left-0 z-50 bg-white px-4 py-2 shadow sm:px-6 md:px-8">
@@ -240,7 +246,10 @@ export default function NavBar() {
                       Team Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="!bg-gray-200" />
-                    <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 hover:!bg-red-50 hover:!text-red-700">
+                    <DropdownMenuItem 
+                      onClick={handleSignOut}
+                      className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 hover:!bg-red-50 hover:!text-red-700"
+                    >
                       Sign out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -296,18 +305,31 @@ export default function NavBar() {
                   </button>
                   <div className="mt-8 space-y-3">
                     {user ? (
-                      
-                      privateNavItems.map((item) => (
+                      <>
+                        {privateNavItems.map((item) => (
+                          <a
+                            key={item.to}
+                            href={item.to}
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {item.icon && <item.icon className="h-5 w-5" />}
+                            {item.label}
+                          </a>
+                        ))}
+                        <div className="my-2 h-px bg-gray-200" />
                         <a
-                          key={item.to}
-                          href={item.to}
+                          href="#"
                           className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                          onClick={() => setIsOpen(false)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setIsOpen(false);
+                            handleSignOut();
+                          }}
                         >
-                          {item.icon && <item.icon className="h-5 w-5" />}
-                          {item.label}
+                          Sign out
                         </a>
-                      ))
+                      </>
                     ) : (
                       <>
                         {publicNavItems.map((item) => (

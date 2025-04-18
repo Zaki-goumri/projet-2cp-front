@@ -1,62 +1,50 @@
+import ReactMarkdown from 'react-markdown';
+import { useInternshipDetails } from '../hooks/useInternshipDetails';
+import { Button } from '@/components/ui/button';
+import { Send } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router';
+
 const InternshipDetails = () => {
+  const { markdownText, isLoading, error } = useInternshipDetails();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const handleContactOrganizer = () => {
+    // Navigate to the chat page with the organizer ID as a parameter
+    navigate(`/chat/${id}`);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto rounded-lg bg-white p-6 shadow flex justify-center">
+        <p>Loading internship details...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto rounded-lg bg-white p-6 shadow text-red-500">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto space-y-4 rounded-lg bg-white p-6 shadow">
-      <h2 className="text-xl font-semibold border-b pb-3">Details & Description</h2>
-      <p className="text-muted-foreground text-base">
-        Huawei is hiring for the Internship Program!
-      </p>
-
-      <div className="space-y-3">
-        <h3 className="font-medium text-lg">Sales & Project Details:</h3>
-        <ul className="text-muted-foreground list-inside list-disc space-y-2 pl-2">
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Background: This internship provides a hands-on learning opportunity
-            in the ICT sector focusing on key technical areas</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Opportunity to network opportunities, data analysis, and innovative
-            solutions across different core technology domains</span>
-          </li>
-        </ul>
-      </div>
-
-      <div className="space-y-3 mt-6">
-        <h3 className="font-medium text-lg">Requirements:</h3>
-        <ul className="text-muted-foreground list-inside list-disc space-y-2 pl-2">
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Open to 3rd year students or recent graduates in IT,
-            Telecommunications, or related fields</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Strong analytical skills and proficiency in IT tools</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Student communication skills and openness for technology</span>
-          </li>
-        </ul>
-      </div>
-
-      <div className="space-y-3 mt-6">
-        <h3 className="font-medium text-lg">Benefits:</h3>
-        <ul className="text-muted-foreground list-inside list-disc space-y-2 pl-2">
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Hands-on experience with cutting-edge technologies</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Networking opportunities with industry professionals</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mt-0.5 mr-2 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-500"></span>
-            <span>Certificate upon successful completion</span>
-          </li>
-        </ul>
+      <ReactMarkdown>{markdownText}</ReactMarkdown>
+      
+      <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
+        <div>
+          <h3 className="font-medium">Contact The organisers</h3>
+        </div>
+        <Button 
+          onClick={handleContactOrganizer}
+          className="bg-[#65C97A] hover:bg-[#52B86A] text-white flex items-center gap-2 px-4 py-2 rounded-md"
+        >
+          <Send className="h-4 w-4" />
+          Send a Message
+        </Button>
       </div>
     </div>
   );

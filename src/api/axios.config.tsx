@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { serialize } from 'cookie';
+import { useUserStore } from '@/modules/shared/store/userStore';
 
 export const baseUrl = import.meta.env.VITE_BASE_URL;
-
 
 const instance = axios.create({
   baseURL: baseUrl,
@@ -38,19 +38,42 @@ instance.interceptors.response.use(
           .split(';')
           .find((cookie: string) => cookie.includes('refreshToken'))
           ?.split('=')[1];
+        
         if (!refreshToken) {
+          // Clear tokens and logout user
+          document.cookie = serialize('accessToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          document.cookie = serialize('refreshToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          useUserStore.getState().logout();
           return Promise.reject(error);
         }
+
         const response = await instance.post('/auth/refershToken', {
           refreshToken,
         });
 
         const newAccessToken = response.data.newAccessToken;
         const newRefreshToken = response.data.newRefreshToken;
-        console.log(response.data);
+
         if (!newAccessToken) {
+          // Clear tokens and logout user
+          document.cookie = serialize('accessToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          document.cookie = serialize('refreshToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          useUserStore.getState().logout();
           return Promise.reject(error);
         }
+
         document.cookie = serialize('accessToken', newAccessToken, {
           httpOnly: false,
           expires: new Date(Date.now() + 60 * 60 * 1000),
@@ -75,6 +98,7 @@ instance.interceptors.response.use(
           httpOnly: true,
           expires: new Date(0),
         });
+        useUserStore.getState().logout();
         return Promise.reject(`error in refreaching :${refreshError}`);
       }
     }

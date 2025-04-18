@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Message, Conversation } from '../types';
-import { fetchConversations, fetchMessages, sendMessageApi } from '../services/chatService';
+import { fetchConversations, fetchMessages, sendMessageApi, fetchUserById } from '../services/chatService';
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -89,6 +89,46 @@ export const useChat = () => {
     }
   };
 
+  // Start a new conversation with a user by ID
+  const startNewConversation = async (userId: string) => {
+    try {
+      setLoading(true);
+      // Fetch user details to create a new conversation
+      const userData = await fetchUserById(userId);
+      
+      if (!userData) {
+        throw new Error('User not found');
+      }
+      
+      // Create a new conversation object
+      const newConversation: Conversation = {
+        id: userData.id,
+        name: userData.name || 'Organizer',
+        avatar: userData.avatar,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        lastMessageTime: new Date(),
+        unreadCount: 0,
+        isOnline: false
+      };
+      
+      // Add to conversations list
+      setConversations(prev => [newConversation, ...prev]);
+      
+      // Set as active conversation
+      setActiveConversation(newConversation);
+      
+      // Initialize with empty messages for this conversation
+      setMessages([]);
+      
+    } catch (err) {
+      setError('Failed to start conversation');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     messages,
     conversations,
@@ -96,6 +136,7 @@ export const useChat = () => {
     loading,
     error,
     selectConversation,
-    sendMessage
+    sendMessage,
+    startNewConversation
   };
 }; 
