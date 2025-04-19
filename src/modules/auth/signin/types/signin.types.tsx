@@ -24,6 +24,6 @@ export type LoginResponse = {
 };
 
 export type LoginRequest = {
-  name: string;
+  password: string;
   email: string;
 };

@@ -178,4 +178,53 @@ export const sendMessageApi = async (message: Omit<Message, 'id'>): Promise<Mess
   });
 };
 
+// Mock organizations data
+const MOCK_USERS = [
+  {
+    id: '1',
+    name: 'Huawei',
+    avatar: '/huawei-logo.png',
+    email: 'HuaweiOfficial@gmail.com',
+    phoneNumber: '+2135678910'
+  },
+  {
+    id: '2',
+    name: 'Yassir',
+    avatar: '/yassir-logo.png',
+    email: 'contact@yassir.com',
+    phoneNumber: '+213456789011'
+  },
+  {
+    id: '3',
+    name: 'Aita Jibril',
+    avatar: '/aita-avatar.png',
+    email: 'aita.jibril@example.com',
+    phoneNumber: '+213687654321'
+  }
+];
+
+// Fetch user by ID (for starting new conversations)
+export const fetchUserById = async (userId: string) => {
+  // Simulate API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Find the user in our mock data
+      const user = MOCK_USERS.find(u => u.id === userId);
+      
+      // If not found, create a default user with the ID
+      if (!user) {
+        resolve({
+          id: userId,
+          name: `Organizer ${userId}`,
+          avatar: '/default-avatar.png',
+          email: `organizer${userId}@example.com`,
+          phoneNumber: null
+        });
+      } else {
+        resolve(user);
+      }
+    }, 500);
+  });
+};
+
 // Later, you can replace these mock implementations with actual API calls 

@@ -98,23 +98,25 @@ const ForgotPasswordForm = () => {
                 <div className="relative group">
                   <Input
                     placeholder="Enter your email"
+                    type="email"
                     {...field}
-                    className="h-12 w-full rounded-xl border-gray-200 bg-gray-50/50 px-11 text-base placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-[#98E9AB] transition-all duration-200"
+                    className="h-12 rounded-lg border-gray-200 bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                   />
-                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 group-focus-within:text-[#98E9AB] transition-colors duration-200" />
+                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                   <button
                     type="button"
                     onClick={handleEmailSubmit}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 ${ableToReqEmail
-                      ? 'text-[#98E9AB] hover:text-[#7ED196] cursor-pointer'
-                      : 'text-gray-400 cursor-not-allowed'
-                      } transition-colors duration-200`}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                      ableToReqEmail
+                        ? 'text-[#98E9AB] hover:text-[#7ED196] cursor-pointer'
+                        : 'text-gray-400 cursor-not-allowed'
+                    }`}
                   >
                     <SendHorizonal className="h-5 w-5" />
                   </button>
                 </div>
               </FormControl>
-              <FormMessage className="mt-2 text-sm" />
+              <FormMessage className="text-xs text-red-500" />
             </FormItem>
           )}
         />
@@ -132,12 +134,12 @@ const ForgotPasswordForm = () => {
                         type={showPass ? 'text' : 'password'}
                         placeholder="New password"
                         {...field}
-                        className="h-12 w-full rounded-xl border-gray-200 bg-gray-50/50 px-11 text-base placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-[#98E9AB] transition-all duration-200"
+                        className="h-12 rounded-lg border-gray-200 bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPass(!showPass)}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                       >
                         {showPass ? (
                           <EyeOff className="h-5 w-5" />
@@ -147,7 +149,7 @@ const ForgotPasswordForm = () => {
                       </button>
                     </div>
                   </FormControl>
-                  <FormMessage className="mt-2 text-sm" />
+                  <FormMessage className="text-xs text-red-500" />
                 </FormItem>
               )}
             />
@@ -162,12 +164,12 @@ const ForgotPasswordForm = () => {
                   onChange={(val) => setValue(val)}
                   className="flex items-center justify-center"
                 >
-                  <div className="flex items-center justify-center gap-3 sm:gap-4">
+                  <div className="flex items-center justify-center gap-2 sm:gap-3">
                     {Array.from({ length: 6 }, (_, i) => (
                       <InputOTPSlot
                         key={i}
                         index={i}
-                        className="h-12 w-12 rounded-lg border-gray-200 bg-gray-50/50 text-center text-lg font-semibold focus:bg-white focus:ring-2 focus:ring-[#98E9AB] transition-all duration-200"
+                        className="h-12 w-10 sm:w-12 rounded-lg border-gray-200 bg-gray-50/50 text-center text-lg font-semibold focus:bg-white focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                       />
                     ))}
                   </div>
@@ -187,10 +189,11 @@ const ForgotPasswordForm = () => {
           <button
             type="submit"
             disabled={value.length !== 6}
-            className={`w-full py-3 px-4 rounded-xl text-white font-semibold transition-all duration-200 ${value.length === 6
-              ? 'bg-[#98E9AB] hover:bg-[#7ED196] shadow-lg shadow-[#98E9AB]/20'
-              : 'bg-gray-300 cursor-not-allowed'
-              } animate-in fade-in slide-in-from-bottom-4 duration-300`}
+            className={`w-full h-12 rounded-lg text-white font-medium transition-all ${
+              value.length === 6
+                ? 'bg-[#98E9AB] hover:bg-[#7ED196] shadow-md shadow-[#98E9AB]/20 hover:shadow-lg hover:shadow-[#98E9AB]/30'
+                : 'bg-gray-300 cursor-not-allowed'
+            } animate-in fade-in slide-in-from-bottom-4 duration-300`}
           >
             Reset Password
           </button>

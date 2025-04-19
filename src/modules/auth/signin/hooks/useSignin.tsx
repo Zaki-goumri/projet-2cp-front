@@ -6,7 +6,7 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
-const useSignin = () => {
+const useSignin = (redirectPath?: string) => {
   const setUser = useUserStore((state) => state.login);
   const navigate = useNavigate();
 
@@ -14,16 +14,36 @@ const useSignin = () => {
     mutationFn: (values: LoginRequest) => loginUser(values),
     onSuccess: (data: User) => {
       setUser({ ...data });
-      navigate('/home');
+      navigate(redirectPath || '/home');
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error) && error.response) {
-        toast.error(error.response.data.email[0], {
+        const errorData = error.response.data;
+        if (typeof errorData === 'object' && errorData !== null) {
+          const errorMessages = Object.entries(errorData)
+            .map(([key, value]) => {
+              if (Array.isArray(value)) {
+                return value.join(', ');
+              }
+              return value;
+            })
+            .join('\n');
+          
+          toast.error(errorMessages, {
+            position: 'top-right',
+            autoClose: 5000,
+          });
+        } else {
+          toast.error(errorData, {
+            position: 'top-right',
+            autoClose: 5000,
+          });
+        }
+      } else {
+        toast.error('An unexpected error occurred', {
           position: 'top-right',
           autoClose: 5000,
         });
-      } else {
-        console.error('Unknown error');
       }
     },
   });

@@ -9,8 +9,8 @@ import ProfilePage from './modules/ProfileManagement/page';
 import { NotificationProvider } from './modules/notifications/context/NotificationContext';
 import MainLayout from './components/layouts/MainLayout';
 import LayoutWithoutFooter from './components/layouts/LayoutWithoutFooter';
-import AuthLayout from './components/layouts/AuthLayout';
 import NotFound from './components/ui/NotFound';
+import { ProtectedRoute } from './components/ProtectedRoute';
 const Dashboard = lazy(() => import('./modules/Dashboard/page'));
 const App = lazy(() => import('./App'));
 const Signin = lazy(() => import('./modules/auth/signin/page'));
@@ -23,7 +23,6 @@ const TeamDetail = lazy(() => import('./modules/teams/pages/TeamDetailPage'));
 const NotificationsPage = lazy(() => import('./modules/notifications/pages/NotificationsPage'));
 import InternshipsAndProblemsPage from './modules/internships&problems/page';
 import CreateTeamCard from './modules/teams/components/CreateTeamCard';
-import { ToastContainer } from 'react-toastify';
 const Chat = lazy(()=>import('./modules/chat/page'));
 
 const root = document.getElementById('root');
@@ -39,24 +38,68 @@ if (root) {
               <Route path="/google/callback" element={<OAuthCallback />} />
               <Route path="/linkedin/callback" element={<LinkedInCallback />} />
               <Route path="auth">
-                <Route index element={<AuthLayout title="Authentication"><div>AuthHome</div></AuthLayout>} />
-                <Route path="signin" element={<AuthLayout title="Sign in" subtitle="Welcome back! Sign in to your account"><Signin /></AuthLayout>} />
-                <Route path="password/forget" element={<AuthLayout title="Reset Password" subtitle="Enter your email to receive a reset link"><ForgotPassword /></AuthLayout>} />
-                <Route path="signup" element={<AuthLayout title="Create an account" subtitle="Join us today"><SignUp /></AuthLayout>} />
+                <Route index element={<div/>}/>
+                <Route path="signin" element={<Signin />} />
+                <Route path="password/forget" element={<ForgotPassword />} />
+                <Route path="signup" element={<SignUp />}/>
               </Route>
               
-              <Route path='/chat' element={<LayoutWithoutFooter><Chat/></LayoutWithoutFooter>}/>
+              {/* Public routes */}
               <Route path="/" element={<MainLayout><App /></MainLayout>} />
               <Route path="/home" element={<MainLayout><Home /></MainLayout>} />
-              <Route path="/notifications" element={<LayoutWithoutFooter><NotificationsPage /></LayoutWithoutFooter>} />
-              <Route path="/opportunities/:id" element={<LayoutWithoutFooter><Opportunity /></LayoutWithoutFooter>} />
-              <Route path="/profile" element={<MainLayout><ProfilePage /></MainLayout>} />
-              <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
-              <Route path="/search" element={<MainLayout><InternshipsAndProblemsPage /></MainLayout>} />
+              
+              {/* Protected routes */}
+              <Route path='/chat' element={
+                <ProtectedRoute>
+                  <LayoutWithoutFooter><Chat/></LayoutWithoutFooter>
+                </ProtectedRoute>
+              }/>
+              <Route path='/chat/:id' element={
+                <ProtectedRoute>
+                  <LayoutWithoutFooter><Chat/></LayoutWithoutFooter>
+                </ProtectedRoute>
+              }/>
+              <Route path="/notifications" element={
+                <ProtectedRoute>
+                  <LayoutWithoutFooter><NotificationsPage /></LayoutWithoutFooter>
+                </ProtectedRoute>
+              } />
+              <Route path="/opportunities/:id" element={
+                <ProtectedRoute>
+                  <LayoutWithoutFooter><Opportunity /></LayoutWithoutFooter>
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <MainLayout><ProfilePage /></MainLayout>
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <MainLayout><Dashboard /></MainLayout>
+                </ProtectedRoute>
+              } />
+              <Route path="/search" element={
+                <ProtectedRoute>
+                  <MainLayout><InternshipsAndProblemsPage /></MainLayout>
+                </ProtectedRoute>
+              } />
               <Route path="teams">
-                <Route index element={<LayoutWithoutFooter><Teams /></LayoutWithoutFooter>} />
-                <Route path="create" element={<MainLayout><CreateTeamCard /></MainLayout>} />
-                <Route path=":teamId" element={<LayoutWithoutFooter><TeamDetail /></LayoutWithoutFooter>} />
+                <Route index element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter><Teams /></LayoutWithoutFooter>
+                  </ProtectedRoute>
+                } />
+                <Route path="create" element={
+                  <ProtectedRoute>
+                    <MainLayout><CreateTeamCard /></MainLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path=":teamId" element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter><TeamDetail /></LayoutWithoutFooter>
+                  </ProtectedRoute>
+                } />
               </Route>
               
               {/* Not found route */}

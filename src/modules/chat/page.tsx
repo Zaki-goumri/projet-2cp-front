@@ -1,5 +1,6 @@
-import { lazy, useState } from 'react';
+import { lazy, useState, useEffect } from 'react';
 import { useChat } from './hooks/useChat';
+import { useParams } from 'react-router';
 
 const ChatSidebar = lazy(() => import('./components/ChatSidebar'));
 const ChatMessages = lazy(() => import('./components/ChatMessages'));
@@ -12,8 +13,26 @@ const ChatPage = () => {
     conversations, 
     activeConversation, 
     sendMessage, 
-    selectConversation 
+    selectConversation,
+    startNewConversation
   } = useChat();
+  const { id } = useParams();
+  
+  // If an ID is provided in the route, start a new conversation or select existing
+  useEffect(() => {
+    if (id) {
+      // Check if we already have a conversation with this organizer
+      const existingConversation = conversations.find(conv => conv.id === id);
+      
+      if (existingConversation) {
+        // If conversation exists, select it
+        selectConversation(existingConversation);
+      } else {
+        // If not, start a new conversation with this organizer
+        startNewConversation(id);
+      }
+    }
+  }, [id, conversations, selectConversation, startNewConversation]);
 
   return (
     <div className="flex h-screen">

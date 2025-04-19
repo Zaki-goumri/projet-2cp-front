@@ -23,6 +23,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => (
       draggable
       pauseOnHover
       theme="light"
+      className="!font-sans !text-sm !rounded-lg !shadow-lg"
+      toastClassName="!bg-white !text-gray-800 !border !border-gray-200"
+      progressClassName="!bg-[#65C97A]"
     />
     {children}
     <Footer />

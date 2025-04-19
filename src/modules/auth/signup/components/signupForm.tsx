@@ -72,111 +72,147 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#98E9AB]/30 to-[#98E9AB]/10 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#98E9AB]/20 via-white to-[#98E9AB]/10 p-4">
       <div className="w-full max-w-md">
-        <div className="overflow-hidden rounded-xl bg-white shadow-lg">
+        <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
           <div className="p-8">
             <div className="mb-6 flex justify-center">
-              <img src="/assets/logo.svg" alt="Logo" className="h-8" />
+              <img src="/assets/logo.svg" alt="Logo" className="h-10 w-auto" />
             </div>
 
-            <h1 className="mb-2 text-center text-2xl font-semibold">Sign up</h1>
-            <p className="mb-6 text-center text-sm text-gray-500">
-              Create an account to start posting jobs and build your remote team
+            <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">Create an account</h1>
+            <p className="mb-8 text-center text-sm text-gray-600">
+              Join us to start posting jobs and building your remote team
             </p>
 
-            <div className="my-4 flex items-center">
-              <div className="h-px flex-grow bg-gray-200"></div>
-              <span className="px-3 text-sm text-gray-500">
-                or sign up with email
-              </span>
-              <div className="h-px flex-grow bg-gray-200"></div>
-            </div>
-
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                {[
-                  {
-                    name: 'email',
-                    placeholder: 'Email',
-                    icon: Mail,
-                    type: 'text',
-                  },
-                  {
-                    name: 'name',
-                    placeholder: 'Full Name',
-                    icon: User,
-                    type: 'text',
-                  },
-                  {
-                    name: 'phoneNumber',
-                    placeholder: 'Phone Number',
-                    icon: Phone,
-                    type: 'text',
-                  },
-                  {
-                    name: 'password',
-                    placeholder: 'Password',
-                    icon: Lock,
-                    type: showPassword ? 'text' : 'password',
-                    toggle: () => setShowPassword(!showPassword),
-                    show: showPassword,
-                  },
-                  {
-                    name: 'confirmPassword',
-                    placeholder: 'Confirm Password',
-                    icon: Lock,
-                    type: showConfirmPassword ? 'text' : 'password',
-                    toggle: () => setShowConfirmPassword(!showConfirmPassword),
-                    show: showConfirmPassword,
-                  },
-                ].map((field, index) => (
-                  <FormField
-                    key={index}
-                    control={form.control}
-                    name={
-                      field.name as
-                        | 'email'
-                        | 'password'
-                        | 'confirmPassword'
-                        | 'name'
-                        | 'phoneNumber'
-                        | 'type'
-                    }
-                    render={({ field: formField }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <field.icon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                            <Input
-                              type={field.type}
-                              placeholder={field.placeholder}
-                              className="!rounded-lg !border-gray-200 !py-6 !pl-10"
-                              {...formField}
-                            />
-                            {field.toggle && (
-                              <button
-                                type="button"
-                                onClick={field.toggle}
-                                className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
-                              >
-                                {field.show ? (
-                                  <EyeOff className="h-5 w-5" />
-                                ) : (
-                                  <Eye className="h-5 w-5" />
-                                )}
-                              </button>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 " />
+                          <Input
+                            placeholder="Email"
+                            type="email"
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <Input
+                            placeholder="Full Name"
+                            type="text"
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <Input
+                            placeholder="Phone Number"
+                            type="tel"
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <Input
+                            placeholder="Password"
+                            type={showPassword ? "text" : "password"}
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            {...field}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-5 w-5" />
+                            ) : (
+                              <Eye className="h-5 w-5" />
                             )}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <Input
+                            placeholder="Confirm Password"
+                            type={showConfirmPassword ? "text" : "password"}
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            {...field}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                          >
+                            {showConfirmPassword ? (
+                              <EyeOff className="h-5 w-5" />
+                            ) : (
+                              <Eye className="h-5 w-5" />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs text-red-500" />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}
@@ -185,20 +221,20 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute top-1/2 left-3 z-10 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <User className="absolute left-3 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
-                            <SelectTrigger className="!rounded-lg !border-gray-200 !py-6 !pl-10 !text-black/40">
+                            <SelectTrigger className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 !text-gray-400  focus:ring focus:ring-[#98E9AB]/20">
                               <SelectValue placeholder="Account Type" />
                             </SelectTrigger>
-                            <SelectContent className="!border-none !bg-white">
+                            <SelectContent className="!bg-white !border-none">
                               {['student', 'company'].map((type) => (
                                 <SelectItem
                                   key={type}
                                   value={type}
-                                  className="!border-0 !bg-white !text-black/40 hover:!bg-gray-200"
+                                  className="focus:bg-[#98E9AB]/10 !text-gray-400 !border-none  !bg-white"
                                 >
                                   {type.charAt(0).toUpperCase() + type.slice(1)}
                                 </SelectItem>
@@ -207,26 +243,27 @@ const SignUpForm = () => {
                           </Select>
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs text-red-500" />
                     </FormItem>
                   )}
                 />
+
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="!w-full !rounded-lg !bg-[#98E9AB] !py-6 !font-medium !text-white !transition-colors hover:!bg-[#7ad98e]"
+                  className="!mt-6 !h-12 !w-full !rounded-lg !bg-[#98E9AB] !font-medium !text-white !shadow-md !shadow-[#98E9AB]/20 !transition-all hover:!bg-[#7ad98e] hover:!shadow-lg hover:!shadow-[#98E9AB]/30 disabled:!bg-gray-300 disabled:!shadow-none"
                 >
-                  {isLoading ? 'Creating account...' : 'Continue'}
+                  {isLoading ? "Creating account..." : "Create account"}
                 </Button>
               </form>
             </Form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-600">
                 Already have an account?{' '}
                 <Link
                   to="/auth/signin"
-                  className="font-medium text-[#98E9AB] hover:underline"
+                  className="font-medium text-[#98E9AB] hover:text-[#7ad98e] hover:underline"
                 >
                   Sign in
                 </Link>
@@ -236,15 +273,14 @@ const SignUpForm = () => {
         </div>
 
         <p className="mt-6 text-center text-xs text-gray-500">
-          By continuing, you agree to our{' '}
-          <a href="#" className="text-[#98E9AB] hover:underline">
+          By creating an account, you agree to our{' '}
+          <Link to="/terms" className="text-[#98E9AB] hover:underline">
             Terms of Use
-          </a>{' '}
+          </Link>{' '}
           and{' '}
-          <a href="#" className="text-[#98E9AB] hover:underline">
+          <Link to="/privacy" className="text-[#98E9AB] hover:underline">
             Privacy Policy
-          </a>
-          .
+          </Link>
         </p>
       </div>
     </div>

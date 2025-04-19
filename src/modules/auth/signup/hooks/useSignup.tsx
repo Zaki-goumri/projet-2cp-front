@@ -18,12 +18,32 @@ const useSignup = () => {
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error) && error.response) {
-        toast.error(error.response.data.email[0], {
+        const errorData = error.response.data;
+        if (typeof errorData === 'object' && errorData !== null) {
+          const errorMessages = Object.entries(errorData)
+            .map(([key, value]) => {
+              if (Array.isArray(value)) {
+                return value.join(', ');
+              }
+              return value;
+            })
+            .join('\n');
+          
+          toast.error(errorMessages, {
+            position: 'top-right',
+            autoClose: 5000,
+          });
+        } else {
+          toast.error(errorData, {
+            position: 'top-right',
+            autoClose: 5000,
+          });
+        }
+      } else {
+        toast.error('An unexpected error occurred', {
           position: 'top-right',
           autoClose: 5000,
         });
-      } else {
-        console.error('Unknown error');
       }
     },
   });
