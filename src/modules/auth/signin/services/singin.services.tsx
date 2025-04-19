@@ -22,7 +22,6 @@ export const loginUser = async (data: LoginRequest): Promise<User> => {
 
 export const logoutUser = async (): Promise<void> => {
   try {
-    // Clear the auth cookies by setting them to expire immediately
     document.cookie = serialize('accessToken', '', {
       httpOnly: false,
       expires: new Date(0),
