@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   Form,
@@ -40,10 +40,10 @@ const SignForm = () => {
       password: '',
     },
   });
-
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { mutate, isLoading } = useSignin();
+  const { mutate, isLoading } = useSignin(location.state?.from);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const loginData = values;

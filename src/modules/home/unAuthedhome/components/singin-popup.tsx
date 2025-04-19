@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { X, Mail, ArrowRight } from 'lucide-react';
+import { X, Mail, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router';
+import { z } from 'zod';
+import useSignin from '@/modules/auth/signin/hooks/useSignin';
 const Linkedin = React.lazy(
   () => import('@/modules/auth/signin/components/linkedinButtton')
 );
@@ -14,17 +16,53 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
+// Define Zod schema for form validation
+const signinSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password should be at least 6 characters'),
+});
+
+type SigninFormData = z.infer<typeof signinSchema>;
+
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [isEmailView, setIsEmailView] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<Partial<SigninFormData>>({});
+
+  const signinMutation = useSignin();
 
   if (!isOpen) return null;
 
+  const validateForm = (): boolean => {
+    try {
+      signinSchema.parse({ email, password });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: Partial<SigninFormData> = {};
+        error.errors.forEach((err) => {
+          const path = err.path[0] as keyof SigninFormData;
+          formattedErrors[path] = err.message;
+        });
+        setErrors(formattedErrors);
+      }
+      return false;
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt made');
+    
+    if (!validateForm()) return;
+    
+    signinMutation.mutate({ 
+      email, 
+      password,
+      name: '' // The API expects a name property even for signin
+    });
   };
 
   return (
@@ -37,11 +75,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         >
           <X className="h-6 w-6" />
         </button>
-
-        {/* Green Header */}
-        {/* <div className="bg-primary h-32 relative">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_120%,rgba(120,190,140,0.46),rgba(255,255,255,0))]" />
-        </div> */}
 
         {/* Content Section */}
         <div className="-mt-16 px-8 pb-8">
@@ -101,10 +134,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="focus:border-primary focus:ring-primary w-full rounded-xl border border-gray-300 px-4 py-3 transition-colors focus:ring-1"
+                    className={`focus:border-primary focus:ring-primary w-full rounded-xl border ${
+                      errors.email ? 'border-red-500' : 'border-gray-300'
+                    } px-4 py-3 transition-colors focus:ring-1`}
                     placeholder="Enter your email"
                     required
                   />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                  )}
                 </div>
 
                 <div>
@@ -114,23 +152,38 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   >
                     Password
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="focus:border-primary focus:ring-primary w-full rounded-xl border border-gray-300 px-4 py-3 transition-colors focus:ring-1"
-                    placeholder="Enter your password"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`focus:border-primary focus:ring-primary w-full rounded-xl border ${
+                        errors.password ? 'border-red-500' : 'border-gray-300'
+                      } px-4 py-3 transition-colors focus:ring-1`}
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+                  )}
                 </div>
 
                 <button
                   type="submit"
-                  className="bg-primary hover:bg-primary/90 mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-white transition-colors"
+                  disabled={signinMutation.isLoading}
+                  className="bg-primary hover:bg-primary/90 mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-white transition-colors disabled:opacity-70"
                 >
-                  Sign In
-                  <ArrowRight className="h-5 w-5" />
+                  {signinMutation.isLoading ? 'Signing in...' : 'Sign In'}
+                  {!signinMutation.isLoading && <ArrowRight className="h-5 w-5" />}
                 </button>
 
                 <button
