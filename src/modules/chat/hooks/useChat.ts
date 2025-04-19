@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { Message, Conversation } from '../types';
 import { fetchConversations, fetchMessages, sendMessageApi, fetchUserById } from '../services/chatService';
 
+interface ChatState {
+  id: string;
+  name: string;
+  avatar: string;
+  email: string;
+  phoneNumber: string;
+}
+
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -94,7 +102,7 @@ export const useChat = () => {
     try {
       setLoading(true);
       // Fetch user details to create a new conversation
-      const userData = await fetchUserById(userId);
+      const userData = await fetchUserById(userId) as ChatState;
       
       if (!userData) {
         throw new Error('User not found');

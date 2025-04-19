@@ -4,8 +4,9 @@ import { Link } from 'react-router';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import  useSignin  from '@/modules/auth/signin/hooks/useSignin';
+import useSignin from '@/modules/auth/signin/hooks/useSignin';
 import { LoginRequest } from '@/modules/auth/signin/types/signin.types';
+
 const Linkedin = React.lazy(
   () => import('@/modules/auth/signin/components/linkedinButtton')
 );
@@ -37,15 +38,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     resolver: zodResolver(loginSchema),
   });
 
-  if (!isOpen) return null;
-
   const { mutate } = useSignin();
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     const loginData = values;
     mutate(loginData as LoginRequest);
   };
-  };
+
+  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/60 p-4 backdrop-blur-sm">
       <div className="animate-fadeIn relative w-full max-w-md overflow-hidden rounded-3xl bg-white">
