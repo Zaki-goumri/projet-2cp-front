@@ -53,8 +53,8 @@ export const useLinkedinAuth = (): LinkedInAuthResult => {
         // Debug info
         setDebugInfo({
           code: code?.substring(0, 10) + '...',
-          state,
-          storedState,
+          state: state || undefined,
+          storedState: storedState || undefined,
           stateMatch: state === storedState
         });
         
