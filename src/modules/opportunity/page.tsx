@@ -19,13 +19,12 @@ import { useParams } from 'react-router';
 export default function InternshipListing() {
   const { id } = useParams();
 
-  useEffect(() => {
-    console.log(id); // Log the ID
+  useEffect(() => { 
   }, [id]);
 
   return (
     <main>
-      <div className="mx-auto h-full max-w-6xl bg-[#2D81940A] p-6">
+      <div className="mx-auto h-full max-w-6xl bg-[#2D81940A] p-6 space-y-6">
         <OverView  />
         <InternshipDetails />
         <AdditionalInformation />

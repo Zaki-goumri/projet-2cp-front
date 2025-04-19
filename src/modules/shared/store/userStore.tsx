@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
+import { logoutUser } from '@/modules/auth/signin/services/singin.services';
 
 
 export interface User {
@@ -20,7 +21,10 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       user: null,
       login: (userData) => set({ user: userData }),
-      logout: () => set({ user: null }),
+      logout: () => {
+        logoutUser().catch(error => console.error('Error during logout:', error));
+        set({ user: null });
+      },
     }),
     {
       name: "user-storage",

@@ -15,11 +15,6 @@ const infoItems = [
     description: 'Algeria',
   },
   {
-    icon: Building2,
-    title: 'Experience',
-    description: 'Entry level/Beginner',
-  },
-  {
     icon: Briefcase,
     title: 'Internship Type',
     description: 'Remote',
@@ -34,18 +29,13 @@ const infoItems = [
     title: 'Internship Duration',
     description: '1 Month',
   },
-  {
-    icon: Gift,
-    title: 'Perks',
-    description: 'Certificate of Completion',
-  },
 ];
 
 const AdditionalInformation = () => {
   return (
     <div className="mb-10 space-y-4 rounded-lg bg-white p-6 shadow">
       <h3 className="text-xl font-semibold border-b pb-3">Additional Information</h3>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
         {infoItems.map((item, index) => (
           <Card
             key={index}

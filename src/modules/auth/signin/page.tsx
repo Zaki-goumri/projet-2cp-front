@@ -5,7 +5,7 @@ const SigninForm = lazy(
 import { ToastContainer } from 'react-toastify';
 import QueryClient from '@/modules/shared/components/ReactQueryProvider';
 
-export default function SignUp() {
+export default function SignIn() {
   return (
     <QueryClient>
       <ToastContainer
@@ -20,7 +20,9 @@ export default function SignUp() {
         pauseOnHover
         theme="light"
       />
-      <SigninForm />
+      <div className="min-h-screen bg-white">
+        <SigninForm />
+      </div>
     </QueryClient>
   );
 }
