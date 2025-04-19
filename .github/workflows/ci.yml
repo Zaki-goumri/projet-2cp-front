@@ -57,6 +57,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:latest,${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:${{ github.sha }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:${{ github.sha }}
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:buildcache,mode=max
