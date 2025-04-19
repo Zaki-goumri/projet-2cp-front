@@ -6,7 +6,7 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
-const useSignin = () => {
+const useSignin = (redirectPath?: string) => {
   const setUser = useUserStore((state) => state.login);
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ const useSignin = () => {
     mutationFn: (values: LoginRequest) => loginUser(values),
     onSuccess: (data: User) => {
       setUser({ ...data });
-      navigate('/home');
+      navigate(redirectPath || '/home');
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error) && error.response) {
