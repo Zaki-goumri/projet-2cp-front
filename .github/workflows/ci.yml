@@ -52,12 +52,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      - name: Set Docker image name
-        run: echo "DOCKER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front" >> $GITHUB_ENV
-      
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ env.DOCKER_IMAGE }}:latest,${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          tags: |
+            zakigoumri/project-2cp-front:latest
+            zakigoumri/project-2cp-front:${{ github.sha }}
