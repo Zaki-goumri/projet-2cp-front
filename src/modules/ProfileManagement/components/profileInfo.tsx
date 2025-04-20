@@ -10,7 +10,7 @@ function ProfileInfo() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">Bentaleb Mohammed</h1>
             <button className="mt-3 sm:mt-0 flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] hover:bg-[#83d69a] transition-colors duration-200 py-2 px-4">
-              <span className="text-sm font-semibold text-white">Edit profile</span>
+              <span  className="text-sm font-semibold text-white">Edit profile</span>
               <img src="assets/edit.svg" alt="edit" className="h-5 w-5" />
             </button>
           </div>
