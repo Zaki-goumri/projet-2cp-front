@@ -40,7 +40,7 @@ export interface User {
   role: 'Student' | 'Professional' | 'Admin';
   skills: string[];
   education: {
-    institution: string;
+  institution: string;
     degree: string;
     startDate: string;
     endDate: string | null;

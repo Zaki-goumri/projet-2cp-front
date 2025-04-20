@@ -4,10 +4,11 @@ export interface infoCardProps {
   icon: string;
   name: string;
   isAddeable: boolean;
+  onAdd: () => void;
   children: string | JSX.Element | JSX.Element[];
 }
 
-function InfoCard({ icon, name, isAddeable, children }: infoCardProps) {
+function InfoCard({ icon, name, isAddeable, onAdd, children }: infoCardProps) {
   return (
     <div className="flex flex-col rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
       <div>
@@ -18,6 +19,7 @@ function InfoCard({ icon, name, isAddeable, children }: infoCardProps) {
           </div>
           {isAddeable && (
             <button 
+              onClick={onAdd}
               className="p-2 rounded-full bg-[#92E3A940] hover:bg-[#92E3A960] transition-colors duration-200"
               title="Add new item"
             >

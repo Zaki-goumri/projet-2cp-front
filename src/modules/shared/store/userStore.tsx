@@ -1,13 +1,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
+import { User } from '@/modules/internships&problems/types/internshipsAndProblems.types';
 
 
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-}
 
 interface UserStore {
   user: User | null;
