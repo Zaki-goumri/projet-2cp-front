@@ -45,7 +45,11 @@ function ProfileInfo({ isEditing, onEditToggle,user }: ProfileInfoProps) {
 
       // Create a URL for the image preview
       const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
+      if (ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+        setProfileImage(imageUrl);
+      } else {
+        setProfileImage(profilePlaceHolder);
+      }
     }
   };
 
