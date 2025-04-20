@@ -1,51 +1,94 @@
-import React from 'react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Edit2, Trash2 } from 'lucide-react';
 import InfoCard from '../InfoCard';
+import AddItemModal from '../modals/AddItemModal';
+
+interface ExperienceProps {
+  isEditing: boolean;
+}
 
 interface ExperienceItem {
+  id: string;
   role: string;
+  title: string;
   company: string;
-  duration: string;
+  period: string;
   description: string;
 }
 
-const ExperienceList = () => {
-  const experiences: ExperienceItem[] = [
-    {
-      role: 'UX/UI Designer',
-      company: 'Yassir',
-      duration: 'Feb 22 - Mar 3 • 15 days',
-      description: 'Worked on creating intuitive and engaging user interfaces for mobile applications.'
-    }
-  ];
+const Experience = ({ isEditing }: ExperienceProps) => {
+  const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDelete = (id: string) => {
+    setExperiences(experiences.filter(exp => exp.id !== id));
+  };
+
+  const handleAdd = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalSubmit = (data: any) => {
+    const newExperience: ExperienceItem = {
+      id: Date.now().toString(),
+      role: data.role,
+      title: data.role,
+      company: data.company,
+      period: `${data.startDate} - ${data.endDate}`,
+      description: data.description
+    };
+    setExperiences([...experiences, newExperience]);
+    setIsModalOpen(false);
+  };
 
   return (
-    <div className="space-y-6">
-      {experiences.map((exp, index) => (
-        <div key={index} className="border-b border-gray-200 last:border-0 pb-4">
-          <h3 className="text-lg font-semibold text-gray-800">{exp.role}</h3>
-          <div className="flex items-center text-sm text-gray-600 mt-1">
-            <span>{exp.company}</span>
-            <span className="mx-2">•</span>
-            <span>{exp.duration}</span>
-          </div>
-          <p className="mt-2 text-gray-700">{exp.description}</p>
+    <>
+      <InfoCard
+        icon={'assets/bag.svg'}
+        name={'Internship Experience'}
+        isAddeable={isEditing}
+        onAdd={handleAdd}
+      >
+        <div className="px-6 py-4">
+          {experiences.length === 0 ? (
+            <p className="text-gray-600">No experience added yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {experiences.map((exp) => (
+                <div key={exp.id} className="border-[#92E3A9] rounded-lg p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold">{exp.title}</h3>
+                      <p className="text-gray-600">{exp.company}</p>
+                      <p className="text-sm text-gray-500">{exp.period}</p>
+                    </div>
+                    {isEditing && (
+                      <div className="flex space-x-2">
+                        <Button variant="ghost" size="sm">
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDelete(exp.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <p className="mt-2 text-gray-700">{exp.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ))}
-    </div>
-  );
-};
+      </InfoCard>
 
-const Experience = () => {
-  return (
-    <InfoCard
-      icon={'assets/bag.svg'}
-      name={'Internship Experience'}
-      isAddeable={true}
-    >
-      <div className="px-6 py-4">
-        <ExperienceList />
-      </div>
-    </InfoCard>
+      <AddItemModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleModalSubmit}
+        type="experience"
+      />
+    </>
   );
 };
 

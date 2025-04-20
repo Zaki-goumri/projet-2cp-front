@@ -1,24 +1,45 @@
-import { lazy } from 'react';
-
-const ProfileInfo = lazy(() => import('./components/profileInfo'));
-const AboutMe = lazy(() => import('./components/sections/AboutMe'));
-const Experience = lazy(() => import('./components/sections/Experience')); 
-const Education = lazy(() => import('./components/sections/Education'));
-const Resume = lazy(() => import('./components/sections/Resume'));
+import { lazy, useState } from 'react';
+import ProfileCard from './components/profileCard';
+import ProfileInfo from './components/profileInfo';
+import AboutMe from './components/sections/AboutMe';
+import Experience from './components/sections/Experience';
+import Education from './components/sections/Education';
+import Resume from './components/sections/Resume';
+import { Button } from '@/components/ui/button';
+import { Edit2, Save, X } from 'lucide-react';
+import { useUserStore } from '../shared/store/userStore';
+import { User } from '../auth/signin/types/signin.types';
 
 const NavBar = lazy(() => import('@/modules/shared/components/navBar'));
 
 const ProfilePage = () => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+  const {user}=useUserStore()
+const dummyUser:User={
+  id: 0,
+  name:"",
+  email: "",
+date_joined:"2025-05-03",
+category:'test',
+type:"dla3",
+profilepic:null,
+number:null
+}
   return (
     <main className="min-h-screen bg-gray-50">
-      <section className="w-full px-4 py-4 md:px-6 lg:px-8">
-        <div className="mx-auto max-w-[90rem] rounded-xl bg-[#92E3A91A] p-3 md:p-4">
-          <ProfileInfo />
+      <section className="w-full px-4 md:px-6 lg:px-8 py-4">
+        <div className="mx-auto max-w-[90rem] bg-[#92E3A91A] rounded-xl p-3 md:p-4">
+       
+          <ProfileInfo isEditing={isEditing} onEditToggle={handleEditToggle} user={user??undefined} />
           <div className="mt-3 space-y-3 md:space-y-4">
-            <AboutMe />
-            <Experience />
-            <Education />
-            <Resume />
+            <AboutMe isEditing={isEditing} aboutMe={"THis is a plaeholder"} />
+            <Experience isEditing={isEditing} />
+            <Education isEditing={isEditing} />
+            <Resume isEditing={isEditing} />
           </div>
         </div>
       </section>
