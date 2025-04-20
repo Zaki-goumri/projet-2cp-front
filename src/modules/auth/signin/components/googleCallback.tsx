@@ -6,14 +6,14 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-const setUser = useUserStore((state) => state.login);
+  const setUser = useUserStore((state) => state.login);
   useEffect(() => {
     const handleAuthentication = async () => {
       try {
         setLoading(true);
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
-        
+
         if (!code) {
           console.error('No authorization code received from Google');
           navigate('/auth/signin?error=google_failed');
@@ -29,10 +29,10 @@ const setUser = useUserStore((state) => state.login);
           }
         });
 
-        setUser(response.data);
+        setUser(response.data.user);
         document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=3600`;
         document.cookie = `refreshToken=${response.data.refreshToken}; path=/; max-age=2592000`;
-        
+
         navigate('/home');
       } catch (error) {
         console.error('Authentication failed:', error);
