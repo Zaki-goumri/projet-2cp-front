@@ -8,6 +8,20 @@ export interface User {
   name: string;
   picture: string;
   type: string;
+  role: 'Student' | 'Professional' | 'Admin';
+  skills: string[];
+  education: {
+  institution: string;
+    degree: string;
+    startDate: string;
+    endDate: string | null;
+  }[];
+  experience: {
+    company: string;
+    role: string;
+    startDate: string;
+    endDate: string | null;
+  }[];
 }
 
 interface UserStore {

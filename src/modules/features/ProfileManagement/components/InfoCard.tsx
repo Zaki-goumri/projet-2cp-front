@@ -1,14 +1,15 @@
 import React from 'react';
+import { Plus } from 'lucide-react';
 
-export interface infoCardProps {
+export interface InfoCardProps {
   icon: string;
   name: string;
   isAddeable: boolean;
-  onAdd: () => void;
-  children: string | JSX.Element | JSX.Element[];
+  onAdd?: () => void;
+  children: React.ReactNode;
 }
 
-function InfoCard({ icon, name, isAddeable, onAdd, children }: infoCardProps) {
+function InfoCard({ icon, name, isAddeable, onAdd, children }: InfoCardProps) {
   return (
     <div className="flex flex-col rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
       <div>
@@ -17,13 +18,13 @@ function InfoCard({ icon, name, isAddeable, onAdd, children }: infoCardProps) {
             <img src={icon} alt="icon" className="h-8 w-8 md:h-10 md:w-10" />
             <h1 className="text-lg md:text-xl font-semibold text-gray-900">{name}</h1>
           </div>
-          {isAddeable && (
+          {isAddeable && onAdd && (
             <button 
               onClick={onAdd}
               className="p-2 rounded-full bg-[#92E3A940] hover:bg-[#92E3A960] transition-colors duration-200"
-              title="Add new item"
+              title={`Add new ${name.toLowerCase()}`}
             >
-              <img src="assets/add.svg" alt="add" className="h-5 w-5" />
+              <Plus className="h-5 w-5 text-[#2E7B32]" />
             </button>
           )}
         </div>
@@ -36,4 +37,4 @@ function InfoCard({ icon, name, isAddeable, onAdd, children }: infoCardProps) {
   );
 }
 
-export default InfoCard;
+export default InfoCard; 
