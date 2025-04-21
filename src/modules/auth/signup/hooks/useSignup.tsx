@@ -28,13 +28,13 @@ const useSignup = () => {
               return value;
             })
             .join('\n');
-          
-          toast.error(errorMessages, {
+
+          toast.error(errorMessages || 'unexpected error', {
             position: 'top-right',
             autoClose: 5000,
           });
         } else {
-          toast.error(errorData, {
+          toast.error(errorData || 'unexpected error', {
             position: 'top-right',
             autoClose: 5000,
           });

@@ -6,6 +6,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig({
+  publicDir: 'public',
   base: '/',
   plugins: [
     react(),
@@ -27,11 +28,15 @@ export default defineConfig({
   preview: {
     port: 8080,
     strictPort: true,
+    https: {
+      key: './certs/localhost-key.pem',
+      cert: './certs/localhost.pem',
+    },
   },
   server: {
     port: 8080,
-    strictPort: false,
+    strictPort: true,
     host: true,
-    origin: 'http://0.0.0.0:8080',
+    origin: 'https://localhost:8080', // Ensure HTTPS origin for local dev
   },
 });

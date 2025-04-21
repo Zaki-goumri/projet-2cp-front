@@ -13,7 +13,7 @@ const useSignin = (redirectPath?: string) => {
   return useMutation({
     mutationFn: (values: LoginRequest) => loginUser(values),
     onSuccess: (data: User) => {
-      setUser({ ...data });
+      setUser(data);
       navigate(redirectPath || '/home');
     },
     onError: (error: unknown) => {
@@ -28,13 +28,13 @@ const useSignin = (redirectPath?: string) => {
               return value;
             })
             .join('\n');
-          
-          toast.error(errorMessages, {
+
+          toast.error(errorMessages || 'unexpected error', {
             position: 'top-right',
             autoClose: 5000,
           });
         } else {
-          toast.error(errorData, {
+          toast.error(errorData || 'unexpected error', {
             position: 'top-right',
             autoClose: 5000,
           });
