@@ -1,11 +1,10 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState, useEffect, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState, useMemo } from 'react';
 import internshipsAndProblemsService from '../services/internshipsAndProblems.service';
 import { Opportunity } from '../types/opportunity.types';
 
 export const useInternshipsAndProblems = (searchQuery: string = '') => {
   const [activeTab, setActiveTab] = useState('internships');
-  const queryClient = useQueryClient();
 
   const {
     data: internships = [],
@@ -15,9 +14,9 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
     queryKey: ['internships'],
     queryFn: () => internshipsAndProblemsService.fetchInternships(),
     enabled: activeTab === 'internships',
-    staleTime: 5 * 60 * 1000, 
+    staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
   const {
@@ -30,7 +29,7 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
     enabled: activeTab === 'problems',
     staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
   const {
@@ -40,17 +39,29 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
   } = useQuery({
     queryKey: ['savedPosts'],
     queryFn: () => internshipsAndProblemsService.fetchSavedPosts(),
-    enabled: activeTab === 'saved',
+    enabled: activeTab === 'applied',
     staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
-  // Filter data based on search query
+  const {
+    data: appliedInternshipsdPosts = [],
+    isLoading: isAppliedPostsLoading,
+    error: appliedPostsError,
+  } = useQuery({
+    queryKey: ['appliedPosts'],
+    queryFn: () => internshipsAndProblemsService.fetchAppliedPosts(),
+    enabled: activeTab === 'applied',
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
   const filteredData = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    if (!query) return { internships, problems, savedPosts };
-
+    if (!query)
+      return { internships, problems, savedPosts, appliedInternshipsdPosts };
     const filterOpportunities = (opportunities: Opportunity[]) =>
       opportunities.filter((opp) => {
         return (
@@ -58,33 +69,55 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
           opp.description?.toLowerCase().includes(query) ||
           opp.company?.name?.toLowerCase().includes(query) ||
           opp.worktype?.toLowerCase().includes(query) ||
-          opp.skills?.some(skill => skill.toLowerCase().includes(query))
+          opp.skills?.some((skill) => skill.toLowerCase().includes(query))
         );
       });
 
     return {
       internships: filterOpportunities(internships),
       problems: filterOpportunities(problems),
-      savedPosts: filterOpportunities(savedPosts)
+      savedPosts: filterOpportunities(savedPosts),
+      appliedInternships: filterOpportunities(appliedInternshipsdPosts),
     };
-  }, [searchQuery, internships, problems, savedPosts]);
+  }, [
+    searchQuery,
+    internships,
+    problems,
+    savedPosts,
+    appliedInternshipsdPosts,
+  ]);
 
-  const appliedInternships = internships.filter((opp: Opportunity) => opp.status);
-
-  const isLoading = 
+  const isLoading =
     (activeTab === 'internships' && isInternshipsLoading) ||
     (activeTab === 'problems' && isProblemsLoading) ||
-    (activeTab === 'saved' && isSavedPostsLoading);
+    (activeTab === 'saved' && isSavedPostsLoading) ||
+    (activeTab === 'applied' && isAppliedPostsLoading);
 
-  const hasError = 
+  const hasError =
     (activeTab === 'internships' && internshipsError) ||
     (activeTab === 'problems' && problemsError) ||
-    (activeTab === 'saved' && savedPostsError);
+    (activeTab === 'saved' && savedPostsError) ||
+    (activeTab === 'applied' && appliedPostsError);
 
   const isEmpty = {
-    internships: filteredData.internships.length === 0 && !isInternshipsLoading && !internshipsError,
-    problems: filteredData.problems.length === 0 && !isProblemsLoading && !problemsError,
-    savedPosts: filteredData.savedPosts.length === 0 && !isSavedPostsLoading && !savedPostsError,
+    internships:
+      filteredData.internships.length === 0 &&
+      !isInternshipsLoading &&
+      !internshipsError,
+
+    problems:
+      filteredData.problems.length === 0 &&
+      !isProblemsLoading &&
+      !problemsError,
+    savedPosts:
+      filteredData.savedPosts.length === 0 &&
+      !isSavedPostsLoading &&
+      !savedPostsError,
+
+    appliedInternships:
+      appliedInternshipsdPosts.length === 0 &&
+      !isAppliedPostsLoading &&
+      !appliedPostsError,
     users: true,
     companies: true,
   };
@@ -93,13 +126,13 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
     internships: filteredData.internships,
     problems: filteredData.problems,
     savedPosts: filteredData.savedPosts,
-    appliedInternships,
+    appliedInternships: filteredData.appliedInternships,
     users: [],
     companies: [],
     isLoading,
     hasError,
     isEmpty,
     activeTab,
-    setActiveTab
+    setActiveTab,
   };
 };
