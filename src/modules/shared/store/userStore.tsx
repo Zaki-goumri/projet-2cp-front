@@ -1,9 +1,28 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
-import { User } from '@/modules/internships&problems/types/internshipsAndProblems.types';
 
-
+export interface User {
+  id: number;
+  email: string;
+  name: string;
+  picture: string;
+  type: string;
+  role: 'Student' | 'Professional' | 'Admin';
+  skills: string[];
+  education: {
+  institution: string;
+    degree: string;
+    startDate: string;
+    endDate: string | null;
+  }[];
+  experience: {
+    company: string;
+    role: string;
+    startDate: string;
+    endDate: string | null;
+  }[];
+}
 
 interface UserStore {
   user: User | null;
@@ -11,24 +30,25 @@ interface UserStore {
   logout: () => void;
 }
 
-
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
       login: (userData) => set({ user: userData }),
       logout: () => {
-        logoutUser().catch(error => console.error('Error during logout:', error));
+        logoutUser().catch((error) =>
+          console.error('Error during logout:', error)
+        );
         set({ user: null });
       },
     }),
     {
-      name: "user-storage",
+      name: 'user-storage',
       storage: createJSONStorage(() => localStorage),
       migrate: (persistedState, version) => {
         if (version !== 0) return persistedState;
         return persistedState as UserStore;
       },
-    },
-  ),
+    }
+  )
 );

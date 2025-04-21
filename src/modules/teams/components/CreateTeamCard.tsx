@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 
 import {
@@ -23,11 +22,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { teamsService } from "../services/teams.service";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { toast } from "react-toastify";
-
+import { useCreateTeam } from "../hooks/useCreateTeam";
 
 // Validation schema using Zod
 const createTeamSchema = z.object({
@@ -63,34 +61,18 @@ const CreateTeamCard = () => {
     }
   });
 
-  // Setup React Query mutation
-  // const createTeamMutation = useMutation({
-  //   mutationFn: (data: CreateTeamFormValues) => {
-  //     return teamsService.createTeam({
-  //       name: data.name,
-  //       description: data.description,
-  //       // Include other required fields from Team interface
-  //       status: 'ACTIVE',
-  //       members: 1, // Start with 1 member (creator)
-  //       projects: 0
-  //     });
-  //   },
-  //   onSuccess: async (createdTeam) => {
-  //     // If there are members to invite, use the invite members endpoint
-  //     if (form.getValues().members.length > 0) {
-  //       await teamsService.inviteMembers(
-  //         createdTeam.id, 
-  //         form.getValues().members
-  //       );
-  //     }
-  //     navigate("/teams");
-  //   }
-  // });
+  const { createTeam, isLoading, error } = useCreateTeam();
 
-  // Form submission handler
-  const onSubmit = (data: CreateTeamFormValues) => {
-    // createTeamMutation.mutate(data);
-    console.log(data);
+  const onSubmit = async (data: CreateTeamFormValues) => {
+    try {
+      await createTeam({
+        name: data.name,
+        emails: data.members
+      });
+      toast.success("Team created successfully!");
+    } catch (err) {
+      toast.error(error?.message || "Failed to create team");
+    }
   };
 
   // Skill selection handler
@@ -106,24 +88,24 @@ const CreateTeamCard = () => {
     }
   };
 
-  
+
 
   const handleAddMember = () => {
     if (emailInput) {
       const emails = emailInput
-        .split(/[,;]/) 
+        .split(/[,;]/)
         .map(email => email.trim())
         .filter(email => {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!email){
+          if (!email) {
             toast.error('cant send to empty email')
-          }else if (!emailRegex.test(email)){
+          } else if (!emailRegex.test(email)) {
             toast.error('some emails are in the wrong format')
-          } else if (memberEmails.includes(email)){
+          } else if (memberEmails.includes(email)) {
             toast.error('email alrady added')
-          } 
-          return email && 
-            emailRegex.test(email) && 
+          }
+          return email &&
+            emailRegex.test(email) &&
             !memberEmails.includes(email);
         });
       if (emails.length > 0) {
@@ -143,7 +125,7 @@ const CreateTeamCard = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); 
+      e.preventDefault();
       handleAddMember();
     }
   };
@@ -238,8 +220,8 @@ const CreateTeamCard = () => {
                       key={skill}
                       variant={selectedSkills.includes(skill) ? "default" : "outline"}
                       className={`px-4 py-2 text-sm rounded-full cursor-pointer flex items-center justify-center h-10 transition-all duration-200 border-none !text-black/50 ${selectedSkills.includes(skill)
-                          ? "!text-white !bg-primary"
-                          : "bg-gray-50 text-gray-700 hover:bg-gray-100 "
+                        ? "!text-white !bg-primary"
+                        : "bg-gray-50 text-gray-700 hover:bg-gray-100 "
                         }`}
                       onClick={() => toggleSkill(skill)}
                     >
@@ -289,7 +271,7 @@ const CreateTeamCard = () => {
                         variant="secondary"
                         className="flex items-center gap-1 px-3 py-1.5 !bg-gray-50 !text-black/50"
                       >
-                        {email }
+                        {email}
                         <X
                           className="h-3.5 w-3.5 cursor-pointer ml-1 text-gray-500 hover:text-gray-700"
                           onClick={() => handleRemoveMember(email)}

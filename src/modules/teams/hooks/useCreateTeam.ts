@@ -1,31 +1,30 @@
-import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query'; 
 import { teamsService } from '../services/teams.service';
-import { Team, TeamApiError } from '../types/teams.types';
+import { Team, TeamApiError, CreateTeamRequest } from '../types/teams.types';
 
 export const useCreateTeam = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<TeamApiError | null>(null);
-  const [team, setTeam] = useState<Team | null>(null);
+  const mutation = useMutation<Team, TeamApiError, CreateTeamRequest>({
+    mutationFn: async (teamData) => {
+      try {
+        return await teamsService.post_team_create({
+          id: 0, 
+          name: teamData.name,
+          emails: teamData.emails
+        });
+      } catch (err) {
+        const error: TeamApiError = {
+          message: err instanceof Error ? err.message : 'Failed to create team',
+          status: 500,
+        };
+        throw error;
+      }
+    },
+  });
 
-  const createTeam = async (teamData: Partial<Team>) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const newTeam = await teamsService.createTeam(teamData);
-      setTeam(newTeam);
-      return newTeam;
-    } catch (err) {
-      const error: TeamApiError = {
-        message: err instanceof Error ? err.message : 'Failed to create team',
-        status: 500
-      };
-      setError(error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
+  return {
+    createTeam: mutation.mutateAsync,
+    isLoading: mutation.isLoading,
+    error: mutation.error,
+    team: mutation.data || null,
   };
-
-  return { createTeam, isLoading, error, team };
-}; 
+};

@@ -24,6 +24,8 @@ const NotificationsPage = lazy(() => import('./modules/notifications/pages/Notif
 import InternshipsAndProblemsPage from './modules/internships&problems/page';
 import CreateTeamCard from './modules/teams/components/CreateTeamCard';
 const Chat = lazy(()=>import('./modules/chat/page'));
+import { QueryProvider } from './providers/QueryProvider';
+
 
 const root = document.getElementById('root');
 
@@ -31,6 +33,7 @@ if (root) {
   ReactDOM.createRoot(root).render(
     <main>
       <Suspense fallback={<Loading />}>
+      <QueryProvider>
         <NotificationProvider>
           <Router>
             <Routes>
@@ -81,7 +84,7 @@ if (root) {
               } />
               <Route path="/search" element={
                 <ProtectedRoute>
-                  <MainLayout><InternshipsAndProblemsPage /></MainLayout>
+                  <LayoutWithoutFooter><InternshipsAndProblemsPage /></LayoutWithoutFooter>
                 </ProtectedRoute>
               } />
               <Route path="teams">
@@ -107,6 +110,7 @@ if (root) {
             </Routes>
           </Router>
         </NotificationProvider>
+      </QueryProvider>
       </Suspense>
     </main>
   );

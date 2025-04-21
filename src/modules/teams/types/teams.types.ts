@@ -16,4 +16,9 @@ export interface TeamResponse {
 export interface TeamApiError {
   message: string;
   status: number;
-} 
+}
+
+export interface CreateTeamRequest {
+  name: string;
+  emails: string[];
+}

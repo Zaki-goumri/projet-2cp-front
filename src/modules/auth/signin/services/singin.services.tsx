@@ -1,10 +1,14 @@
-import axios from '@/api/axios.config';
+import axios from 'axios';
 import { serialize } from 'cookie';
 import { LoginRequest, User, LoginResponse } from '../types/signin.types';
+import { baseUrl } from '@/api/axios.config';
 
 export const loginUser = async (data: LoginRequest): Promise<User> => {
   try {
-    const response = await axios.post<LoginResponse>('/Auth/Login', data);
+    const response = await axios.post<LoginResponse>(
+      `${baseUrl}/Auth/Login`,
+      data
+    );
     document.cookie = serialize('accessToken', response.data.access, {
       httpOnly: false,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
@@ -32,10 +36,9 @@ export const logoutUser = async (): Promise<void> => {
       expires: new Date(0),
       path: '/',
     });
-    
+
     // Optional: Call logout endpoint if your API requires it
     // await axios.post('/Auth/Logout');
-    
   } catch (error) {
     console.error('Logout Error:', error);
     throw error;
