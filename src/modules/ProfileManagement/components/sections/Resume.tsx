@@ -9,7 +9,7 @@ interface ResumeFile {
   size: string;
 }
 
-const ResumeList = () => {
+const ResumeList = ({isEditing}:ResumeProps) => {
   const [resumes, setResumes] = useState<ResumeFile[]>([
     {
       id: '1',
@@ -76,17 +76,17 @@ const ResumeList = () => {
               <img src="assets/download.svg" alt="Download" className="h-4 w-4" />
 
             </button> */}
-            <button 
+           {isEditing&&(   <button 
               className="p-1.5 rounded-full hover:bg-red-50 transition-colors duration-200"
               onClick={() => handleDelete(resume.id)}
             >
               <img src="assets/trash.svg" alt="Delete" />
-            </button>
+            </button>  )}
           </div>
         </div>
       ))}
       
-      <input
+     {isEditing&&( <>  <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileUpload}
@@ -99,20 +99,24 @@ const ResumeList = () => {
         className="w-full mt-3 flex items-center justify-center space-x-2 py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-700 transition-all duration-200"
       >
         <span className="text-sm font-medium">Upload New Resume</span>
-      </button>
+      </button> </> )}
     </div>
   );
 };
 
-const Resume = () => {
+interface ResumeProps{
+  isEditing:Boolean
+}
+const Resume = ({isEditing}:ResumeProps) => {
   return (
     <InfoCard
       icon={'assets/resume.svg'}
       name={'Resume'}
       isAddeable={false}
+      onAdd={()=>{}}
     >
       <div className="p-3">
-        <ResumeList />
+        <ResumeList isEditing={isEditing} />
       </div>
     </InfoCard>
   );
