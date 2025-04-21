@@ -1,0 +1,14 @@
+VITE_GOOGLE_CLIENT_ID=241487075785-ca4eq6d3642e5qasusc2342ndckimnar.apps.googleusercontent.com
+VITE_LINKEDIN_CLIENT_ID=77fzfa1dhch0j9
+VITE_BASE_URL=http://0.0.0.0:8000
+VITE_GEMINI_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCKfrZ1h1G6tlPcyxyLbIJQKfdX6rAAzEU
+VITE_GEMINI_API_KEY=AIzaSyCKfrZ1h1G6tlPcyxyLbIJQKfdX6rAAzEU
+
+ # Firebase configuration
+VITE_FIREBASE_API_KEY=AIzaSyDC8lwOHeXaefVxJhYg4l2l-vQdR0qpkII
+VITE_FIREBASE_AUTH_DOMAIN=cp-project-4a907.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=cp-project-4a907
+VITE_FIREBASE_STORAGE_BUCKET=cp-project-4a907.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=384180080362
+VITE_FIREBASE_APP_ID=1:384180080362:web:51f9fc04866458b7f9d193
+VITE_FIREBASE_VAPID_KEY=BHi08OMiEDnghewVmkhpbfwEh8UCTV4XA1Ay46pOVY-uYEo0jphBhG_vk9AsaKt1o7WkpaCs7TIaai_3D2ydYqU

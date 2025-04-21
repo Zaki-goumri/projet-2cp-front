@@ -72,7 +72,7 @@ if (root) {
                   <LayoutWithoutFooter><Opportunity /></LayoutWithoutFooter>
                 </ProtectedRoute>
               } />
-              <Route path="/profile" element={
+              <Route path="/profile/:userName" element={
                 <ProtectedRoute>
                   <MainLayout><ProfilePage /></MainLayout>
                 </ProtectedRoute>
