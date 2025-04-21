@@ -16,7 +16,7 @@ jobs:
           node-version: '18'
           cache: 'npm'
       - name: Install dependencies
-        run: npm ci
+        run: npm i
       - name: Format code
         run: npx prettier --write "src/**/*.{js,jsx,ts,tsx}"
       - name: Build verification
@@ -58,7 +58,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:${{ github.sha }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/project-2cp-front:buildcache,mode=max
+            zakigoumri/project-2cp-front:latest
+            zakigoumri/project-2cp-front:${{ github.sha }}
