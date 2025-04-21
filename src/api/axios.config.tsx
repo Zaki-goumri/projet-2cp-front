@@ -38,7 +38,7 @@ instance.interceptors.response.use(
           .split(';')
           .find((cookie: string) => cookie.includes('refreshToken'))
           ?.split('=')[1];
-        
+
         if (!refreshToken) {
           // Clear tokens and logout user
           document.cookie = serialize('accessToken', '', {
@@ -53,7 +53,7 @@ instance.interceptors.response.use(
           return Promise.reject(error);
         }
 
-        const response = await instance.post('/auth/refershToken', {
+        const response = await instance.post('/Auth/refershToken', {
           refreshToken,
         });
 

@@ -8,7 +8,6 @@ import {
   Bell,
   LayoutDashboard,
   User,
-  Briefcase,
   Building2,
   Code,
   Users,
@@ -16,7 +15,7 @@ import {
   CheckCircle2,
   Menu,
   MessageCircle,
-  Search
+  Search,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -30,24 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useUserStore } from '../store/userStore';
 import { useNotifications } from '@/modules/notifications/context/NotificationContext';
-import { format, formatDistanceToNow } from 'date-fns';
-
-type Notification = {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  unread: boolean;
-};
-
-type BaseNavItem = {
-  to: string;
-  label: string;
-};
-
-type NavItemWithIcon = BaseNavItem & {
-  icon: React.ComponentType<{ className?: string }>;
-};
+import { formatDistanceToNow } from 'date-fns';
 
 type NavItem = {
   to: string;
@@ -57,10 +39,10 @@ type NavItem = {
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useUserStore((state)=> state.user);
+  const user = useUserStore((state) => state.user);
   const logout = useUserStore((state) => state.logout);
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
-
+  const { notifications, unreadCount, markAsRead, markAllAsRead } =
+    useNotifications();
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -80,7 +62,6 @@ export default function NavBar() {
 
   const privateNavItems: NavItem[] = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/enterprises', label: 'Enterprises', icon: Building2 },
     { to: '/problems', label: 'Problems', icon: Code },
     { to: '/teams', label: 'Teams', icon: Users },
     { to: '/chat', label: 'Chat', icon: MessageCircle },
@@ -89,7 +70,7 @@ export default function NavBar() {
 
   const handleSignOut = () => {
     logout();
-    window.location.href = '/';
+    window.location.href = '/auth/signin';
   };
 
   return (
@@ -168,7 +149,10 @@ export default function NavBar() {
                               <DropdownMenuItem
                                 key={notification.id}
                                 className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100"
-                                onClick={() => !notification.read && markAsRead(notification.id)}
+                                onClick={() =>
+                                  !notification.read &&
+                                  markAsRead(notification.id)
+                                }
                               >
                                 <div className="!flex !w-full !items-start !justify-between">
                                   <span className="!flex !items-center !gap-2 !font-medium !text-black">
@@ -179,7 +163,10 @@ export default function NavBar() {
                                   </span>
                                   <span className="!flex !items-center !gap-1 !text-xs !text-gray-500">
                                     <Clock className="!h-3 !w-3" />
-                                    {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                                    {formatDistanceToNow(
+                                      new Date(notification.createdAt),
+                                      { addSuffix: true }
+                                    )}
                                   </span>
                                 </div>
                                 <p className="!text-sm !text-black">
@@ -200,7 +187,7 @@ export default function NavBar() {
                           </DropdownMenuItem>
                         </Link>
                         {unreadCount > 0 && (
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700"
                             onClick={() => markAllAsRead()}
                           >
@@ -217,12 +204,9 @@ export default function NavBar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger className="mb-2 focus:outline-none">
                     <Avatar className="cursor-pointer rounded-full transition-colors duration-200 hover:bg-gray-100">
-                      <AvatarImage
-                        src="" //to do
-                        className="!bg-white"
-                      />
+                      <AvatarImage src={user.picture} className="!bg-white" />
                       <AvatarFallback className="!bg-neutral-200">
-                        CN
+                        {user.name.slice(0, 2)}
                       </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
@@ -246,7 +230,7 @@ export default function NavBar() {
                       Team Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="!bg-gray-200" />
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       onClick={handleSignOut}
                       className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 hover:!bg-red-50 hover:!text-red-700"
                     >
@@ -282,18 +266,14 @@ export default function NavBar() {
               </Button>
             </div>
             <div
-              className={`fixed inset-0 z-50 transition-opacity duration-300 lg:hidden ${
-                isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
-              }`}
+              className={`fixed inset-0 z-50 transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
             >
               <div
                 className="absolute inset-0 bg-black/50"
                 onClick={() => setIsOpen(false)}
               />
               <div
-                className={`absolute top-0 right-0 h-full w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out ${
-                  isOpen ? 'translate-x-0' : 'translate-x-full'
-                }`}
+                className={`absolute top-0 right-0 h-full w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
               >
                 <div className="p-4">
                   <button

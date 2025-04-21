@@ -32,27 +32,6 @@ export interface Problem {
   isSubmitted?: boolean;
 }
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  profilePicture: string;
-  role: 'Student' | 'Professional' | 'Admin';
-  skills: string[];
-  education: {
-  institution: string;
-    degree: string;
-    startDate: string;
-    endDate: string | null;
-  }[];
-  experience: {
-    company: string;
-    role: string;
-    startDate: string;
-    endDate: string | null;
-  }[];
-  createdAt: string;
-}
 
 export interface Company {
   id: string;

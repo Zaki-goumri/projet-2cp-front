@@ -32,7 +32,7 @@ const OAuthCallback = () => {
           }
         });
 
-        setUser(response.data);
+        setUser(response.data.user);
         document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=3600`;
         document.cookie = `refreshToken=${response.data.refreshToken}; path=/; max-age=2592000`;
         

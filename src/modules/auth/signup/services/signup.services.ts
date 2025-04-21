@@ -1,10 +1,14 @@
-import axios from '@/api/axios.config';
+import axios from 'axios';
 import { serialize } from 'cookie';
 import { RegisterRequest, User, RegisterResponse } from '../types/signup.types';
+import { baseUrl } from '@/api/axios.config';
 
 export const registerUser = async (data: RegisterRequest): Promise<User> => {
   try {
-    const response = await axios.post<RegisterResponse>('/Auth/Signup', data);
+    const response = await axios.post<RegisterResponse>(
+      `${baseUrl}/Auth/Signup`,
+      data
+    );
     document.cookie = serialize('accessToken', response.data.access, {
       httpOnly: false,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
