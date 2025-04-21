@@ -9,15 +9,19 @@ import { Button } from '@/components/ui/button';
 import { Edit2, Save, X } from 'lucide-react';
 import { useUserStore } from '../shared/store/userStore';
 import { User } from '../auth/signin/types/signin.types';
+import { Params, useParams } from 'react-router';
+import { useEffect } from 'react';
 
 const NavBar = lazy(() => import('@/modules/shared/components/navBar'));
 
+type ParamsType={userName:string}
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
+
   const { user } = useUserStore();
   const dummyUser: User = {
     id: 0,
@@ -29,11 +33,13 @@ const ProfilePage = () => {
     profilepic: null,
     number: null,
   };
-  return (
+  const {userName} =useParams<ParamsType>()
+    return (
     <main className="min-h-screen bg-gray-50">
       <section className="w-full px-4 py-4 md:px-6 lg:px-8">
         <div className="mx-auto max-w-[90rem] rounded-xl bg-[#92E3A91A] p-3 md:p-4">
           <ProfileInfo
+            isUserProfile={user?.name==userName}
             isEditing={isEditing}
             onEditToggle={handleEditToggle}
             user={user ?? undefined}

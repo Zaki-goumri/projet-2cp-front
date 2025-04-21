@@ -218,7 +218,7 @@ export default function NavBar() {
                       My Account
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="!bg-gray-200" />
-                    <Link to={'/profile'}>
+                    <Link to={`/profile/${user.name}`}>
                       {' '}
                       <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
                         <User className="h-4 w-4" />
