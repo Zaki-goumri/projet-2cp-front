@@ -21,7 +21,8 @@ export interface User {
     role: string;
     startDate: string;
     endDate: string | null;
-  }[];
+  }[],
+  date_joined:string
 }
 
 interface UserStore {
