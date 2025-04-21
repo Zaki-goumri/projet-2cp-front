@@ -1,33 +1,40 @@
-import axios from 'axios';
-import { TeamResponse, Team } from '../types/teams.types';
-
-const API_URL ='http://localhost:3000/api';
+import axios from '@/api/axios.config';
+import { TeamResponse, Team, CreateTeamRequest } from '../types/teams.types';
 
 export const teamsService = {
   async getTeams(): Promise<TeamResponse> {
-    const response = await axios.get(`${API_URL}/teams`);
+    const response = await axios.get(`/teams`);
     return response.data;
   },
 
   async getTeamById(id: string): Promise<Team> {
-    const response = await axios.get(`${API_URL}/teams/${id}`);
+    const response = await axios.get(`/teams/${id}`);
     return response.data;
   },
 
-  async createTeam(teamData: Partial<Team>): Promise<Team> {
-    const response = await axios.post(`${API_URL}/teams`, teamData);
+  async createTeam(teamData: CreateTeamRequest): Promise<Team> {
+    const response = await axios.post('/post/team/', teamData);
+    return response.data;
+  },
+
+  async post_team_create(data: {
+    id: number;
+    name: string;
+    emails: string[];
+  }): Promise<Team> {
+    const response = await axios.post(`/post/team/`, data );
     return response.data;
   },
 
   async inviteMembers(teamId: string, emails: string[]): Promise<void> {
-    await axios.post(`${API_URL}/teams/${teamId}/invite`, { emails });
+    await axios.post(`/teams/${teamId}/invite`, { emails });
   },
 
   async joinTeam(teamId: string): Promise<void> {
-    await axios.post(`${API_URL}/teams/${teamId}/join`);
+    await axios.post(`/teams/${teamId}/join`);
   },
 
   async leaveTeam(teamId: string): Promise<void> {
-    await axios.post(`${API_URL}/teams/${teamId}/leave`);
-  }
-}; 
+    await axios.post(`/teams/${teamId}/leave`);
+  },
+};
