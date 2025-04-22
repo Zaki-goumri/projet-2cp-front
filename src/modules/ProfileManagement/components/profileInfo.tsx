@@ -1,59 +1,74 @@
 import React, { useRef, useState } from 'react';
-import ProfileCard from './profileCard';
 import { Button } from '@/components/ui/button';
-import { Edit2, Save, Camera } from 'lucide-react';
+import { Edit2, Save, Camera, X } from 'lucide-react';
 import { User } from '@/modules/shared/store/userStore';
+import { useUpdateUser } from '../hooks/useUserService';
+import Spinner from '@/modules/shared/components/Spinner';
+import { UpdateUserData } from '../services/userService';
 
 interface ProfileInfoProps {
+  isUserProfile: boolean;
   isEditing: boolean;
   onEditToggle: () => void;
-  user?:User
-  isUserProfile:Boolean
+  onSave: () => void;
+  user?: User;
+  onProfilePicChange: (file: File) => void;
+  isEditingLoading: boolean;
+  onCancel: () => void;
 }
 
-const MAX_FILE_SIZE = 5000000; // 5MB
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfoProps) {
+function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePicChange,onSave,isEditingLoading,onCancel }: ProfileInfoProps) {
+  const profilePlaceHolder = "/assets/profile-placeholder.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const profilePlaceHolder="https://shorturl.at/6SX4W";
-  const [profileImage, setProfileImage] = useState<string>(user?.profilepic?? profilePlaceHolder);
+  const [profileImage, setProfileImage] = useState<string>(profilePlaceHolder);
 
-  const [error, setError] = useState<string>("");
-
-  const handleImageClick = () => {
+  const isValidBlobUrl = (url: string): boolean => {
+    try {
+      const parsedUrl = new URL(url);
+      return parsedUrl.protocol === 'blob:' && parsedUrl.origin === window.location.origin;
+    } catch {
+      return false;
+    }
+  };
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
+    const handleImageClick = () => {
     if (isEditing) {
       fileInputRef.current?.click();
     }
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    
-    if (file) {
-      // Validate file size
-      if (file.size > MAX_FILE_SIZE) {
-        setError("Image size should be less than 5MB");
-        return;
-      }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      // Validate file type
-      if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-        setError("Only .jpg, .jpeg, .png and .webp formats are supported");
-        return;
-      }
-      // Clear any previous errors
-      setError("");
-
-      // Create a URL for the image preview
-      const imageUrl = URL.createObjectURL(file);
-      if (ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-        setProfileImage(imageUrl);
-      } else {
-        setProfileImage(profilePlaceHolder);
-      }
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      setError('File size exceeds 5MB limit');
+      return;
     }
+
+    // Validate file type
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setError('Invalid file type. Please upload a JPG, PNG, or WebP image');
+      return;
+    }
+
+    setError(null);
+    setSelectedFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    if (isValidBlobUrl(objectUrl)) {
+      setProfileImage(objectUrl);
+    } else {
+      setError('Invalid file URL');
+    }
+    onProfilePicChange(file);
   };
+
 
   return (
     <div className="flex flex-col rounded-xl bg-white p-4 md:p-6 lg:p-8">
@@ -64,7 +79,7 @@ function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfo
             onClick={handleImageClick}
           >
             <img 
-              src={profileImage} 
+              src={isValidBlobUrl(profileImage) ? profileImage : profilePlaceHolder} 
               className="w-full h-full object-cover"
             />
             {isEditing && (
@@ -78,33 +93,50 @@ function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfo
             accept="image/*"
             className="hidden"
             ref={fileInputRef}
-            onChange={handleImageChange}
+            onChange={handleFileChange}
           />
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </div>
         <div className="mt-4 md:mt-0 flex-1">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">{user?.name}</h1>
-           {isUserProfile&&(   <Button
-              onClick={onEditToggle}
-              className={`mt-3 sm:mt-0 bg-[#92E3A9]! flex items-center text-white justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 text-white! ${
-                isEditing 
-                  ? ' hover:bg-[#7ED196]' 
-                  : 'hover:bg-[#7ED196]'
-              }`}
-            >
-              {isEditing ? (
-                <>
-                  <Save className="h-5 w-5" />
-                  <span className="text-sm font-semibold">Save Changes</span>
-                </>
-              ) : (
-                <>
-                  <Edit2 className="h-5 w-5" />
-                  <span className="text-sm font-semibold">Edit Profile</span>
-                </>
-              )}
-            </Button>  )}
+            {isUserProfile && (
+              <div className="mt-3 sm:mt-0 flex space-x-2">
+                {isEditing ? (
+                  <>
+                    <Button
+                      onClick={onSave}
+                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
+                      disabled={isEditingLoading}
+                    >
+                      {isEditingLoading ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <>
+                          <Save className="h-5 w-5" />
+                          <span className="text-sm font-semibold">Save</span>
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={onCancel}
+                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-gray-200 hover:bg-gray-300"
+                    >
+                      <X className="h-5 w-5" />
+                      <span className="text-sm font-semibold">Cancel</span>
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={onEditToggle}
+                    className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
+                  >
+                    <Edit2 className="h-5 w-5" />
+                    <span className="text-sm font-semibold">Edit Profile</span>
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
           <p className="mt-1 text-gray-600">{user?.email}</p>
         </div>
@@ -119,7 +151,7 @@ function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfo
         <div className="hidden sm:block w-px h-10 bg-gray-200"></div>
         
         <div className="flex flex-col items-center mb-4 sm:mb-0">
-          <p className="text-xl font-bold text-gray-800">{user?.date_joined??"2025-05-03"}</p>
+          <p className="text-xl font-bold text-gray-800">{user?.date_joined}</p>
           <p className="text-sm text-gray-500">Member Since</p>
         </div>
         

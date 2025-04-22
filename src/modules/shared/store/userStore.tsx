@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
+import { Attachment } from '../types/attachement';
 
 export interface ExperienceData{
   id:string;
@@ -14,14 +15,15 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  profilepic: string;
+  profilepic?: string;
   type: string;
   role: 'Student' | 'Professional' | 'Admin';
   description:string 
   skills: string[];
   education: ExperienceData[];
   experience: ExperienceData[],
-  date_joined:string
+  date_joined:string,
+  cv?: Attachment
 }
 
 interface UserStore {
@@ -34,12 +36,14 @@ export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
-      login: (userData) => set({ user: userData }),
-      logout: () => {
-        logoutUser().catch((error) =>
-          console.error('Error during logout:', error)
-        );
-        set({ user: null });
+      login: (userData: User) => set({ user: userData }),
+      logout: async () => {
+        try {
+          await logoutUser();
+          set({ user: null });
+        } catch (error) {
+          console.error('Error logging out:', error);
+        }
       },
     }),
     {

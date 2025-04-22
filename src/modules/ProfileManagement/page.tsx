@@ -10,7 +10,7 @@ import { Edit2, Save, X } from 'lucide-react';
 import { useUserStore } from '../shared/store/userStore';
 import { User } from '../auth/signin/types/signin.types';
 import { useParams } from 'react-router';
-import { useUserInfo } from './hooks/useUserService';
+import { useUserInfo, useProfileUpdate } from './hooks/useUserService';
 import ErrorBoundary from './components/ErrorBoundary';
 import Spinner from '../shared/components/Spinner';
 import UserNotFound from './components/UserNotFound';
@@ -24,7 +24,40 @@ const ProfilePage = () => {
   const { user } = useUserStore();
   const { userName } = useParams<ParamsType>();
   const { data, isLoading, isError } = useUserInfo(userName!);
+  const { updateProfile, isLoading: isUpdating } = useProfileUpdate(() => setIsEditing(false));
   const sameUser = userName === user?.name;
+
+  // State for all sections
+  const [aboutMe, setAboutMe] = useState(data?.description || '');
+  const [experiences, setExperiences] = useState(data?.experience || []);
+  const [education, setEducation] = useState(data?.education || []);
+  const [resume, setResume] = useState<File | null>(null);
+  const [profilePic, setProfilePic] = useState<File | null>(null);
+
+  const handleEditToggle = () => {
+    if (isEditing) {
+      // Save changes when exiting edit mode
+      handleSaveChanges();
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleSaveChanges = () => {
+    const updateData: any = {
+      description: aboutMe,
+      experience: experiences,
+      education: education,
+    };
+    
+    if (resume) {
+      updateData.cv = resume;
+    }
+    
+    if (profilePic) {
+      updateData.profilepic = profilePic;
+    } 
+    updateProfile(updateData);
+  };
 
   if (isLoading) return <Spinner size="lg" className="min-h-screen" />;
   if (isError || !data) return <UserNotFound />;
@@ -36,17 +69,38 @@ const ProfilePage = () => {
       <ErrorBoundary>
         <section className="w-full px-4 py-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-[90rem] rounded-xl bg-[#92E3A91A] p-3 md:p-4">
+                        
             <ProfileInfo
               isUserProfile={sameUser}
               isEditing={isEditing}
+              isEditingLoading={isUpdating}
+              onCancel={() => setIsEditing(false)}
               onEditToggle={() => setIsEditing(!isEditing)}
               user={data}
+              onProfilePicChange={setProfilePic}
+              onSave={handleSaveChanges}
             />
             <div className="mt-3 space-y-3 md:space-y-4">
-              <AboutMe isEditing={isEditing} aboutMe={data?.description ?? ""} />
-              <Experience isEditing={isEditing} userExperiences={data?.experience ?? []} />
-              <Education isEditing={isEditing} />
-              <Resume isEditing={isEditing} />
+              <AboutMe 
+                isEditing={isEditing} 
+                text={aboutMe} 
+                onTextChange={setAboutMe} 
+              />
+              <Experience 
+                isEditing={isEditing} 
+                experiences={experiences} 
+                onExperiencesChange={setExperiences} 
+              />
+              <Education 
+                isEditing={isEditing} 
+                education={education} 
+                onEducationChange={setEducation} 
+              />
+              <Resume 
+                isEditing={isEditing} 
+                onResumeChange={setResume} 
+                cv={data?.cv}
+              />
             </div>
           </div>
         </section>
