@@ -48,7 +48,7 @@ const Experience = ({ isEditing, experiences, onExperiencesChange }: ExperienceP
       <InfoCard
         icon="/assets/bag.svg"
         name={'Experience'}
-        isAddeable={isEditing}
+        isAddeable={false}
         onAdd={handleAdd}
       >
         <div className="px-6 py-4">
