@@ -87,35 +87,41 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">{user?.name}</h1>
             {isUserProfile && (
-              <Button
-                onClick={isEditing ? onSave : onEditToggle}
-                className={`mt-3 sm:mt-0 flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 ${
-                  isEditing 
-                    ? 'bg-[#92E3A9] hover:bg-[#7ED196]' 
-                    : 'bg-[#92E3A9] hover:bg-[#7ED196]'
-                }`}
-                disabled={ isEditingLoading }
-              >
-                {isEditingLoading ? (
-                  <Spinner size="sm" />
-                ) : isEditing ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-2">
-                      <Save className="h-5 w-5" />
-                      <span className="text-sm font-semibold">Save Changes</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
+              <div className="mt-3 sm:mt-0 flex space-x-2">
+                {isEditing ? (
+                  <>
+                    <Button
+                      onClick={onSave}
+                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
+                      disabled={isEditingLoading}
+                    >
+                      {isEditingLoading ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <>
+                          <Save className="h-5 w-5" />
+                          <span className="text-sm font-semibold">Save</span>
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={onCancel}
+                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-gray-200 hover:bg-gray-300"
+                    >
                       <X className="h-5 w-5" />
                       <span className="text-sm font-semibold">Cancel</span>
-                    </div>
-                  </div>
+                    </Button>
+                  </>
                 ) : (
-                  <>
+                  <Button
+                    onClick={onEditToggle}
+                    className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
+                  >
                     <Edit2 className="h-5 w-5" />
                     <span className="text-sm font-semibold">Edit Profile</span>
-                  </>
+                  </Button>
                 )}
-              </Button>
+              </div>
             )}
           </div>
           <p className="mt-1 text-gray-600">{user?.email}</p>
