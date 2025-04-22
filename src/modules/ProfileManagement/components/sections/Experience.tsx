@@ -3,10 +3,23 @@ import { Button } from '@/components/ui/button';
 import { Edit2, Trash2 } from 'lucide-react';
 import InfoCard from '../InfoCard';
 import AddItemModal from '../modals/AddItemModal';
-import { ExperienceItem,ExperienceProps } from '../../types/profile.types';
+import { ExperienceData } from '@/modules/shared/store/userStore';
 
-const Experience = ({ isEditing }: ExperienceProps) => {
-  const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
+interface ExperienceProps {
+  isEditing: boolean;
+  userExperiences:ExperienceData[];
+}
+
+interface ExperienceItem {
+  id: string;
+  role: string;
+  company: string;
+  starDate:string;
+  endDate:string;
+}
+
+const Experience = ({ isEditing ,userExperiences}: ExperienceProps) => {
+  const [experiences, setExperiences] = useState<ExperienceData[]>(userExperiences);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = (id: string) => {
@@ -18,13 +31,12 @@ const Experience = ({ isEditing }: ExperienceProps) => {
   };
 
   const handleModalSubmit = (data: any) => {
-    const newExperience: ExperienceItem = {
+    const newExperience: ExperienceData= {
       id: Date.now().toString(),
       role: data.role,
-      title: data.role,
       company: data.company,
-      period: `${data.startDate} - ${data.endDate}`,
-      description: data.description,
+      startDate:data.startDate,
+      endDate:data.endDate
     };
     setExperiences([...experiences, newExperience]);
     setIsModalOpen(false);
@@ -34,6 +46,7 @@ const Experience = ({ isEditing }: ExperienceProps) => {
     <>
       <InfoCard
         icon="assets/bag.svg"
+        icon={'/assets/bag.svg'}
         name={'Internship Experience'}
         isAddeable={isEditing}
         onAdd={handleAdd}
@@ -48,9 +61,11 @@ const Experience = ({ isEditing }: ExperienceProps) => {
                 <div key={exp.id} className="rounded-lg border-[#92E3A9] p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold">{exp.title}</h3>
+                      <h3 className="font-semibold">{exp.role}</h3>
                       <p className="text-gray-600">{exp.company}</p>
-                      <p className="text-sm text-gray-500">{exp.period}</p>
+                      <p className="text-sm text-gray-500">{exp.startDate} -  {exp.endDate}</p>
+
+
                     </div>
                     {isEditing && (
                       <div className="flex space-x-2">
@@ -67,7 +82,6 @@ const Experience = ({ isEditing }: ExperienceProps) => {
                       </div>
                     )}
                   </div>
-                  <p className="mt-2 text-gray-700">{exp.description}</p>
                 </div>
               ))}
             </div>
@@ -85,5 +99,4 @@ const Experience = ({ isEditing }: ExperienceProps) => {
   );
 };
 
-export default Experience;
-
+export default Experience; 

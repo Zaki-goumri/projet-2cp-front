@@ -75,7 +75,7 @@ if (root) {
               } />
               <Route path="/profile/:userName" element={
                 <ProtectedRoute>
-                  <MainLayout><ProfilePage /></MainLayout>
+                  <LayoutWithoutFooter><ProfilePage /></LayoutWithoutFooter>
                 </ProtectedRoute>
               } />
               <Route path="/dashboard" element={

@@ -2,39 +2,38 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
 
+export interface ExperienceData{
+  id:string;
+ company: string;
+    role: string;
+    startDate: string;
+    endDate: string | null;
+
+}
 export interface User {
   id: number;
   email: string;
   name: string;
-  picture: string | null;
+  profilepic: string | null;
   type: string;
   role: 'Student' | 'Professional' | 'Admin';
+  description:string 
   skills: string[];
-  education: {
-  institution: string;
-    degree: string;
-    startDate: string;
-    endDate: string | null;
-  }[];
-  experience: {
-    company: string;
-    role: string;
-    startDate: string;
-    endDate: string | null;
-  }[],
+  education: ExperienceData[];
+  experience: ExperienceData[],
   date_joined:string
-  category?:string
 }
 
 interface UserStore {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
+  updateUser: (updatedData: Partial<User>) => void;
 }
 
 export const useUserStore = create<UserStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       login: (userData) => set({ user: userData }),
       logout: () => {
@@ -42,6 +41,12 @@ export const useUserStore = create<UserStore>()(
           console.error('Error during logout:', error)
         );
         set({ user: null });
+      },
+      updateUser: (updatedData) => {
+        const currentUser = get().user;
+        if (currentUser) {
+          set({ user: { ...currentUser, ...updatedData } });
+        }
       },
     }),
     {
