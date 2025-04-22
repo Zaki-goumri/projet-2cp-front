@@ -43,7 +43,7 @@ const Education = ({ isEditing }: EducationProps) => {
   return (
     <>
       <InfoCard
-        icon={'assets/education.svg'}
+        icon={'/assets/education.svg'}
         name={'Education'}
         isAddeable={isEditing}
         onAdd={handleAdd}

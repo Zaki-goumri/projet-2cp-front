@@ -57,7 +57,7 @@ const ResumeList = ({isEditing}:ResumeProps) => {
         >
           <div className="flex items-center space-x-3 min-w-0">
             <div className="bg-red-50 p-2 rounded-lg group-hover:bg-red-100 transition-colors duration-200 flex-shrink-0">
-              <img src="assets/pdf.svg" alt="PDF"  />
+              <img src="/assets/pdf.svg" alt="PDF"  />
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-900 truncate">{resume.name}</h3>
@@ -80,7 +80,7 @@ const ResumeList = ({isEditing}:ResumeProps) => {
               className="p-1.5 rounded-full hover:bg-red-50 transition-colors duration-200"
               onClick={() => handleDelete(resume.id)}
             >
-              <img src="assets/trash.svg" alt="Delete" />
+              <img src="/assets/trash.svg" alt="Delete" />
             </button>  )}
           </div>
         </div>
@@ -110,7 +110,7 @@ interface ResumeProps{
 const Resume = ({isEditing}:ResumeProps) => {
   return (
     <InfoCard
-      icon={'assets/resume.svg'}
+      icon={'/assets/resume.svg'}
       name={'Resume'}
       isAddeable={false}
       onAdd={()=>{}}

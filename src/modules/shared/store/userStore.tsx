@@ -2,26 +2,25 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
 
+export interface ExperienceData{
+  id:string;
+ company: string;
+    role: string;
+    startDate: string;
+    endDate: string | null;
+
+}
 export interface User {
   id: number;
   email: string;
   name: string;
-  picture: string;
+  profilepic: string;
   type: string;
   role: 'Student' | 'Professional' | 'Admin';
+  description:string 
   skills: string[];
-  education: {
-  institution: string;
-    degree: string;
-    startDate: string;
-    endDate: string | null;
-  }[];
-  experience: {
-    company: string;
-    role: string;
-    startDate: string;
-    endDate: string | null;
-  }[],
+  education: ExperienceData[];
+  experience: ExperienceData[],
   date_joined:string
 }
 
