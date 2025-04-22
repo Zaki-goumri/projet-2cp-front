@@ -23,7 +23,7 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/web
 function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePicChange,onSave,isEditingLoading,onCancel }: ProfileInfoProps) {
   const profilePlaceHolder = "/assets/profile-placeholder.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImage, setProfileImage] = useState<string | null>(user?.profilepic ?? profilePlaceHolder);
+  const [profileImage, setProfileImage] = useState<string>(profilePlaceHolder);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   
@@ -51,7 +51,8 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
 
     setError(null);
     setSelectedFile(file);
-    setProfileImage(URL.createObjectURL(file));
+    const objectUrl = URL.createObjectURL(file);
+    setProfileImage(objectUrl);
     onProfilePicChange(file);
   };
 
@@ -65,7 +66,7 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
             onClick={handleImageClick}
           >
             <img 
-              src={profileImage || profilePlaceHolder} 
+              src={profileImage.startsWith('blob:') ? profileImage : profilePlaceHolder} 
               className="w-full h-full object-cover"
             />
             {isEditing && (
