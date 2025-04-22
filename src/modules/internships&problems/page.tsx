@@ -307,51 +307,52 @@ const InternshipsAndProblemsPage = () => {
           </TabsContent>
 
           <TabsContent value="applied">
-            {hasError ? (
+            {isLoading ? (
+              <LoadingState />
+            ) : hasError ? (
               <ErrorState />
-            ) : !appliedInternships || appliedInternships?.length === 0 ? (
+            ) : isEmpty.appliedInternships ? (
               <EmptyState type="applied" searchQuery={searchQuery} />
             ) : (
               <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {appliedInternships &&
-                  appliedInternships.map((post: Opportunity) => (
-                    <li
-                      key={post.id}
-                      className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                    >
-                      <h3 className="mb-2 text-lg font-medium">{post.title}</h3>
-                      <p className="mb-3 text-sm text-gray-600">
-                        {post.company.name} - {post.worktype}
-                      </p>
-                      <p className="mb-3 line-clamp-2 text-sm text-gray-600">
-                        {post.description}
-                      </p>
-                      {post.duration && (
-                        <div className="mb-2 flex items-center text-sm text-gray-600">
-                          <Clock className="mr-2 h-4 w-4" />
-                          Duration: {post.duration}
-                        </div>
-                      )}
-                      {post.endday && (
-                        <div className="mb-2 flex items-center text-sm text-gray-600">
-                          <Calendar className="mr-2 h-4 w-4" />
-                          Ends: {new Date(post.endday).toLocaleDateString()}
-                        </div>
-                      )}
-                      {post.skills.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {post.skills.map((skill, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </li>
-                  ))}
+                {appliedInternships.map((post: Opportunity) => (
+                  <li
+                    key={post.id}
+                    className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
+                  >
+                    <h3 className="mb-2 text-lg font-medium">{post.title}</h3>
+                    <p className="mb-3 text-sm text-gray-600">
+                      {post.company.name} - {post.worktype}
+                    </p>
+                    <p className="mb-3 line-clamp-2 text-sm text-gray-600">
+                      {post.description}
+                    </p>
+                    {post.duration && (
+                      <div className="mb-2 flex items-center text-sm text-gray-600">
+                        <Clock className="mr-2 h-4 w-4" />
+                        Duration: {post.duration}
+                      </div>
+                    )}
+                    {post.endday && (
+                      <div className="mb-2 flex items-center text-sm text-gray-600">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        Ends: {new Date(post.endday).toLocaleDateString()}
+                      </div>
+                    )}
+                    {post.skills.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {post.skills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                ))}
               </ul>
             )}
           </TabsContent>
@@ -393,9 +394,6 @@ const InternshipsAndProblemsPage = () => {
                     className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
                   >
                     <h3 className="mb-2 text-lg font-medium">{company.name}</h3>
-                    <p className="mb-2 text-sm text-gray-600">
-                      {company.industry}
-                    </p>
                     <p className="text-sm text-gray-600">{company.location}</p>
                   </li>
                 ))}

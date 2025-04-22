@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Edit2, Trash2 } from 'lucide-react';
 import InfoCard from '../InfoCard';
 import AddItemModal from '../modals/AddItemModal';
+import { EducationData } from '@/modules/shared/types/shared.types';
 
 interface Education {
   id: string;
@@ -14,15 +15,19 @@ interface Education {
 
 interface EducationProps {
   isEditing: boolean;
-  education: Education[];
-  onEducationChange: (education: Education[]) => void;
+  education: EducationData[];
+  onEducationChange: (education: EducationData[]) => void;
 }
 
-const Education = ({ isEditing, education, onEducationChange }: EducationProps) => {
+const Education = ({
+  isEditing,
+  education,
+  onEducationChange,
+}: EducationProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = (id: string) => {
-    const updatedEducation = education.filter(edu => edu.id !== id);
+    const updatedEducation = education.filter((edu) => edu.id !== id);
     onEducationChange(updatedEducation);
   };
 
@@ -30,13 +35,18 @@ const Education = ({ isEditing, education, onEducationChange }: EducationProps) 
     setIsModalOpen(true);
   };
 
-  const handleModalSubmit = (data: any) => {
-    const newEducation: Education = {
+  const handleModalSubmit = (data: Education) => {
+    const newEducation: EducationData = {
       id: Date.now().toString(),
       company: data.company,
       role: data.role,
       startDate: data.startDate,
-      endDate: data.endDate
+      endDate: data.endDate,
+      institution: data.company,
+      degree: data.role,
+      description: '',
+      attachments: [],
+      type: 'education',
     };
     const updatedEducation = [...education, newEducation];
     onEducationChange(updatedEducation);
@@ -57,21 +67,23 @@ const Education = ({ isEditing, education, onEducationChange }: EducationProps) 
           ) : (
             <div className="space-y-4">
               {education.map((edu) => (
-                <div key={edu.id} className="border-[#92E3A9] rounded-lg p-4">
-                  <div className="flex justify-between items-start">
+                <div key={edu.id} className="rounded-lg border-[#92E3A9] p-4">
+                  <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-semibold">{edu.company}</h3>
                       <p className="text-gray-600">{edu.role}</p>
-                      <p className="text-sm text-gray-500">{edu.startDate} - {edu.endDate}</p>
+                      <p className="text-sm text-gray-500">
+                        {edu.startDate} - {edu.endDate}
+                      </p>
                     </div>
                     {isEditing && (
                       <div className="flex space-x-2">
                         <Button variant="ghost" size="sm">
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleDelete(edu.id)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -96,4 +108,4 @@ const Education = ({ isEditing, education, onEducationChange }: EducationProps) 
   );
 };
 
-export default Education; 
+export default Education;

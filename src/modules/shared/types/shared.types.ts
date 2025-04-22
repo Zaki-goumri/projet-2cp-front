@@ -1,0 +1,47 @@
+export interface Attachment {
+  id: string;
+  fileName: string;
+  fileType: string;
+  fileSize: string;
+  fileUrl: string;
+  type: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ExperienceData {
+  id: string;
+  company: string;
+  role: string;
+  startDate: string;
+  endDate: string | null;
+}
+export interface User {
+  id: number;
+  email: string;
+  name: string;
+  profilepic: string | null;
+  type: string;
+  role: 'Student' | 'Professional' | 'Admin';
+  description: string;
+  skills: string[];
+  education: EducationData[];
+  experience: ExperienceData[];
+  date_joined: string;
+  cv?: Attachment;
+}
+
+export interface EducationData {
+  id: string;
+  institution: string;
+  degree: string;
+  startDate: string;
+  endDate: string | null;
+  description: string;
+  attachments: Attachment[];
+  type: string;
+  createdAt?: string;
+  updatedAt?: string;
+  company: string;
+  role: string;
+}

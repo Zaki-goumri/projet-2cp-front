@@ -1,15 +1,16 @@
-export interface Company {
-  id: number;
-  name: string;
-  email: string;
-  number: string | null;
-  type: string;
-  profilepic: string | null;
-  links: string | null;
-  date_joined: string;
-  location: string | null;
-  category: string | null;
-}
+import { Company } from './internshipsAndProblems.types';
+// export interface Company {
+//   id: number;
+//   name: string;
+//   email: string;
+//   number: string | null;
+//   type: string;
+//   profilepic: string | null;
+//   links: string | null;
+//   date_joined: string;
+//   location: string | null;
+//   category: string | null;
+// }
 
 export interface Opportunity {
   id: number;
@@ -24,4 +25,9 @@ export interface Opportunity {
   company: Company;
   created_at: string;
   duration: string | null;
+  isSaved: boolean;
+}
+
+export interface AppliedPostsApiResponse {
+  post?: Opportunity[];
 }

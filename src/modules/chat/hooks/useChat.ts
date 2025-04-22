@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Message, Conversation } from '../types';
-import { fetchConversations, fetchMessages, sendMessageApi, fetchUserById } from '../services/chatService';
+import {
+  fetchConversations,
+  fetchMessages,
+  sendMessageApi,
+  fetchUserById,
+} from '../services/chatService';
 
 interface ChatState {
   id: string;
@@ -13,7 +18,8 @@ interface ChatState {
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [activeConversation, setActiveConversation] =
+    useState<Conversation | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,28 +72,28 @@ export const useChat = () => {
   // Send a message
   const sendMessage = async (content: string) => {
     if (!activeConversation) return;
-    
+
     try {
       const newMessage: Omit<Message, 'id'> = {
         content,
         senderId: 'current-user-id', // Replace with actual user ID
         receiverId: activeConversation.id,
         timestamp: new Date(),
-        isRead: false
+        isRead: false,
       };
-      
+
       const sentMessage = await sendMessageApi(newMessage);
-      setMessages(prev => [...prev, sentMessage]);
-      
+      setMessages((prev) => [...prev, sentMessage]);
+
       // Update last message in conversation list
-      setConversations(prev => 
-        prev.map(conv => 
-          conv.id === activeConversation.id 
-            ? { 
-                ...conv, 
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === activeConversation.id
+            ? {
+                ...conv,
                 lastMessage: content,
-                lastMessageTime: new Date() 
-              } 
+                lastMessageTime: new Date(),
+              }
             : conv
         )
       );
@@ -102,12 +108,12 @@ export const useChat = () => {
     try {
       setLoading(true);
       // Fetch user details to create a new conversation
-      const userData = await fetchUserById(userId) as ChatState;
-      
+      const userData = (await fetchUserById(userId)) as ChatState;
+
       if (!userData) {
         throw new Error('User not found');
       }
-      
+
       // Create a new conversation object
       const newConversation: Conversation = {
         id: userData.id,
@@ -117,18 +123,17 @@ export const useChat = () => {
         phoneNumber: userData.phoneNumber,
         lastMessageTime: new Date(),
         unreadCount: 0,
-        isOnline: false
+        isOnline: false,
       };
-      
+
       // Add to conversations list
-      setConversations(prev => [newConversation, ...prev]);
-      
+      setConversations((prev) => [newConversation, ...prev]);
+
       // Set as active conversation
       setActiveConversation(newConversation);
-      
+
       // Initialize with empty messages for this conversation
       setMessages([]);
-      
     } catch (err) {
       setError('Failed to start conversation');
       console.error(err);
@@ -145,6 +150,6 @@ export const useChat = () => {
     error,
     selectConversation,
     sendMessage,
-    startNewConversation
+    startNewConversation,
   };
-}; 
+};

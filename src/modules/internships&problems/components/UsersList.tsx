@@ -5,7 +5,7 @@ import { Users, GraduationCap, Briefcase, UserPlus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
-import { User } from '../types/internshipsAndProblems.types';
+import { User } from '@/modules/shared/types/shared.types';
 
 interface UsersListProps {
   searchQuery: string;
@@ -14,16 +14,13 @@ interface UsersListProps {
 const UsersList: React.FC<UsersListProps> = ({ searchQuery }) => {
   const { users, isLoading } = useInternshipsAndProblems();
 
-  // Filter users based on search query
   const filteredUsers = searchQuery
     ? users.filter(
-        (user) =>
+        (user: User) =>
           user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          user.education.some(edu => 
-            edu.institution.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            edu.degree.toLowerCase().includes(searchQuery.toLowerCase())
+          user.skills.some((skill) =>
+            skill.toLowerCase().includes(searchQuery.toLowerCase())
           )
       )
     : users;
@@ -68,7 +65,7 @@ const UsersList: React.FC<UsersListProps> = ({ searchQuery }) => {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {filteredUsers.map((user) => (
+      {filteredUsers.map((user: User) => (
         <UserCard key={user.id} user={user} />
       ))}
     </div>
@@ -85,9 +82,12 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
       <div className="p-4">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16 border-2 border-white shadow">
-            <AvatarImage src={user.profilePicture} alt={user.name} />
+            <AvatarImage src={user.profilepic || ''} alt={user.name} />
             <AvatarFallback>
-              {user.name.split(' ').map(part => part[0]).join('')}
+              {user.name
+                .split(' ')
+                .map((part) => part[0])
+                .join('')}
             </AvatarFallback>
           </Avatar>
           <div>
@@ -143,7 +143,11 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
         )}
 
         <div className="mt-4 flex justify-end">
-          <Button size="sm" variant="outline" className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex items-center gap-2"
+          >
             <UserPlus className="h-4 w-4" />
             <span>View Profile</span>
           </Button>
@@ -153,4 +157,4 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   );
 };
 
-export default UsersList; 
+export default UsersList;

@@ -1,21 +1,15 @@
-import { lazy, Suspense, useState } from 'react';
-import ProfileCard from './components/profileCard';
+import { Suspense, useState } from 'react';
 import ProfileInfo from './components/profileInfo';
 import AboutMe from './components/sections/AboutMe';
 import Experience from './components/sections/Experience';
 import Education from './components/sections/Education';
 import Resume from './components/sections/Resume';
-import { Button } from '@/components/ui/button';
-import { Edit2, Save, X } from 'lucide-react';
 import { useUserStore } from '../shared/store/userStore';
-import { User } from '../auth/signin/types/signin.types';
 import { useParams } from 'react-router';
 import { useUserInfo, useProfileUpdate } from './hooks/useUserService';
 import ErrorBoundary from './components/ErrorBoundary';
 import Spinner from '../shared/components/Spinner';
 import UserNotFound from './components/UserNotFound';
-
-const NavBar = lazy(() => import('@/modules/shared/components/navBar'));
 
 type ParamsType = { userName: string };
 
@@ -24,7 +18,7 @@ const ProfilePage = () => {
   const { user } = useUserStore();
   const { userName } = useParams<ParamsType>();
   const { data, isLoading, isError } = useUserInfo(userName!);
-  const { updateProfile, isLoading: isUpdating } = useProfileUpdate(() => setIsEditing(false));
+  const { updateProfile, isLoading: isUpdating } = useProfileUpdate();
   const sameUser = userName === user?.name;
 
   // State for all sections
@@ -34,28 +28,29 @@ const ProfilePage = () => {
   const [resume, setResume] = useState<File | null>(null);
   const [profilePic, setProfilePic] = useState<File | null>(null);
 
-  const handleEditToggle = () => {
-    if (isEditing) {
-      // Save changes when exiting edit mode
-      handleSaveChanges();
-    }
-    setIsEditing(!isEditing);
-  };
+  // const handleEditToggle = () => {
+  //   if (isEditing) {
+  //     // Save changes when exiting edit mode
+  //     handleSaveChanges();
+  //   }
+  //   setIsEditing(!isEditing);
+  // };
 
   const handleSaveChanges = () => {
+    // eslint-disable-next-line
     const updateData: any = {
       description: aboutMe,
       experience: experiences,
       education: education,
     };
-    
+
     if (resume) {
       updateData.cv = resume;
     }
-    
+
     if (profilePic) {
       updateData.profilepic = profilePic;
-    } 
+    }
     updateProfile(updateData);
   };
 
@@ -64,12 +59,12 @@ const ProfilePage = () => {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <Suspense fallback={<Spinner size="lg" className="min-h-screen" />}>
-      </Suspense>
+      <Suspense
+        fallback={<Spinner size="lg" className="min-h-screen" />}
+      ></Suspense>
       <ErrorBoundary>
         <section className="w-full px-4 py-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-[90rem] rounded-xl bg-[#92E3A91A] p-3 md:p-4">
-                        
             <ProfileInfo
               isUserProfile={sameUser}
               isEditing={isEditing}
@@ -81,24 +76,24 @@ const ProfilePage = () => {
               onSave={handleSaveChanges}
             />
             <div className="mt-3 space-y-3 md:space-y-4">
-              <AboutMe 
-                isEditing={isEditing} 
-                text={aboutMe} 
-                onTextChange={setAboutMe} 
+              <AboutMe
+                isEditing={isEditing}
+                text={aboutMe}
+                onTextChange={setAboutMe}
               />
-              <Experience 
-                isEditing={isEditing} 
-                experiences={experiences} 
-                onExperiencesChange={setExperiences} 
+              <Experience
+                isEditing={isEditing}
+                experiences={experiences}
+                onExperiencesChange={setExperiences}
               />
-              <Education 
-                isEditing={isEditing} 
-                education={education} 
-                onEducationChange={setEducation} 
+              <Education
+                isEditing={isEditing}
+                education={education}
+                onEducationChange={setEducation}
               />
-              <Resume 
-                isEditing={isEditing} 
-                onResumeChange={setResume} 
+              <Resume
+                isEditing={isEditing}
+                onResumeChange={setResume}
                 cv={data?.cv}
               />
             </div>

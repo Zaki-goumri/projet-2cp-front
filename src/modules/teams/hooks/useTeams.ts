@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { teamsService } from '../services/teams.service';
-import { Team, TeamResponse } from '../types/teams.types';
+import { Team, CreateTeamRequest } from '../types/teams.types';
 
 export const useTeams = () => {
-  const [activeTeams, setActiveTeams] = useState<Team[]>([]);
-  const [suggestedTeams, setSuggestedTeams] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -12,9 +11,8 @@ export const useTeams = () => {
     const fetchTeams = async () => {
       try {
         setIsLoading(true);
-        const data = await teamsService.getTeams();
-        setActiveTeams(data.activeTeams);
-        setSuggestedTeams(data.suggestedTeams);
+        const fetchedTeams = await teamsService.getTeams();
+        setTeams(fetchedTeams);
       } catch (err) {
         setError(err as Error);
       } finally {
@@ -24,11 +22,11 @@ export const useTeams = () => {
     fetchTeams();
   }, []);
 
-  const createTeam = async (teamData: Partial<Team>) => {
+  const createTeam = async (teamData: CreateTeamRequest) => {
     try {
       setIsLoading(true);
       setError(null);
-      return await teamsService.createTeam(teamData);
+      return await teamsService.post_team_create(teamData);
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -37,5 +35,5 @@ export const useTeams = () => {
     }
   };
 
-  return { activeTeams, suggestedTeams, createTeam, isLoading, error };
+  return { teams, createTeam, isLoading, error };
 }; 
