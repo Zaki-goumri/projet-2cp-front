@@ -1,12 +1,4 @@
-import React from 'react';
-
-export interface infoCardProps {
-  icon: string;
-  name: string;
-  isAddeable: boolean;
-  onAdd: () => void;
-  children: string | JSX.Element | JSX.Element[];
-}
+import { infoCardProps } from "../types/profile.types";
 
 function InfoCard({ icon, name, isAddeable, onAdd, children }: infoCardProps) {
   return (

@@ -1,13 +1,10 @@
 import { Link } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 
 const ForgotPasswordForm = lazy(
-  () =>
-    import(
-      '@/modules/auth/forgot-password/components/forgotPasswordForm'
-    )
+  () => import('@/modules/auth/forgot-password/components/forgotPasswordForm')
 );
 const queryClient = new QueryClient();
 
@@ -22,7 +19,11 @@ const ForgotPassword = () => {
               {/* Logo and decorative elements */}
               <div className="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-[#98E9AB] to-[#7ED196]"></div>
               <div className="mb-8 flex justify-center">
-                <img src="/assets/logo.svg" alt="Logo" className="h-10 w-auto" />
+                <img
+                  src="/assets/logo.svg"
+                  alt="Logo"
+                  className="h-10 w-auto"
+                />
               </div>
 
               {/* Header */}

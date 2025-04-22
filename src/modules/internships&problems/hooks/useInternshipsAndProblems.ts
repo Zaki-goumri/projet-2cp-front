@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import internshipsAndProblemsService from '../services/internshipsAndProblems.service';
 import { Opportunity } from '../types/opportunity.types';
 
+
 export const useInternshipsAndProblems = (searchQuery: string = '') => {
   const [activeTab, setActiveTab] = useState('internships');
 
@@ -39,14 +40,14 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
   } = useQuery({
     queryKey: ['savedPosts'],
     queryFn: () => internshipsAndProblemsService.fetchSavedPosts(),
-    enabled: activeTab === 'applied',
+    enabled: activeTab === 'saved',
     staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
   const {
-    data: appliedInternshipsdPosts = [],
+    data: appliedInternships = [],
     isLoading: isAppliedPostsLoading,
     error: appliedPostsError,
   } = useQuery({
@@ -61,7 +62,7 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
   const filteredData = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
     if (!query)
-      return { internships, problems, savedPosts, appliedInternshipsdPosts };
+      return { internships, problems, savedPosts, appliedInternships };
     const filterOpportunities = (opportunities: Opportunity[]) =>
       opportunities.filter((opp) => {
         return (
@@ -77,14 +78,14 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
       internships: filterOpportunities(internships),
       problems: filterOpportunities(problems),
       savedPosts: filterOpportunities(savedPosts),
-      appliedInternships: filterOpportunities(appliedInternshipsdPosts),
+      appliedInternships: filterOpportunities(appliedInternships),
     };
   }, [
     searchQuery,
     internships,
     problems,
     savedPosts,
-    appliedInternshipsdPosts,
+    appliedInternships,
   ]);
 
   const isLoading =
@@ -115,7 +116,7 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
       !savedPostsError,
 
     appliedInternships:
-      appliedInternshipsdPosts.length === 0 &&
+      filteredData.appliedInternships.length === 0 &&
       !isAppliedPostsLoading &&
       !appliedPostsError,
     users: true,

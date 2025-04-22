@@ -15,10 +15,11 @@ const Dashboard = lazy(() => import('./modules/Dashboard/page'));
 const App = lazy(() => import('./App'));
 const Signin = lazy(() => import('./modules/auth/signin/page'));
 const Home = lazy(() => import('./modules/home/page'));
-const Opportunity = lazy(() => import('./modules/opportunity/page'));
+const OpportunityDetailOld = lazy(() => import('./modules/opportunity/page'));
+const OpportunitiesPage = lazy(() => import('./modules/opportunities/page'));
 const OAuthCallback = lazy(() => import('./modules/auth/signin/components/googleCallback'));
 const LinkedInCallback = lazy(() => import('./modules/auth/signin/components/linkedinCallback'));
-const Teams = lazy(() => import('./modules/teams/components/TeamsOverview'));
+const Teams = lazy(() => import('./modules/teams/pages/TeamsPage'));
 const TeamDetail = lazy(() => import('./modules/teams/pages/TeamDetailPage'));
 const NotificationsPage = lazy(() => import('./modules/notifications/pages/NotificationsPage'));
 import InternshipsAndProblemsPage from './modules/internships&problems/page';
@@ -67,9 +68,9 @@ if (root) {
                   <LayoutWithoutFooter><NotificationsPage /></LayoutWithoutFooter>
                 </ProtectedRoute>
               } />
-              <Route path="/opportunities/:id" element={
+              <Route path="/opportunities" element={
                 <ProtectedRoute>
-                  <LayoutWithoutFooter><Opportunity /></LayoutWithoutFooter>
+                  <LayoutWithoutFooter><OpportunitiesPage /></LayoutWithoutFooter>
                 </ProtectedRoute>
               } />
               <Route path="/profile/:userName" element={

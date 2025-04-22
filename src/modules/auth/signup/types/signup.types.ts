@@ -1,17 +1,9 @@
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  number: null;
-  type: string;
-  profilepic: null;
-  date_joined: string;
-  category: string;
-}
+import { User } from '@/modules/shared/store/userStore';
+
 export type RegisterResponse = {
-  user: User,
-  refresh: string,
-  access: string
+  user: User;
+  refresh: string;
+  access: string;
 };
 
 export interface RegisterRequest {

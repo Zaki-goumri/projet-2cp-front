@@ -1,17 +1,17 @@
-interface ResetEmailDtoRes {
+export type ResetEmailDtoRes = {
   otp: string;
   iat: string;
-}
-interface ResetEmailDtoReq {
+};
+export type ResetEmailDtoReq = {
   email: string;
-}
-interface ResetPasswordReq {
+};
+export type ResetPasswordReq = {
   email: string;
   otp: string;
   expectedDto: string;
   iat: string;
   password: string;
-}
-interface ResetPasswordResDto {
+};
+export type ResetPasswordResDto = {
   message: string[];
-}
+};

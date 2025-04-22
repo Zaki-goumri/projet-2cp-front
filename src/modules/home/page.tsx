@@ -19,7 +19,7 @@ const HomaPage = () => {
       navigator.serviceWorker
         .register('/firebase-messaging-sw.js')
         .then(() => {
-          requestFcmToken();
+          // requestFcmToken();
         })
         .catch((err) => console.error('SW registration failed:', err));
     }

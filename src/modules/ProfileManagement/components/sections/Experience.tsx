@@ -3,26 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Edit2, Trash2 } from 'lucide-react';
 import InfoCard from '../InfoCard';
 import AddItemModal from '../modals/AddItemModal';
-
-interface ExperienceProps {
-  isEditing: boolean;
-}
-
-interface ExperienceItem {
-  id: string;
-  role: string;
-  title: string;
-  company: string;
-  period: string;
-  description: string;
-}
+import { ExperienceItem,ExperienceProps } from '../../types/profile.types';
 
 const Experience = ({ isEditing }: ExperienceProps) => {
   const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = (id: string) => {
-    setExperiences(experiences.filter(exp => exp.id !== id));
+    setExperiences(experiences.filter((exp) => exp.id !== id));
   };
 
   const handleAdd = () => {
@@ -36,7 +24,7 @@ const Experience = ({ isEditing }: ExperienceProps) => {
       title: data.role,
       company: data.company,
       period: `${data.startDate} - ${data.endDate}`,
-      description: data.description
+      description: data.description,
     };
     setExperiences([...experiences, newExperience]);
     setIsModalOpen(false);
@@ -45,19 +33,20 @@ const Experience = ({ isEditing }: ExperienceProps) => {
   return (
     <>
       <InfoCard
-        icon={'assets/bag.svg'}
+        icon="assets/bag.svg"
         name={'Internship Experience'}
         isAddeable={isEditing}
         onAdd={handleAdd}
       >
         <div className="px-6 py-4">
+          {' '}
           {experiences.length === 0 ? (
             <p className="text-gray-600">No experience added yet.</p>
           ) : (
             <div className="space-y-4">
               {experiences.map((exp) => (
-                <div key={exp.id} className="border-[#92E3A9] rounded-lg p-4">
-                  <div className="flex justify-between items-start">
+                <div key={exp.id} className="rounded-lg border-[#92E3A9] p-4">
+                  <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold">{exp.title}</h3>
                       <p className="text-gray-600">{exp.company}</p>
@@ -68,7 +57,11 @@ const Experience = ({ isEditing }: ExperienceProps) => {
                         <Button variant="ghost" size="sm">
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(exp.id)}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(exp.id)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -92,4 +85,5 @@ const Experience = ({ isEditing }: ExperienceProps) => {
   );
 };
 
-export default Experience; 
+export default Experience;
+

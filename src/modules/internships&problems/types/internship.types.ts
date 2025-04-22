@@ -16,3 +16,4 @@ export interface Internship {
   isApplied?: boolean;
   status?: string;
 }
+
