@@ -15,7 +15,7 @@ function InfoCard({ icon, name, isAddeable, onAdd, children }: infoCardProps) {
               className="p-2 rounded-full bg-[#92E3A940] hover:bg-[#92E3A960] transition-colors duration-200"
               title="Add new item"
             >
-              <img src="assets/add.svg" alt="add" className="h-5 w-5" />
+              <img src="/assets/add.svg" alt="add" className="h-5 w-5" />
             </button>
           )}
         </div>

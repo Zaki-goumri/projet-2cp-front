@@ -12,7 +12,7 @@ const AboutMe = ({ isEditing ,aboutMe}: AboutMeProps) => {
   return (
     <InfoCard
       onAdd={() => {}}
-      icon={'assets/profile.svg'}
+      icon={'/assets/profile.svg'}
       name={'About Me'}
       isAddeable={false}
     >
