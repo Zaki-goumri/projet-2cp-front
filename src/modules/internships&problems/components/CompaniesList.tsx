@@ -16,7 +16,7 @@ const CompaniesList: React.FC<CompaniesListProps> = ({ searchQuery }) => {
   // Filter companies based on search query
   const filteredCompanies = searchQuery
     ? companies.filter(
-        (company) =>
+        (company:Company) =>
           company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           company.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           company.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -64,7 +64,7 @@ const CompaniesList: React.FC<CompaniesListProps> = ({ searchQuery }) => {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {filteredCompanies.map((company) => (
+      {filteredCompanies.map((company:Company) => (
         <CompanyCard key={company.id} company={company} />
       ))}
     </div>

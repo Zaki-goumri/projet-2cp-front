@@ -6,25 +6,45 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
 import { Internship } from '../types/internshipsAndProblems.types';
+import { Opportunity } from '../types/opportunity.types';
 import { Badge } from '@/components/ui/badge';
 
 interface AppliedInternshipsProps {
   searchQuery: string;
 }
 
-const AppliedInternships: React.FC<AppliedInternshipsProps> = ({ searchQuery }) => {
-  const { appliedInternships, isLoading } = useInternshipsAndProblems();
+const mapOpportunityToInternship = (opp: Opportunity): Internship => {
+  return {
+    id: opp.id.toString(), 
+    title: opp.title,
+    company: opp.company.name, 
+    companyLogo: opp.company.profilepic || '/placeholder-logo.png', 
+    location: opp.company.location || 'Remote', 
+    daysLeft: opp.endday ? Math.max(0, Math.ceil((new Date(opp.endday).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0, 
+    description: opp.description,
+    requirements: [], 
+    skills: opp.skills,
+    category: opp.category,
+    startDate: '', 
+    endDate: opp.endday || '', 
+    createdAt: opp.created_at, 
+    isApplied: true, 
+    status: opp.status as Internship['status'] || 'Pending', 
+  };
+};
 
-  // Filter applied internships based on search query
-  const filteredInternships = searchQuery
-    ? appliedInternships.filter(
-        (internship) =>
-          internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.description.toLowerCase().includes(searchQuery.toLowerCase())
+const AppliedInternships: React.FC<AppliedInternshipsProps> = ({ searchQuery }) => {
+  const { appliedInternships: opportunities, isLoading } = useInternshipsAndProblems();
+
+  const filteredOpportunities = searchQuery
+    ? opportunities.filter(
+        (opportunity) => 
+          opportunity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          opportunity.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          opportunity.company.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          opportunity.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : appliedInternships;
+    : opportunities; 
 
   if (isLoading) {
     return (
@@ -52,7 +72,7 @@ const AppliedInternships: React.FC<AppliedInternshipsProps> = ({ searchQuery }) 
     );
   }
 
-  if (filteredInternships.length === 0) {
+  if (filteredOpportunities.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg bg-gray-50 p-8 text-center">
         <Briefcase className="mb-4 h-12 w-12 text-gray-400" />
@@ -71,12 +91,13 @@ const AppliedInternships: React.FC<AppliedInternshipsProps> = ({ searchQuery }) 
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-medium text-gray-900">My Applications</h2>
-        <span className="text-muted-foreground text-sm">{filteredInternships.length} applications</span>
+        <span className="text-muted-foreground text-sm">{filteredOpportunities.length} applications</span>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredInternships.map((internship) => (
-          <AppliedInternshipCard key={internship.id} internship={internship} />
-        ))}
+        {filteredOpportunities.map((opportunity) => {
+          const internship = mapOpportunityToInternship(opportunity); // Map here
+          return <AppliedInternshipCard key={internship.id} internship={internship} />;
+        })}
       </div>
     </div>
   );

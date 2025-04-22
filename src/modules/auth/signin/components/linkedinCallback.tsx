@@ -25,17 +25,10 @@ const OAuthCallback = () => {
 
         const formData = new URLSearchParams();
         formData.append('code', code);
-
-        const response = await axios.post(`${baseUrl}/Auth/linkedin`, formData, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        });
-
+        const response = await axios.post(`${baseUrl}/Auth/linkedin`, formData);
         setUser(response.data.user);
-        document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=3600`;
-        document.cookie = `refreshToken=${response.data.refreshToken}; path=/; max-age=2592000`;
-        
+        document.cookie = `accessToken=${response.data.access}; path=/; max-age=3600`;
+        document.cookie = `refreshToken=${response.data.refresh}; path=/; max-age=2592000`;
         navigate('/home');
       } catch (error) {
         console.error('Authentication failed:', error);

@@ -6,6 +6,7 @@ import { MapPin, Calendar, Heart, Briefcase, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
 import { Internship } from '../types/internshipsAndProblems.types';
+import { Opportunity } from '../types/opportunity.types';
 
 interface InternshipsListProps {
   searchQuery: string;
@@ -17,10 +18,10 @@ const InternshipsList: React.FC<InternshipsListProps> = ({ searchQuery }) => {
   // Filter internships based on search query
   const filteredInternships = searchQuery
     ? internships.filter(
-        (internship) =>
+        (internship:Opportunity) =>
           internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          internship.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          internship.company.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           internship.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : internships;
@@ -73,7 +74,7 @@ const InternshipsList: React.FC<InternshipsListProps> = ({ searchQuery }) => {
 };
 
 interface InternshipCardProps {
-  internship: Internship;
+  internship: Opportunity;
 }
 
 const InternshipCard: React.FC<InternshipCardProps> = ({ internship }) => {
@@ -83,17 +84,17 @@ const InternshipCard: React.FC<InternshipCardProps> = ({ internship }) => {
         <div className="flex items-start gap-4">
           <div className="rounded-lg bg-white p-3 shadow-sm">
             <img
-              src={internship.companyLogo}
+              src={internship.company.profilepic || ''}
               alt={`${internship.company} logo`}
               className="h-10 w-10 object-contain"
             />
           </div>
           <div>
             <h3 className="text-lg font-medium text-gray-900">{internship.title}</h3>
-            <p className="text-primary text-sm">{internship.company}</p>
+            <p className="text-primary text-sm">{internship.company.name}</p>
             <div className="text-muted-foreground mt-1 flex items-center text-sm">
               <MapPin className="mr-1 h-3 w-3" />
-              <span>{internship.location}</span>
+              <span>{internship.company.location}</span>
             </div>
           </div>
         </div>
@@ -122,7 +123,7 @@ const InternshipCard: React.FC<InternshipCardProps> = ({ internship }) => {
           <div className="flex items-center gap-2 text-sm">
             <div className="flex items-center text-orange-500">
               <Clock className="mr-1 h-4 w-4" />
-              <span className="font-medium">{internship.daysLeft}</span>
+              <span className="font-medium">{internship.duration}</span>
             </div>
             <span className="text-muted-foreground">days left</span>
           </div>
@@ -131,7 +132,7 @@ const InternshipCard: React.FC<InternshipCardProps> = ({ internship }) => {
             <Button
               variant="outline"
               size="icon"
-              className={internship.isSaved ? 'text-red-500' : ''}
+              className={internship.isSaved? 'text-red-500' : ''}
             >
               <Heart className="h-4 w-4" />
             </Button>

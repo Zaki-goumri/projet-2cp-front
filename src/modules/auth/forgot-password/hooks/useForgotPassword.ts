@@ -6,6 +6,7 @@ import {
 } from '../services/forgot-password.services';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import {ResetEmailDtoRes,ResetPasswordReq , ResetEmailDtoReq} from '../types/forget-password.dto'
 
 function isError(error: unknown): error is Error {
   return error instanceof Error;

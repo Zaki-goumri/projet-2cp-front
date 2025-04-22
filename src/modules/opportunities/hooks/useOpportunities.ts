@@ -109,23 +109,17 @@ export const useOpportunities = (searchQuery: string = '') => {
   }, [isLoading, error, filteredOpportunities]);
 
   return {
-    // Provide the final filtered list
     opportunities: filteredOpportunities,
-    // Filter state and setter
     filterType,
     setFilterType,
-    // Loading and error states from the single query
     isLoading,
     error,
-    // Derived empty state
     isEmpty,
-    // Saved state and actions
     savedPostIds,
     savePost: saveMutation.mutate,
-    isSaving: saveMutation.isPending,
+    isSaving: saveMutation.isSuccess,
     unsavePost: unsaveMutation.mutate,
-    isUnsaving: unsaveMutation.isPending,
-    // Keep original data if needed elsewhere, though usually not required by UI
-    // allOpportunities,
+    isUnsaving: unsaveMutation.isSuccess,
+   
   };
 }; 

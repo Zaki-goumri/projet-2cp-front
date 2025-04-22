@@ -24,6 +24,7 @@ export interface Opportunity {
   company: Company;
   created_at: string;
   duration: string | null;
+  isSaved: boolean;
 }
 
 export interface AppliedPostsApiResponse {

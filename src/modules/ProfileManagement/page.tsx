@@ -6,7 +6,6 @@ import Experience from './components/sections/Experience';
 import Education from './components/sections/Education';
 import Resume from './components/sections/Resume';
 import { useUserStore } from '../shared/store/userStore';
-import { User } from '../auth/signin/types/signin.types';
 import { useParams } from 'react-router';
 import { useUserInfo } from './hooks/useUserService';
 import ErrorBoundary from './components/ErrorBoundary';

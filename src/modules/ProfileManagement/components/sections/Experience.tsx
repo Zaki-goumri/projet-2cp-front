@@ -45,7 +45,6 @@ const Experience = ({ isEditing ,userExperiences}: ExperienceProps) => {
   return (
     <>
       <InfoCard
-        icon="assets/bag.svg"
         icon={'/assets/bag.svg'}
         name={'Internship Experience'}
         isAddeable={isEditing}
