@@ -8,7 +8,6 @@ const OAuthCallback = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const setUser = useUserStore((state) => state.login);
-  const user = useUserStore((state) => state.user);
   useEffect(() => {
     const handleAuthentication = async () => {
       try {

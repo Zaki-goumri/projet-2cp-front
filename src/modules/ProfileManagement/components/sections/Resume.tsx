@@ -1,17 +1,15 @@
 import React, { useRef, useState } from 'react';
 import InfoCard from '../InfoCard';
-import { ResumeFile } from '../../types/profile.types';
+import { Attachment } from '@/modules/shared/types/shared.types';
 
-const ResumeList = ({ isEditing }: ResumeProps) => {
-  const [resumes, setResumes] = useState<ResumeFile[]>([
-    {
-      id: '1',
-      name: 'Bentaleb Mohamed - CV - UI/UX Designer',
-      type: 'PDF',
-      date: 'Feb 12, 2023',
-      size: '2.5 MB',
-    },
-  ]);
+interface ResumeProps {
+  isEditing: boolean;
+  onResumeChange: (file: File) => void;
+  cv?: Attachment;
+}
+
+const ResumeSection = ({ isEditing, cv }: ResumeProps) => {
+  const [resumes, setResumes] = useState<Attachment | undefined>(cv);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -19,31 +17,34 @@ const ResumeList = ({ isEditing }: ResumeProps) => {
     const file = event.target.files?.[0];
     if (file) {
       const size = (file.size / (1024 * 1024)).toFixed(1);
-      const newResume: ResumeFile = {
+
+      const newResume: Attachment = {
         id: Date.now().toString(),
-        name: file.name,
+        fileName: file.name,
+        fileType: file.type.split('/')[1].toUpperCase(),
+        fileSize: `${size} MB`,
+        fileUrl: URL.createObjectURL(file),
         type: file.type.split('/')[1].toUpperCase(),
-        date: new Date().toLocaleDateString('en-US', {
+        createdAt: new Date().toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
           year: 'numeric',
         }),
-        size: `${size} MB`,
       };
 
-      setResumes((prev) => [...prev, newResume]);
+      setResumes(newResume);
     }
   };
 
-  const handleDelete = (id: string) => {
-    setResumes((prev) => prev.filter((resume) => resume.id !== id));
+  const handleDelete = () => {
+    setResumes(undefined);
   };
 
   return (
     <div className="space-y-2">
-      {resumes.map((resume) => (
+      {resumes ? (
         <div
-          key={resume.id}
+          key={resumes.id}
           className="group flex items-center justify-between rounded-lg border border-gray-100 bg-white p-2.5 transition-all duration-200 hover:shadow-md"
         >
           <div className="flex min-w-0 items-center space-x-3">
@@ -52,12 +53,12 @@ const ResumeList = ({ isEditing }: ResumeProps) => {
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="truncate text-sm font-medium text-gray-900">
-                {resume.name}
+                {resumes.fileName}
               </h3>
               <div className="mt-0.5 flex items-center text-xs text-gray-500">
-                <span>{resume.date}</span>
+                <span>{resumes.createdAt}</span>
                 <span className="mx-1.5">•</span>
-                <span>{resume.size}</span>
+                <span>{resumes.fileSize}</span>
               </div>
             </div>
           </div>
@@ -72,14 +73,18 @@ const ResumeList = ({ isEditing }: ResumeProps) => {
             {isEditing && (
               <button
                 className="rounded-full p-1.5 transition-colors duration-200 hover:bg-red-50"
-                onClick={() => handleDelete(resume.id)}
+                onClick={() => handleDelete()}
               >
                 <img src="/assets/trash.svg" alt="Delete" />
               </button>
             )}
           </div>
         </div>
-      ))}
+      ) : (
+        <div className="py-4 text-center">
+          <p className="text-gray-500">No resume uploaded yet.</p>
+        </div>
+      )}
 
       {isEditing && (
         <>
@@ -103,23 +108,43 @@ const ResumeList = ({ isEditing }: ResumeProps) => {
   );
 };
 
-interface ResumeProps {
-  isEditing: boolean;
-}
-const Resume = ({ isEditing }: ResumeProps) => {
+const Resume = ({ isEditing, onResumeChange, cv }: ResumeProps) => {
+  // const [, setFileName] = useState<string | null>(null);
+  // const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     setFileName(file.name);
+  //     onResumeChange(file);
+  //   }
+  // };
+
+  // const handleUploadClick = () => {
+  //   fileInputRef.current?.click();
+  // };
+
   return (
     <InfoCard
-      icon={'/assets/resume.svg'}
+      icon="/assets/resume.svg"
       name={'Resume'}
       isAddeable={false}
       onAdd={() => {}}
     >
-      <div className="p-3">
-        <ResumeList isEditing={isEditing} />
+      <div className="px-6 py-4">
+        <ResumeSection
+          isEditing={isEditing}
+          onResumeChange={onResumeChange}
+          cv={cv}
+        />
+        {isEditing ? (
+          <div className="space-y-4"></div>
+        ) : (
+          <div className="py-4 text-center"></div>
+        )}
       </div>
     </InfoCard>
   );
 };
 
 export default Resume;
-

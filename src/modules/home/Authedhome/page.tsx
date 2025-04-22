@@ -1,6 +1,6 @@
 import { useUserStore } from '@/modules/shared/store/userStore';
 import { lazy, useState, useEffect } from 'react';
-import { updateUserProfile } from '@/modules/ProfileManagement/services/userService';
+// import { updateUser } from '@/modules/ProfileManagement/services/userService';
 import { ChooseUserTypeDialog } from './components/ChooseUserTypeDialog';
 
 const SearchSection = lazy(
@@ -24,8 +24,8 @@ const AuthedHome = () => {
     if (!user) return;
 
     try {
-      const updatedUser = await updateUserProfile({ type });
-      updateUser(updatedUser);
+      updateUser({ type });
+      // updateUser(updatedUser);
     } catch (error) {
       console.error("Failed to update user type from page:", error);
       throw error;
@@ -37,7 +37,7 @@ const AuthedHome = () => {
       <SearchSection />
       <Oppertunities />
 
-      <ChooseUserTypeDialog 
+      <ChooseUserTypeDialog
         isOpen={isTypeDialogOpen}
         onOpenChange={setIsTypeDialogOpen}
         onSelectType={handleTypeSelect}

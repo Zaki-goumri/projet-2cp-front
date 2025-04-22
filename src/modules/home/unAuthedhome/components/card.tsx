@@ -1,7 +1,5 @@
 import { ArrowRight, Eye, Timer } from 'lucide-react';
-import { Link } from 'react-router'; // Updated import for Link
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Link } from 'react-router';
 
 interface InternshipCardProps {
   logo: string;
@@ -20,16 +18,7 @@ export default function InternshipCard({
 }: InternshipCardProps) {
   return (
     <main className="group mx-auto my-10 flex h-full w-full max-w-md min-w-2 cursor-pointer flex-col overflow-hidden rounded-3xl border-transparent shadow-lg duration-300 ease-in-out hover:scale-110 sm:mx-0">
-      {/* Green Section */}
-      <div className="bg-primary relative h-28 flex-shrink-0 p-5 pb-12">
-        <div className="flex items-start justify-between">
-          {/* Optional: Add content here if needed */}
-        </div>
-      </div>
-
-      {/* White Section */}
       <aside className="relative -mt-6 flex flex-1 flex-col rounded-3xl bg-white px-5 pt-8 pb-6">
-        {/* Logo positioned between green and white sections */}
         <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl bg-white p-2.5 shadow-sm sm:h-20 sm:w-20">
           <img
             src={logo}
@@ -40,9 +29,7 @@ export default function InternshipCard({
           />
         </div>
 
-        {/* Content Section */}
         <div className="flex flex-1 flex-col justify-between space-y-4">
-          {/* Title and Description */}
           <div className="mt-5 flex items-start justify-between gap-4">
             <div className="space-y-2">
               <h3 className="text-lg font-medium text-black">{title}</h3>
@@ -56,7 +43,6 @@ export default function InternshipCard({
             <ArrowRight className="text-muted-foreground mt-1 h-5 w-5" />
           </div>
 
-          {/* Views and Days Left */}
           <div className="text-muted-foreground flex flex-col gap-4 pt-2 text-sm text-black sm:flex-row sm:gap-6">
             <div className="flex items-center gap-2">
               <Eye className="h-4 w-4" />

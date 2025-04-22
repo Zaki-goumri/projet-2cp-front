@@ -5,7 +5,7 @@ import { LoginRequest } from '../types/signin.types';
 import { useUserStore } from '@/modules/shared/store/userStore';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import {User} from '@/modules/shared/store/userStore'
+import { User } from '@/modules/shared/types/shared.types';
 
 const useSignin = (redirectPath?: string) => {
   const setUser = useUserStore((state) => state.login);
@@ -22,7 +22,7 @@ const useSignin = (redirectPath?: string) => {
         const errorData = error.response.data;
         if (typeof errorData === 'object' && errorData !== null) {
           const errorMessages = Object.entries(errorData)
-            .map(([key, value]) => {
+            .map(([, value]) => {
               if (Array.isArray(value)) {
                 return value.join(', ');
               }

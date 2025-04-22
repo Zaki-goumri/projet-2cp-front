@@ -1,26 +1,26 @@
 import { Search } from 'lucide-react';
-import { lazy, useState ,useEffect} from 'react';
-const SearchPop = lazy(()=> import('@/modules/home/Authedhome/components/search-popup')) 
-
+import { lazy, useState, useEffect } from 'react';
+const SearchPop = lazy(
+  () => import('@/modules/home/Authedhome/components/search-popup')
+);
+import { keyboardEvent } from '../types/event-keyboard.type';
 
 export default function SearchSection() {
-  const [isPopupOpen , setIsPopupOpen] = useState(false)
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
-    const handleKeyPress = (event :any) => {
+    const handleKeyPress = (event: keyboardEvent) => {
       if (event.ctrlKey && event.key === 'k') {
-        event.preventDefault(); 
-        setIsPopupOpen((prev) => !prev); 
+        event.preventDefault();
+        setIsPopupOpen((prev) => !prev);
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
 
-    // Cleanup listener on component unmount
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
 
-// }
   return (
     <section className="mt-8 w-full py-12 md:py-16 lg:py-20">
       <div className="container mx-auto place-self-center px-4 md:px-6">
@@ -62,10 +62,7 @@ export default function SearchSection() {
         </div>
       </div>
       <hr className="mx-auto mt-32 w-3/4 place-self-center opacity-30" />
-      <SearchPop  isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
-        />
+      <SearchPop isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
     </section>
-
   );
 }

@@ -6,56 +6,6 @@ import React from 'react';
 const Slider = React.lazy(
   () => import('@/modules/home/Authedhome/components/slider')
 );
-const problems = [
-  {
-    logo: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png',
-    title: 'Software Development Intern',
-    description:
-      'Join TechCorp as a software development intern and work on cutting-edge projects using modern technologies.',
-    views: 245,
-    daysLeft: 15,
-  },
-  {
-    logo: 'https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g',
-    title: 'Marketing Intern',
-    description:
-      'BrandCo is looking for a creative marketing intern to help drive our social media and content strategy.',
-    views: 189,
-    daysLeft: 20,
-  },
-  {
-    logo: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31',
-    title: 'Data Science Intern',
-    description:
-      'DataTech offers an exciting internship opportunity in data science and machine learning applications.',
-    views: 312,
-    daysLeft: 30,
-  },
-  {
-    logo: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png',
-    title: 'Software Development Intern',
-    description:
-      'Join TechCorp as a software development intern and work on cutting-edge projects using modern technologies.',
-    views: 245,
-    daysLeft: 15,
-  },
-  {
-    logo: 'https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g',
-    title: 'Marketing Intern',
-    description:
-      'BrandCo is looking for a creative marketing intern to help drive our social media and content strategy.',
-    views: 189,
-    daysLeft: 20,
-  },
-  {
-    logo: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31',
-    title: 'Data Science Intern',
-    description:
-      'DataTech offers an exciting internship opportunity in data science and machine learning applications.',
-    views: 312,
-    daysLeft: 30,
-  },
-];
 
 const Opportunities = () => {
   return (
