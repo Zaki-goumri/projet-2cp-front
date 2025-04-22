@@ -34,3 +34,29 @@ export function useUpdateUser() {
     }
   });
 }
+
+// Hook to collect all section data for update
+export function useProfileUpdate() {
+  const { mutate: updateProfile, isLoading } = useUpdateUser();
+  const { user } = useUserStore();
+
+  const handleProfileUpdate = (sectionData: Partial<UpdateUserData>) => {
+    if (!user) return;
+
+    const updateData: UpdateUserData = {
+      ...sectionData,
+      // Include existing data if not being updated
+      experience: sectionData.experience || user.experience,
+      education: sectionData.education || user.education,
+      description: sectionData.description || user.description,
+      skills: sectionData.skills || user.skills,
+    };
+
+    updateProfile(updateData);
+  };
+
+  return {
+    updateProfile: handleProfileUpdate,
+    isLoading
+  };
+}

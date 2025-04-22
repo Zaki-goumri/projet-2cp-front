@@ -21,6 +21,21 @@ export interface UpdateUserData {
   description?: string;
   skills?: string[];
   profilepic?: File;
+  experience?: {
+    id: string;
+    company: string;
+    role: string;
+    startDate: string;
+    endDate: string | null;
+  }[];
+  education?: {
+    id: string;
+    company: string;
+    role: string;
+    startDate: string;
+    endDate: string | null;
+  }[];
+  cv?: File;
 }
 
 export async function updateUser(data: UpdateUserData): Promise<User> {
@@ -32,6 +47,9 @@ export async function updateUser(data: UpdateUserData): Promise<User> {
   if (data.description) formData.append('description', data.description);
   if (data.skills) formData.append('skills', JSON.stringify(data.skills));
   if (data.profilepic) formData.append('pic', data.profilepic);
+  if (data.experience) formData.append('experience', JSON.stringify(data.experience));
+  if (data.education) formData.append('education', JSON.stringify(data.education));
+  if (data.cv) formData.append('cv', data.cv);
 
   const res = await axios.put<User>('/Auth/user', formData, {
     headers: {
@@ -43,5 +61,4 @@ export async function updateUser(data: UpdateUserData): Promise<User> {
     return res.data;
   }
   return Promise.reject('Failed to update user');
-  
 }
