@@ -23,16 +23,7 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/web
 function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePicChange,onSave,isEditingLoading,onCancel }: ProfileInfoProps) {
   const profilePlaceHolder = "/assets/profile-placeholder.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImage, setProfileImage] = useState<string>(profilePlaceHolder);
-
-  const isValidBlobUrl = (url: string): boolean => {
-    try {
-      const parsedUrl = new URL(url);
-      return parsedUrl.protocol === 'blob:' && parsedUrl.origin === window.location.origin;
-    } catch {
-      return false;
-    }
-  };
+  const [profileImage, setProfileImage] = useState<string | null>(user?.profilepic ?? profilePlaceHolder);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   
@@ -60,12 +51,7 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
 
     setError(null);
     setSelectedFile(file);
-    const objectUrl = URL.createObjectURL(file);
-    if (isValidBlobUrl(objectUrl)) {
-      setProfileImage(objectUrl);
-    } else {
-      setError('Invalid file URL');
-    }
+    setProfileImage(URL.createObjectURL(file));
     onProfilePicChange(file);
   };
 
@@ -79,7 +65,7 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
             onClick={handleImageClick}
           >
             <img 
-              src={isValidBlobUrl(profileImage) ? profileImage : profilePlaceHolder} 
+              src={profileImage || profilePlaceHolder} 
               className="w-full h-full object-cover"
             />
             {isEditing && (
@@ -101,41 +87,35 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">{user?.name}</h1>
             {isUserProfile && (
-              <div className="mt-3 sm:mt-0 flex space-x-2">
-                {isEditing ? (
-                  <>
-                    <Button
-                      onClick={onSave}
-                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
-                      disabled={isEditingLoading}
-                    >
-                      {isEditingLoading ? (
-                        <Spinner size="sm" />
-                      ) : (
-                        <>
-                          <Save className="h-5 w-5" />
-                          <span className="text-sm font-semibold">Save</span>
-                        </>
-                      )}
-                    </Button>
-                    <Button
-                      onClick={onCancel}
-                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-gray-200 hover:bg-gray-300"
-                    >
+              <Button
+                onClick={isEditing ? onSave : onEditToggle}
+                className={`mt-3 sm:mt-0 flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 ${
+                  isEditing 
+                    ? 'bg-[#92E3A9] hover:bg-[#7ED196]' 
+                    : 'bg-[#92E3A9] hover:bg-[#7ED196]'
+                }`}
+                disabled={ isEditingLoading }
+              >
+                {isEditingLoading ? (
+                  <Spinner size="sm" />
+                ) : isEditing ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2">
+                      <Save className="h-5 w-5" />
+                      <span className="text-sm font-semibold">Save Changes</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
                       <X className="h-5 w-5" />
                       <span className="text-sm font-semibold">Cancel</span>
-                    </Button>
-                  </>
+                    </div>
+                  </div>
                 ) : (
-                  <Button
-                    onClick={onEditToggle}
-                    className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
-                  >
+                  <>
                     <Edit2 className="h-5 w-5" />
                     <span className="text-sm font-semibold">Edit Profile</span>
-                  </Button>
+                  </>
                 )}
-              </div>
+              </Button>
             )}
           </div>
           <p className="mt-1 text-gray-600">{user?.email}</p>
