@@ -17,7 +17,7 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfoProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const profilePlaceHolder="https://shorturl.at/6SX4W";
-  const [profileImage, setProfileImage] = useState<string>(user?.picture?? profilePlaceHolder);
+  const [profileImage, setProfileImage] = useState<string>(user?.profilepic?? profilePlaceHolder);
 
   const [error, setError] = useState<string>("");
 
@@ -65,7 +65,6 @@ function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfo
           >
             <img 
               src={profileImage} 
-              alt="Profile" 
               className="w-full h-full object-cover"
             />
             {isEditing && (
@@ -120,7 +119,7 @@ function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfo
         <div className="hidden sm:block w-px h-10 bg-gray-200"></div>
         
         <div className="flex flex-col items-center mb-4 sm:mb-0">
-          <p className="text-xl font-bold text-gray-800">{"2025-05-03"}</p>
+          <p className="text-xl font-bold text-gray-800">{user?.date_joined??"2025-05-03"}</p>
           <p className="text-sm text-gray-500">Member Since</p>
         </div>
         
