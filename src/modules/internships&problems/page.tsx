@@ -394,9 +394,6 @@ const InternshipsAndProblemsPage = () => {
                     className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
                   >
                     <h3 className="mb-2 text-lg font-medium">{company.name}</h3>
-                    <p className="mb-2 text-sm text-gray-600">
-                      {company.industry}
-                    </p>
                     <p className="text-sm text-gray-600">{company.location}</p>
                   </li>
                 ))}

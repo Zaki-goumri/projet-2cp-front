@@ -1,7 +1,6 @@
-import { User } from "@/modules/shared/store/userStore";
+import { User } from '@/modules/shared/types/shared.types';
 
 export interface Student extends User {
- 
   number: string | null;
   student: {
     education: any[]; // to do
@@ -17,13 +16,13 @@ export interface Student extends User {
 }
 
 export interface Team {
-  id: number; 
+  id: number;
   name: string;
-  students: Student[]; 
-  leader: Student; 
-  createdate: string; 
-  category: string; 
-  description: string | null; 
+  students: Student[];
+  leader: Student;
+  createdate: string;
+  category: string;
+  description: string | null;
 }
 
 export interface TeamResponse {
@@ -64,5 +63,5 @@ export interface Invitation {
     name: string;
   };
   // Add inviter info if available from API
-  // inviter?: { id: number; name: string }; 
+  // inviter?: { id: number; name: string };
 }

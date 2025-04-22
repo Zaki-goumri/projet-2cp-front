@@ -16,7 +16,7 @@ const OAuthCallback = () => {
         setLoading(true);
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
-        
+
         if (!code) {
           console.error('No authorization code received from LinkedIn');
           navigate('/auth/signin?error=linkedin_failed');

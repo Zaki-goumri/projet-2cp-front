@@ -2,7 +2,7 @@ import axios from 'axios';
 import { serialize } from 'cookie';
 import { LoginRequest, LoginResponse } from '../types/signin.types';
 import { baseUrl } from '@/api/axios.config';
-import { User } from '@/modules/shared/store/userStore';
+import { User } from '@/modules/shared/types/shared.types';
 
 export const loginUser = async (data: LoginRequest): Promise<User> => {
   try {

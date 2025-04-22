@@ -1,11 +1,10 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Heart, Briefcase, Clock, BookmarkCheck } from 'lucide-react';
+import { MapPin, Heart, Clock, BookmarkCheck } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
-import { Internship } from '../types/internshipsAndProblems.types';
 import { Opportunity } from '../types/opportunity.types';
 
 interface SavedInternshipsProps {
@@ -15,13 +14,19 @@ interface SavedInternshipsProps {
 const SavedInternships: React.FC<SavedInternshipsProps> = ({ searchQuery }) => {
   const { savedPosts, isLoading } = useInternshipsAndProblems();
 
-    const filteredInternships = searchQuery
+  const filteredInternships = searchQuery
     ? savedPosts.filter(
-        (internship:Opportunity) =>
+        (internship: Opportunity) =>
           internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.company.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.description.toLowerCase().includes(searchQuery.toLowerCase())
+          internship.company.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          internship.company.location
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          internship.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
       )
     : savedPosts;
 
@@ -55,7 +60,9 @@ const SavedInternships: React.FC<SavedInternshipsProps> = ({ searchQuery }) => {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg bg-gray-50 p-8 text-center">
         <BookmarkCheck className="mb-4 h-12 w-12 text-gray-400" />
-        <h3 className="text-lg font-medium text-gray-900">No saved internships found</h3>
+        <h3 className="text-lg font-medium text-gray-900">
+          No saved internships found
+        </h3>
         <p className="mt-2 text-gray-600">
           You haven't saved any internships yet or none match your search.
         </p>
@@ -69,8 +76,12 @@ const SavedInternships: React.FC<SavedInternshipsProps> = ({ searchQuery }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium text-gray-900">My Saved Internships</h2>
-        <span className="text-muted-foreground text-sm">{filteredInternships.length} saved</span>
+        <h2 className="text-lg font-medium text-gray-900">
+          My Saved Internships
+        </h2>
+        <span className="text-muted-foreground text-sm">
+          {filteredInternships.length} saved
+        </span>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredInternships.map((internship) => (
@@ -85,7 +96,9 @@ interface SavedInternshipCardProps {
   internship: Opportunity;
 }
 
-const SavedInternshipCard: React.FC<SavedInternshipCardProps> = ({ internship }) => {
+const SavedInternshipCard: React.FC<SavedInternshipCardProps> = ({
+  internship,
+}) => {
   return (
     <Card className="overflow-hidden transition-transform duration-200 hover:shadow-md">
       <div className="p-4">
@@ -98,7 +111,9 @@ const SavedInternshipCard: React.FC<SavedInternshipCardProps> = ({ internship })
             />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">{internship.title}</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              {internship.title}
+            </h3>
             <p className="text-primary text-sm">{internship.company.name}</p>
             <div className="text-muted-foreground mt-1 flex items-center text-sm">
               <MapPin className="mr-1 h-3 w-3" />
@@ -137,11 +152,7 @@ const SavedInternshipCard: React.FC<SavedInternshipCardProps> = ({ internship })
           </div>
 
           <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className="text-red-500"
-            >
+            <Button variant="outline" size="icon" className="text-red-500">
               <Heart className="h-4 w-4" />
             </Button>
             <Link to={`/opportunities/${internship.id}`}>
@@ -154,4 +165,4 @@ const SavedInternshipCard: React.FC<SavedInternshipCardProps> = ({ internship })
   );
 };
 
-export default SavedInternships; 
+export default SavedInternships;

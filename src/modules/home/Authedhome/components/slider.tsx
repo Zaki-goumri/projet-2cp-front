@@ -2,19 +2,7 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useState } from 'react';
 import { MoveRight, MoveLeft } from 'lucide-react';
-
-const NavBar = React.lazy(() => import('@/modules/shared/components/navBar'));
-const OppCard = React.lazy(
-  () => import('@/modules/home/unAuthedhome/components/card')
-);
-const Introduction = React.lazy(
-  () => import('@/modules/home/unAuthedhome/components/introduction')
-);
-const ProductModel = React.lazy(
-  () => import('@/modules/home/unAuthedhome/components/singin-popup')
-);
 
 const internships = [
   {
@@ -179,9 +167,7 @@ const SliderOfOpp = () => {
             <div
               key={index}
               className="px-1.5 duration-150 ease-linear hover:scale-[105%]"
-            >
-              <OppCard {...internship} />
-            </div>
+            ></div>
           ))}
         </Slider>
       </section>
@@ -207,9 +193,7 @@ const SliderOfOpp = () => {
             <div
               key={index}
               className="px-1.5 duration-150 ease-linear hover:scale-[105%]"
-            >
-              <OppCard {...problem} />
-            </div>
+            ></div>
           ))}
         </Slider>
       </section>
@@ -227,7 +211,13 @@ const SliderOfOpp = () => {
 
 export default SliderOfOpp;
 
-const NextArrow = (props: any) => {
+interface ArrowProps {
+  className: string;
+  style: React.CSSProperties;
+  onClick: () => void;
+}
+
+const NextArrow = (props: Partial<ArrowProps>) => {
   const { className, style, onClick } = props;
   return (
     <div
@@ -240,7 +230,7 @@ const NextArrow = (props: any) => {
   );
 };
 
-const PrevArrow = (props: any) => {
+const PrevArrow = (props: Partial<ArrowProps>) => {
   const { className, style, onClick } = props;
   return (
     <div

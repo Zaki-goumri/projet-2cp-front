@@ -16,7 +16,7 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
 
   if (!activeConversation) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-500">
+      <div className="flex h-full items-center justify-center text-gray-500">
         Select a conversation to start chatting
       </div>
     );
@@ -24,7 +24,7 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
 
   // Group messages by date
   const groupedMessages: { [key: string]: Message[] } = {};
-  messages.forEach(message => {
+  messages.forEach((message) => {
     const date = new Date(message.timestamp).toLocaleDateString();
     if (!groupedMessages[date]) {
       groupedMessages[date] = [];
@@ -33,17 +33,17 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
   });
 
   return (
-    <div className="p-4 h-full overflow-y-auto">
-      <div className="flex items-center justify-center mb-6">
+    <div className="h-full overflow-y-auto p-4">
+      <div className="mb-6 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-2 relative">
-            <img 
-              src={activeConversation.avatar || '/default-avatar.png'} 
+          <div className="relative mx-auto mb-2 h-16 w-16">
+            <img
+              src={activeConversation.avatar || '/default-avatar.png'}
               alt={activeConversation.name}
-              className="w-full h-full rounded-full"
+              className="h-full w-full rounded-full"
             />
             {activeConversation.isOnline && (
-              <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></span>
+              <span className="absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-white bg-green-500"></span>
             )}
           </div>
           <h2 className="text-lg font-semibold">{activeConversation.name}</h2>
@@ -53,48 +53,48 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
         </div>
       </div>
 
-      {Object.keys(groupedMessages).map(date => (
+      {Object.keys(groupedMessages).map((date) => (
         <div key={date}>
-          <div className="flex justify-center my-4">
-            <span className="text-xs bg-gray-200 text-gray-600 px-3 py-1 rounded-full">
+          <div className="my-4 flex justify-center">
+            <span className="rounded-full bg-gray-200 px-3 py-1 text-xs text-gray-600">
               {date}
             </span>
           </div>
-          
-          {groupedMessages[date].map(message => {
+
+          {groupedMessages[date].map((message) => {
             const isCurrentUser = message.senderId === 'current-user-id';
-            
+
             return (
-              <div 
-                key={message.id} 
-                className={`flex mb-4 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
+              <div
+                key={message.id}
+                className={`mb-4 flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
               >
                 {!isCurrentUser && (
                   <div className="mr-2 flex-shrink-0">
-                    <img 
-                      src={activeConversation.avatar || '/default-avatar.png'} 
+                    <img
+                      src={activeConversation.avatar || '/default-avatar.png'}
                       alt={activeConversation.name}
-                      className="w-8 h-8 rounded-full"
+                      className="h-8 w-8 rounded-full"
                     />
                   </div>
                 )}
-                
-                <div 
-                  className={`max-w-[70%] px-4 py-2 rounded-lg ${
-                    isCurrentUser 
-                      ? 'bg-blue-500 text-white rounded-br-none' 
-                      : 'bg-gray-200 text-gray-800 rounded-bl-none'
+
+                <div
+                  className={`max-w-[70%] rounded-lg px-4 py-2 ${
+                    isCurrentUser
+                      ? 'rounded-br-none bg-blue-500 text-white'
+                      : 'rounded-bl-none bg-gray-200 text-gray-800'
                   }`}
                 >
                   <p>{message.content}</p>
-                  <div 
-                    className={`text-xs mt-1 ${
+                  <div
+                    className={`mt-1 text-xs ${
                       isCurrentUser ? 'text-blue-100' : 'text-gray-500'
                     }`}
                   >
                     {new Date(message.timestamp).toLocaleTimeString([], {
                       hour: '2-digit',
-                      minute: '2-digit'
+                      minute: '2-digit',
                     })}
                   </div>
                 </div>
@@ -103,10 +103,10 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
           })}
         </div>
       ))}
-      
+
       <div ref={messagesEndRef}></div>
     </div>
   );
 };
 
-export default ChatMessages; 
+export default ChatMessages;

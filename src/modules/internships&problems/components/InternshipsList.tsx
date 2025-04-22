@@ -2,10 +2,9 @@ import React from 'react';
 import { Link } from 'react-router';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Calendar, Heart, Briefcase, Clock } from 'lucide-react';
+import { MapPin, Heart, Briefcase, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
-import { Internship } from '../types/internshipsAndProblems.types';
 import { Opportunity } from '../types/opportunity.types';
 
 interface InternshipsListProps {
@@ -18,11 +17,17 @@ const InternshipsList: React.FC<InternshipsListProps> = ({ searchQuery }) => {
   // Filter internships based on search query
   const filteredInternships = searchQuery
     ? internships.filter(
-        (internship:Opportunity) =>
+        (internship: Opportunity) =>
           internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.company.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          internship.description.toLowerCase().includes(searchQuery.toLowerCase())
+          internship.company.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          internship.company.location
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          internship.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
       )
     : internships;
 
@@ -56,9 +61,12 @@ const InternshipsList: React.FC<InternshipsListProps> = ({ searchQuery }) => {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg bg-gray-50 p-8 text-center">
         <Briefcase className="mb-4 h-12 w-12 text-gray-400" />
-        <h3 className="text-lg font-medium text-gray-900">No internships found</h3>
+        <h3 className="text-lg font-medium text-gray-900">
+          No internships found
+        </h3>
         <p className="mt-2 text-gray-600">
-          Try adjusting your search query or filters to find what you're looking for.
+          Try adjusting your search query or filters to find what you're looking
+          for.
         </p>
       </div>
     );
@@ -90,7 +98,9 @@ const InternshipCard: React.FC<InternshipCardProps> = ({ internship }) => {
             />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">{internship.title}</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              {internship.title}
+            </h3>
             <p className="text-primary text-sm">{internship.company.name}</p>
             <div className="text-muted-foreground mt-1 flex items-center text-sm">
               <MapPin className="mr-1 h-3 w-3" />
@@ -132,7 +142,7 @@ const InternshipCard: React.FC<InternshipCardProps> = ({ internship }) => {
             <Button
               variant="outline"
               size="icon"
-              className={internship.isSaved? 'text-red-500' : ''}
+              className={internship.isSaved ? 'text-red-500' : ''}
             >
               <Heart className="h-4 w-4" />
             </Button>
@@ -146,4 +156,4 @@ const InternshipCard: React.FC<InternshipCardProps> = ({ internship }) => {
   );
 };
 
-export default InternshipsList; 
+export default InternshipsList;

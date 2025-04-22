@@ -3,33 +3,43 @@ import InfoCard from '../InfoCard';
 
 interface AboutMeProps {
   isEditing: boolean;
-  aboutMe:string;
+  text: string;
+  onTextChange: (text: string) => void;
 }
 
-const AboutMe = ({ isEditing ,aboutMe}: AboutMeProps) => {
-  const [aboutText, setAboutText] = useState(aboutMe);
+const AboutMe = ({ isEditing, text, onTextChange }: AboutMeProps) => {
+  const [inputText, setInputText] = useState(text);
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputText(e.target.value);
+  };
+
+  const handleAddItem = () => {
+    onTextChange(inputText);
+  };
 
   return (
     <InfoCard
-      onAdd={() => {}}
-      icon={'/assets/profile.svg'}
+      icon="/assets/profile.svg"
       name={'About Me'}
-      isAddeable={false}
+      isAddeable={isEditing}
+      onAdd={handleAddItem}
     >
       <div className="px-6 py-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">About Me</h2>
-          
-        </div>
         {isEditing ? (
-          <textarea
-            className="w-full p-2 border rounded-lg"
-            value={aboutText}
-            onChange={(e) => setAboutText(e.target.value)}
-            placeholder="Write something about yourself..."
-          />
+          <div className="space-y-4">
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#92E3A9]"
+              rows={4}
+              value={inputText}
+              onChange={handleTextChange}
+              placeholder="Tell us about yourself..."
+            />
+          </div>
         ) : (
-          <p className="text-gray-600">{aboutText || 'No information provided yet.'}</p>
+          <p className="text-gray-700 whitespace-pre-line">
+            {text || 'No information provided yet.'}
+          </p>
         )}
       </div>
     </InfoCard>

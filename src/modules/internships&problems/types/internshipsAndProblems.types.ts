@@ -32,24 +32,21 @@ export interface Problem {
   isSubmitted?: boolean;
 }
 
-
 export interface Company {
-  id: string;
+  id: number;
   name: string;
-  logo: string;
-  description: string;
-  location: string;
-  website: string;
-  industry: string;
-  size: 'Small' | 'Medium' | 'Large';
-  foundedIn: string;
-  createdAt: string;
-  activeInternships: number;
-  activeProblems: number;
+  email: string;
+  number: string | null;
+  type: string;
+  profilepic: string | null;
+  links: string | null;
+  date_joined: string;
+  location: string | null;
+  category: string | null;
 }
 
 export interface FilterOptions {
   category?: string;
   location?: string;
   status?: string;
-} 
+}

@@ -36,7 +36,9 @@ const internshipsAndProblemsService = {
   async fetchAppliedPosts(): Promise<Opportunity[]> {
     try {
       console.log('Fetching applied posts...');
-      const response = await axios.get<AppliedPostsApiResponse>(API_ENDPOINTS.APPLIED_POSTS);
+      const response = await axios.get<AppliedPostsApiResponse>(
+        API_ENDPOINTS.APPLIED_POSTS
+      );
       console.log('Applied posts response:', response);
       return response.data.post || [];
     } catch (error) {

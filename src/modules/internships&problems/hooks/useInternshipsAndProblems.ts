@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react';
 import internshipsAndProblemsService from '../services/internshipsAndProblems.service';
 import { Opportunity } from '../types/opportunity.types';
 
-
 export const useInternshipsAndProblems = (searchQuery: string = '') => {
   const [activeTab, setActiveTab] = useState('internships');
 
@@ -80,13 +79,7 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
       savedPosts: filterOpportunities(savedPosts),
       appliedInternships: filterOpportunities(appliedInternships),
     };
-  }, [
-    searchQuery,
-    internships,
-    problems,
-    savedPosts,
-    appliedInternships,
-  ]);
+  }, [searchQuery, internships, problems, savedPosts, appliedInternships]);
 
   const isLoading =
     (activeTab === 'internships' && isInternshipsLoading) ||

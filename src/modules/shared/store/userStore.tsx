@@ -1,38 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
+import { User } from '../types/shared.types';
 
-export interface ExperienceData{
-  id:string;
- company: string;
-    role: string;
-    startDate: string;
-    endDate: string | null;
-
-}
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-  profilepic: string | null;
-  type: string;
-  role: 'Student' | 'Professional' | 'Admin';
-  description:string 
-  skills: string[];
-  education: EducationData[];
-  experience: ExperienceData[],
-  date_joined:string
-  category:string
-  number:string|null
-}
-
-interface EducationData{
-  id:string;
-  degree:string;
-  institution:string;
-  startDate:string;
-  endDate:string|null;
-}
 
 interface UserStore {
   user: User | null;
@@ -43,21 +13,21 @@ interface UserStore {
 
 export const useUserStore = create<UserStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
-      login: (userData) => set({ user: userData }),
-      logout: () => {
-        logoutUser().catch((error) =>
-          console.error('Error during logout:', error)
-        );
-        set({ user: null });
-      },
-      updateUser: (updatedData) => {
-        const currentUser = get().user;
-        if (currentUser) {
-          set({ user: { ...currentUser, ...updatedData } });
+      login: (userData: User) => set({ user: userData }),
+      logout: async () => {
+        try {
+          await logoutUser();
+          set({ user: null });
+        } catch (error) {
+          console.error('Error logging out:', error);
         }
       },
+      updateUser: (updatedData: Partial<User>) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...updatedData } : null,
+        })),
     }),
     {
       name: 'user-storage',

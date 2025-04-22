@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Dialog, 
+  Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
@@ -14,20 +14,22 @@ import { Link } from 'react-router';
 interface ChooseUserTypeDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSelectType: (type: 'Student' | 'Professional') => Promise<void>; 
+  onSelectType: (type: 'Student' | 'Professional') => Promise<void>;
 }
 
-export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({ 
+export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({
   isOpen,
   onOpenChange,
-  onSelectType
+  onSelectType,
 }) => {
-  const [selectedType, setSelectedType] = useState<'Student' | 'Professional' | null>(null);
+  const [selectedType, setSelectedType] = useState<
+    'Student' | 'Professional' | null
+  >(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const userTypes = [
     { id: 'Student', label: 'Student' },
-    { id: 'Professional', label: 'Company' }
+    { id: 'Professional', label: 'Company' },
   ];
 
   const handleSelect = (type: 'Student' | 'Professional') => {
@@ -43,10 +45,12 @@ export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({
     try {
       await onSelectType(selectedType);
       toast.success('Account type updated successfully!');
-      onOpenChange(false); 
+      onOpenChange(false);
     } catch (error) {
-      console.error("Failed to update user type:", error);
-      toast.error((error as Error)?.message || 'Failed to update account type.');
+      console.error('Failed to update user type:', error);
+      toast.error(
+        (error as Error)?.message || 'Failed to update account type.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -57,42 +61,45 @@ export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}} >
-      <DialogContent  
-        className="sm:max-w-md !bg-white [&>button]:hidden"
+    <Dialog open={isOpen} onOpenChange={() => {}}>
+      <DialogContent
+        className="!bg-white sm:max-w-md [&>button]:hidden"
         onInteractOutside={handleInteractOutside}
         onEscapeKeyDown={handleInteractOutside}
       >
         <DialogHeader>
           <DialogTitle>Choose Your Account Type</DialogTitle>
           <DialogDescription className="text-gray-500">
-            Please select the type that best describes you to personalize your experience.
+            Please select the type that best describes you to personalize your
+            experience.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6">
+        <div className="grid grid-cols-1 gap-4 py-6 sm:grid-cols-2">
           {userTypes.map((type) => (
-            <Button 
+            <Button
               key={type.id}
               variant={selectedType === type.id ? 'default' : 'outline'}
-              onClick={() => handleSelect(type.id as 'Student' | 'Professional')}
-              className={`h-12 rounded-full text-lg   ${selectedType === type.id ? '!bg-primary !text-white' : '!bg-gray-100/30 !text-primary !border-none'}`}
+              onClick={() =>
+                handleSelect(type.id as 'Student' | 'Professional')
+              }
+              className={`h-12 rounded-full text-lg ${selectedType === type.id ? '!bg-primary !text-white' : '!text-primary !border-none !bg-gray-100/30'}`}
             >
               {type.label}
             </Button>
           ))}
         </div>
         <DialogFooter className="flex !flex-col gap-2">
-          <Button 
-            type="button" 
-            onClick={handleSubmit} 
+          <Button
+            type="button"
+            onClick={handleSubmit}
             disabled={!selectedType || isLoading}
-            className="w-full !bg-primary hover:!bg-primary/90 !text-white"
+            className="!bg-primary hover:!bg-primary/90 w-full !text-white"
           >
             {isLoading ? 'Saving...' : 'Confirm Account Type'}
           </Button>
-          <Link 
-            to="/auth/signin" 
-            className="text-center text-sm text-gray-500 hover:text-primary transition-colors"
+          <Link
+            to="/auth/signin"
+            className="hover:text-primary text-center text-sm text-gray-500 transition-colors"
           >
             Sign in
           </Link>

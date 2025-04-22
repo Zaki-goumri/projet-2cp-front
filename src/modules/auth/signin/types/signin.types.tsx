@@ -1,4 +1,4 @@
-import { User } from '@/modules/shared/store/userStore';
+import { User } from '@/modules/shared/types/shared.types';
 
 export type LoginResponse = {
   user: User;

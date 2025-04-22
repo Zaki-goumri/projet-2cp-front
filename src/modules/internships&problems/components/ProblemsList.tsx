@@ -1,10 +1,9 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Heart, Filter, Code, Calendar } from 'lucide-react';
+import { Heart, Code, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
-import { Problem } from '../types/internshipsAndProblems.types';
 import { Opportunity } from '../types/opportunity.types';
 interface ProblemsListProps {
   searchQuery: string;
@@ -16,11 +15,15 @@ const ProblemsList: React.FC<ProblemsListProps> = ({ searchQuery }) => {
   // Filter problems based on search query
   const filteredProblems = searchQuery
     ? problems.filter(
-        (problem:Opportunity) =>
+        (problem: Opportunity) =>
           problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          problem.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          problem.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          problem.category.toLowerCase().includes(searchQuery.toLowerCase()) 
+          problem.company.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          problem.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          problem.category.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : problems;
 
@@ -56,7 +59,8 @@ const ProblemsList: React.FC<ProblemsListProps> = ({ searchQuery }) => {
         <Code className="mb-4 h-12 w-12 text-gray-400" />
         <h3 className="text-lg font-medium text-gray-900">No problems found</h3>
         <p className="mt-2 text-gray-600">
-          Try adjusting your search query or filters to find what you're looking for.
+          Try adjusting your search query or filters to find what you're looking
+          for.
         </p>
       </div>
     );
@@ -76,12 +80,6 @@ interface ProblemCardProps {
 }
 
 const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
-  const difficultyColors = {
-    Easy: 'text-green-600 bg-green-50',
-    Medium: 'text-yellow-600 bg-yellow-50',
-    Hard: 'text-red-600 bg-red-50',
-  };
-
   return (
     <Card className="overflow-hidden transition-transform duration-200 hover:shadow-md">
       <div className="p-4">
@@ -94,10 +92,14 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
             />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">{problem.title}</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              {problem.title}
+            </h3>
             <p className="text-primary text-sm">{problem.company.name}</p>
             <div className="mt-1 flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">{problem.category}</span>
+              <span className="text-muted-foreground text-xs">
+                {problem.category}
+              </span>
             </div>
           </div>
         </div>
@@ -109,7 +111,12 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="text-muted-foreground h-4 w-4" />
-            <span className="text-muted-foreground">Deadline: {problem.endday ? new Date(problem.endday).toLocaleDateString() : 'No deadline'}</span>
+            <span className="text-muted-foreground">
+              Deadline:{' '}
+              {problem.endday
+                ? new Date(problem.endday).toLocaleDateString()
+                : 'No deadline'}
+            </span>
           </div>
 
           <div className="flex space-x-2">
@@ -128,4 +135,4 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
   );
 };
 
-export default ProblemsList; 
+export default ProblemsList;
