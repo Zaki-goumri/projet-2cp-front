@@ -99,6 +99,7 @@ const ProfilePage = () => {
               <Resume 
                 isEditing={isEditing} 
                 onResumeChange={setResume} 
+                cv={data?.cv}
               />
             </div>
           </div>

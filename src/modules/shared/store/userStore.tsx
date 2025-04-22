@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
+import { Attachment } from '../types/attachement';
 
 export interface ExperienceData{
   id:string;
@@ -21,7 +22,8 @@ export interface User {
   skills: string[];
   education: ExperienceData[];
   experience: ExperienceData[],
-  date_joined:string
+  date_joined:string,
+  cv?: Attachment
 }
 
 interface UserStore {
