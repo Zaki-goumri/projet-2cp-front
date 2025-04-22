@@ -1,24 +1,7 @@
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  number: null;
-  type: string;
-  profilepic: null;
-  date_joined: string;
-  category: string;
-};
+import { User } from '@/modules/shared/store/userStore';
+
 export type LoginResponse = {
-  user: {
-    id: number;
-    name: string;
-    email: string;
-    number: null;
-    type: string;
-    profilepic: null;
-    date_joined: string;
-    category: string;
-  };
+  user: User;
   refresh: string;
   access: string;
 };

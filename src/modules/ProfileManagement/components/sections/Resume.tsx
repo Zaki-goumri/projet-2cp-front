@@ -1,13 +1,7 @@
 import React, { useRef, useState } from 'react';
 import InfoCard from '../InfoCard';
+import { ResumeFile } from '../../types/profile.types';
 
-interface ResumeFile {
-  id: string;
-  name: string;
-  type: string;
-  date: string;
-  size: string;
-}
 
 const ResumeList = ({isEditing}:ResumeProps) => {
   const [resumes, setResumes] = useState<ResumeFile[]>([
@@ -25,7 +19,6 @@ const ResumeList = ({isEditing}:ResumeProps) => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Convert size to MB
       const size = (file.size / (1024 * 1024)).toFixed(1);
       
       const newResume: ResumeFile = {

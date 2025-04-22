@@ -25,3 +25,7 @@ export interface Opportunity {
   created_at: string;
   duration: string | null;
 }
+
+export interface AppliedPostsApiResponse {
+  post?: Opportunity[]; 
+}

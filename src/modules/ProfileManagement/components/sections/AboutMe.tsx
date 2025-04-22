@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Edit2, Plus } from 'lucide-react';
 import InfoCard from '../InfoCard';
-import { User } from '@/modules/auth/signin/types/signin.types';
 
 interface AboutMeProps {
   isEditing: boolean;

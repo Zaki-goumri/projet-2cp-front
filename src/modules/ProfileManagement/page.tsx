@@ -8,7 +8,7 @@ import Resume from './components/sections/Resume';
 import { Button } from '@/components/ui/button';
 import { Edit2, Save, X } from 'lucide-react';
 import { useUserStore } from '../shared/store/userStore';
-import { User } from '../auth/signin/types/signin.types';
+import { User } from '../shared/store/userStore';
 import { Params, useParams } from 'react-router';
 import { useEffect } from 'react';
 
@@ -28,10 +28,12 @@ const ProfilePage = () => {
     name: '',
     email: '',
     date_joined: '2025-05-03',
-    category: 'test',
     type: 'dla3',
-    profilepic: null,
-    number: null,
+    picture: null,
+    role: 'Student',
+    skills: [],
+    education: [],
+    experience: [],
   };
   const {userName} =useParams<ParamsType>()
     return (

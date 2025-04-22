@@ -1,17 +1,10 @@
 import React, { useRef, useState } from 'react';
-import ProfileCard from './profileCard';
 import { Button } from '@/components/ui/button';
 import { Edit2, Save, Camera } from 'lucide-react';
-import { User } from '@/modules/shared/store/userStore';
+import { ProfileInfoProps } from '../types/profile.types';
 
-interface ProfileInfoProps {
-  isEditing: boolean;
-  onEditToggle: () => void;
-  user?:User
-  isUserProfile:Boolean
-}
 
-const MAX_FILE_SIZE = 5000000; // 5MB
+const MAX_FILE_SIZE = 5000000; 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 function ProfileInfo({ isEditing, onEditToggle,user ,isUserProfile}: ProfileInfoProps) {

@@ -1,12 +1,7 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { TeamProjectProps } from '../types/teams.types';
 
-interface TeamProjectProps {
-  name: string;
-  members: number;
-  description: string;
-  onViewDetails?: () => void;
-}
 
 const TeamProject: React.FC<TeamProjectProps> = ({ 
   name, 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { baseUrl } from '@/api/axios.config';
 import { useUserStore } from '@/modules/shared/store/userStore';
+
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -23,11 +24,7 @@ const OAuthCallback = () => {
         const formData = new URLSearchParams();
         formData.append('code', code);
 
-        const response = await axios.post(`${baseUrl}/Auth/google`, formData, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        });
+        const response = await axios.post(`${baseUrl}/Auth/google`, formData);
 
         setUser(response.data.user);
         document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=3600`;
@@ -46,11 +43,11 @@ const OAuthCallback = () => {
   }, [navigate]);
 
   return (
-    <div className="h-screen w-screen bg-white flex items-center justify-center">
+    <div className="flex h-screen w-screen items-center justify-center bg-white">
       {loading && (
         <div className="text-center">
-          <p className="text-lg mb-2">Processing your login...</p>
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mb-2 text-lg">Processing your login...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
         </div>
       )}
     </div>
@@ -58,3 +55,4 @@ const OAuthCallback = () => {
 };
 
 export default OAuthCallback;
+

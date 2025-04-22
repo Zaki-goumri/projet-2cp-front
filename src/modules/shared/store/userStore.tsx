@@ -6,7 +6,7 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  picture: string;
+  picture: string | null;
   type: string;
   role: 'Student' | 'Professional' | 'Admin';
   skills: string[];
@@ -23,6 +23,7 @@ export interface User {
     endDate: string | null;
   }[],
   date_joined:string
+  category?:string
 }
 
 interface UserStore {
