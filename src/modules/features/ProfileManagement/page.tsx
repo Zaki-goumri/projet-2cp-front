@@ -7,14 +7,47 @@ import Education from './components/sections/Education';
 import Resume from './components/sections/Resume';
 import { Button } from '@/components/ui/button';
 import { Edit2, Save, X } from 'lucide-react';
+import { useProfileUpdate } from '../../hooks/useUserService';
+import { useUserStore } from '@/modules/shared/store/userStore';
 
 const NavBar = lazy(() => import('@/modules/shared/components/navBar'));
 
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const { user } = useUserStore();
+  const { updateProfile, isLoading } = useProfileUpdate();
+  
+  // State for all sections
+  const [aboutMe, setAboutMe] = useState(user?.description || '');
+  const [experiences, setExperiences] = useState(user?.experience || []);
+  const [education, setEducation] = useState(user?.education || []);
+  const [resume, setResume] = useState<File | null>(null);
+  const [profilePic, setProfilePic] = useState<File | null>(null);
 
   const handleEditToggle = () => {
+    if (isEditing) {
+      // Save changes when exiting edit mode
+      handleSaveChanges();
+    }
     setIsEditing(!isEditing);
+  };
+
+  const handleSaveChanges = () => {
+    const updateData: any = {
+      description: aboutMe,
+      experience: experiences,
+      education: education,
+    };
+    
+    if (resume) {
+      updateData.cv = resume;
+    }
+    
+    if (profilePic) {
+      updateData.profilepic = profilePic;
+    }
+    
+    updateProfile(updateData);
   };
 
   return (
@@ -30,11 +63,12 @@ const ProfilePage = () => {
                   ? 'bg-gray-200 hover:bg-gray-300 text-gray-800' 
                   : 'bg-[#92E3A9] hover:bg-[#7ED196] text-white'
               }`}
+              disabled={isLoading}
             >
               {isEditing ? (
                 <>
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel Editing
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
                 </>
               ) : (
                 <>
@@ -45,12 +79,30 @@ const ProfilePage = () => {
             </Button>
           </div>
 
-          <ProfileInfo />
+          <ProfileInfo 
+            isEditing={isEditing} 
+            onProfilePicChange={setProfilePic} 
+          />
           <div className="mt-3 space-y-3 md:space-y-4">
-            <AboutMe isEditing={isEditing} />
-            <Experience isEditing={isEditing} />
-            <Education isEditing={isEditing} />
-            <Resume isEditing={isEditing} />
+            <AboutMe 
+              isEditing={isEditing} 
+              text={aboutMe} 
+              onTextChange={setAboutMe} 
+            />
+            <Experience 
+              isEditing={isEditing} 
+              experiences={experiences} 
+              onExperiencesChange={setExperiences} 
+            />
+            <Education 
+              isEditing={isEditing} 
+              education={education} 
+              onEducationChange={setEducation} 
+            />
+            <Resume 
+              isEditing={isEditing} 
+              onResumeChange={setResume} 
+            />
           </div>
         </div>
       </section>
