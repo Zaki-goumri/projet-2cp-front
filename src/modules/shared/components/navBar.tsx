@@ -8,7 +8,6 @@ import {
   Bell,
   LayoutDashboard,
   User,
-  Building2,
   Code,
   Users,
   Clock,
@@ -204,7 +203,10 @@ export default function NavBar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger className="mb-2 focus:outline-none">
                     <Avatar className="cursor-pointer rounded-full transition-colors duration-200 hover:bg-gray-100">
-                      <AvatarImage src={user.profilepic} className="!bg-white" />
+                      <AvatarImage
+                        src={user.profilepic || ''}
+                        className="!bg-white"
+                      />
                       <AvatarFallback className="!bg-neutral-200">
                         {user.name.slice(0, 2)}
                       </AvatarFallback>

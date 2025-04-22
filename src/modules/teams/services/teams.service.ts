@@ -1,10 +1,11 @@
 import axios from '@/api/axios.config';
 import { TeamResponse, Team, CreateTeamRequest } from '../types/teams.types';
+import { Invitation } from '../types/teams.types';
 
 export const teamsService = {
-  async getTeams(): Promise<TeamResponse> {
-    const response = await axios.get(`/teams`);
-    return response.data;
+  async getTeams(): Promise<Team[]> {
+    const response = await axios.get<TeamResponse>(`/post/team/`);
+    return response.data.results;
   },
 
   async getTeamById(id: string): Promise<Team> {
@@ -12,15 +13,12 @@ export const teamsService = {
     return response.data;
   },
 
-  async createTeam(teamData: CreateTeamRequest): Promise<Team> {
-    const response = await axios.post('/post/team/', teamData);
-    return response.data;
-  },
 
   async post_team_create(data: {
-    id: number;
     name: string;
     emails: string[];
+    description: string;
+    category: string;
   }): Promise<Team> {
     const response = await axios.post(`/post/team/`, data );
     return response.data;
@@ -28,6 +26,19 @@ export const teamsService = {
 
   async inviteMembers(teamId: string, emails: string[]): Promise<void> {
     await axios.post(`/teams/${teamId}/invite`, { emails });
+  },
+
+  async getInvitations(): Promise<Invitation[]> {
+    const response = await axios.get<Invitation[]>('/teams/invitations');
+    return response.data;
+  },
+
+  async acceptInvitation(invitationId: string): Promise<void> {
+    await axios.post(`/teams/invitations/${invitationId}/accept`);
+  },
+
+  async declineInvitation(invitationId: string): Promise<void> {
+    await axios.post(`/teams/invitations/${invitationId}/decline`);
   },
 
   async joinTeam(teamId: string): Promise<void> {

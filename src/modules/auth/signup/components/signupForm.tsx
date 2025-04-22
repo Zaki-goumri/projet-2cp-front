@@ -24,7 +24,6 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
 import useSignup from '@/modules/auth/signup/hooks/useSignup';
 import { RegisterRequest } from '../types/signup.types';
-import { toast } from 'react-toastify';
 
 const formSchema = z
   .object({
@@ -64,10 +63,11 @@ const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { mutate, isLoading, error } = useSignup();
+  const { mutate, isLoading } = useSignup();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { confirmPassword, phoneNumber, ...registrationData } = values;
+    console.log('Registration Data:', confirmPassword, phoneNumber); //for stopping never used error currently
     mutate(registrationData as RegisterRequest);
   };
 
@@ -80,13 +80,18 @@ const SignUpForm = () => {
               <img src="/assets/logo.svg" alt="Logo" className="h-10 w-auto" />
             </div>
 
-            <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">Create an account</h1>
+            <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">
+              Create an account
+            </h1>
             <p className="mb-8 text-center text-sm text-gray-600">
               Join us to start posting jobs and building your remote team
             </p>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="email"
@@ -94,11 +99,11 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 " />
+                          <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Email"
                             type="email"
-                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pr-4 pl-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                             {...field}
                           />
                         </div>
@@ -115,11 +120,11 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <User className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Full Name"
                             type="text"
-                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pr-4 pl-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                             {...field}
                           />
                         </div>
@@ -136,11 +141,11 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <Phone className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Phone Number"
                             type="tel"
-                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pr-4 pl-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                             {...field}
                           />
                         </div>
@@ -157,17 +162,17 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <Lock className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Password"
-                            type={showPassword ? "text" : "password"}
-                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            type={showPassword ? 'text' : 'password'}
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pr-10 pl-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                             {...field}
                           />
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                           >
                             {showPassword ? (
                               <EyeOff className="h-5 w-5" />
@@ -189,17 +194,19 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <Lock className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Confirm Password"
-                            type={showConfirmPassword ? "text" : "password"}
-                            className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            className="h-12 rounded-lg !border-none bg-gray-50/50 pr-10 pl-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                             {...field}
                           />
                           <button
                             type="button"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                           >
                             {showConfirmPassword ? (
                               <EyeOff className="h-5 w-5" />
@@ -221,20 +228,20 @@ const SignUpForm = () => {
                     <FormItem>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                          <User className="absolute top-1/2 left-3 z-10 h-5 w-5 -translate-y-1/2 text-gray-400" />
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
-                            <SelectTrigger className="h-12 rounded-lg !border-none bg-gray-50/50 pl-10 pr-4 !text-gray-400  focus:ring focus:ring-[#98E9AB]/20">
+                            <SelectTrigger className="h-12 rounded-lg !border-none bg-gray-50/50 pr-4 pl-10 !text-gray-400 focus:ring focus:ring-[#98E9AB]/20">
                               <SelectValue placeholder="Account Type" />
                             </SelectTrigger>
-                            <SelectContent className="!bg-white !border-none">
+                            <SelectContent className="!border-none !bg-white">
                               {['student', 'company'].map((type) => (
                                 <SelectItem
                                   key={type}
                                   value={type}
-                                  className="focus:bg-[#98E9AB]/10 !text-gray-400 !border-none  !bg-white"
+                                  className="!border-none !bg-white !text-gray-400 focus:bg-[#98E9AB]/10"
                                 >
                                   {type.charAt(0).toUpperCase() + type.slice(1)}
                                 </SelectItem>
@@ -253,7 +260,7 @@ const SignUpForm = () => {
                   disabled={isLoading}
                   className="!mt-6 !h-12 !w-full !rounded-lg !bg-[#98E9AB] !font-medium !text-white !shadow-md !shadow-[#98E9AB]/20 !transition-all hover:!bg-[#7ad98e] hover:!shadow-lg hover:!shadow-[#98E9AB]/30 disabled:!bg-gray-300 disabled:!shadow-none"
                 >
-                  {isLoading ? "Creating account..." : "Create account"}
+                  {isLoading ? 'Creating account...' : 'Create account'}
                 </Button>
               </form>
             </Form>

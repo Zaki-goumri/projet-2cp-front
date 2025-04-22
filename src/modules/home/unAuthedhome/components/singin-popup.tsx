@@ -29,7 +29,6 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [isEmailView, setIsEmailView] = useState(false);
-  
   const {
     register,
     handleSubmit,
@@ -115,9 +114,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     type="email"
                     id="email"
                     {...register('email')}
-                    className={`focus:border-primary focus:ring-primary w-full rounded-xl border px-4 py-3 transition-colors focus:ring-1 ${
-                      errors.email ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`focus:border-primary focus:ring-primary w-full rounded-xl border px-4 py-3 transition-colors focus:ring-1 ${errors.email ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Enter your email"
                   />
                   {errors.email && (
@@ -138,9 +136,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     type="password"
                     id="password"
                     {...register('password')}
-                    className={`focus:border-primary focus:ring-primary w-full rounded-xl border px-4 py-3 transition-colors focus:ring-1 ${
-                      errors.password ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`focus:border-primary focus:ring-primary w-full rounded-xl border px-4 py-3 transition-colors focus:ring-1 ${errors.password ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Enter your password"
                   />
                   {errors.password && (

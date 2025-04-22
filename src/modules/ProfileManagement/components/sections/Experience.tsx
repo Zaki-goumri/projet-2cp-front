@@ -52,13 +52,14 @@ const Experience = ({ isEditing, experiences, onExperiencesChange }: ExperienceP
         onAdd={handleAdd}
       >
         <div className="px-6 py-4">
+          {' '}
           {experiences.length === 0 ? (
             <p className="text-gray-600">No experience added yet.</p>
           ) : (
             <div className="space-y-4">
               {experiences.map((exp) => (
-                <div key={exp.id} className="border-[#92E3A9] rounded-lg p-4">
-                  <div className="flex justify-between items-start">
+                <div key={exp.id} className="rounded-lg border-[#92E3A9] p-4">
+                  <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold">{exp.company}</h3>
                       <p className="text-gray-600">{exp.role}</p>

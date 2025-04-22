@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { serialize } from 'cookie';
-import { LoginRequest, User, LoginResponse } from '../types/signin.types';
+import { LoginRequest, LoginResponse } from '../types/signin.types';
 import { baseUrl } from '@/api/axios.config';
+import { User } from '@/modules/shared/types/shared.types';
 
 export const loginUser = async (data: LoginRequest): Promise<User> => {
   try {
@@ -18,6 +19,7 @@ export const loginUser = async (data: LoginRequest): Promise<User> => {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
     return response.data.user;
+
   } catch (error) {
     console.error('Login Error:', error);
     throw error;
@@ -36,9 +38,6 @@ export const logoutUser = async (): Promise<void> => {
       expires: new Date(0),
       path: '/',
     });
-
-    // Optional: Call logout endpoint if your API requires it
-    // await axios.post('/Auth/Logout');
   } catch (error) {
     console.error('Logout Error:', error);
     throw error;

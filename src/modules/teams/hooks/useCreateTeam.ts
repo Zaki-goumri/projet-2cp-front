@@ -7,9 +7,10 @@ export const useCreateTeam = () => {
     mutationFn: async (teamData) => {
       try {
         return await teamsService.post_team_create({
-          id: 0, 
           name: teamData.name,
-          emails: teamData.emails
+          emails: teamData.emails,
+          description: teamData.description,
+          category: teamData.category
         });
       } catch (err) {
         const error: TeamApiError = {

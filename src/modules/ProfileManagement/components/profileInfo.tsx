@@ -1,10 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit2, Save, Camera, X } from 'lucide-react';
-import { User } from '@/modules/shared/store/userStore';
-import { useUpdateUser } from '../hooks/useUserService';
+import { User } from '@/modules/shared/types/shared.types';
 import Spinner from '@/modules/shared/components/Spinner';
-import { UpdateUserData } from '../services/userService';
 
 interface ProfileInfoProps {
   isUserProfile: boolean;
@@ -18,16 +16,32 @@ interface ProfileInfoProps {
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
 
-function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePicChange,onSave,isEditingLoading,onCancel }: ProfileInfoProps) {
-  const profilePlaceHolder = "/assets/profile-placeholder.png";
+function ProfileInfo({
+  isEditing,
+  onEditToggle,
+  user,
+  isUserProfile,
+  onProfilePicChange,
+  onSave,
+  isEditingLoading,
+  onCancel,
+}: ProfileInfoProps) {
+  const profilePlaceHolder = '/assets/profile-placeholder.png';
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImage, setProfileImage] = useState<string | null>(user?.profilepic ?? profilePlaceHolder);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    user?.profilepic ?? profilePlaceHolder
+  );
+  const [, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
-    const handleImageClick = () => {
+
+  const handleImageClick = () => {
     if (isEditing) {
       fileInputRef.current?.click();
     }
@@ -55,22 +69,21 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
     onProfilePicChange(file);
   };
 
-
   return (
     <div className="flex flex-col rounded-xl bg-white p-4 md:p-6 lg:p-8">
       <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
         <div className="relative">
-          <div 
-            className={`relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#92E3A9] ${isEditing ? 'cursor-pointer' : ''}`}
+          <div
+            className={`relative h-32 w-32 overflow-hidden rounded-full border-4 border-[#92E3A9] ${isEditing ? 'cursor-pointer' : ''}`}
             onClick={handleImageClick}
           >
-            <img 
-              src={profileImage || profilePlaceHolder} 
-              className="w-full h-full object-cover"
+            <img
+              src={profileImage || profilePlaceHolder}
+              className="h-full w-full object-cover"
             />
             {isEditing && (
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
-                <Camera className="w-8 h-8 text-white" />
+              <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center bg-black opacity-0 transition-opacity duration-200 hover:opacity-100">
+                <Camera className="h-8 w-8 text-white" />
               </div>
             )}
           </div>
@@ -81,18 +94,20 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
             ref={fileInputRef}
             onChange={handleFileChange}
           />
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
         </div>
-        <div className="mt-4 md:mt-0 flex-1">
+        <div className="mt-4 flex-1 md:mt-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">{user?.name}</h1>
+            <h1 className="text-2xl font-semibold text-gray-900 md:text-3xl">
+              {user?.name}
+            </h1>
             {isUserProfile && (
-              <div className="mt-3 sm:mt-0 flex space-x-2">
+              <div className="mt-3 flex space-x-2 sm:mt-0">
                 {isEditing ? (
                   <>
                     <Button
                       onClick={onSave}
-                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
+                      className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
                       disabled={isEditingLoading}
                     >
                       {isEditingLoading ? (
@@ -106,7 +121,7 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
                     </Button>
                     <Button
                       onClick={onCancel}
-                      className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-gray-200 hover:bg-gray-300"
+                      className="flex items-center justify-center space-x-2 rounded-xl bg-gray-200 px-4 py-2 transition-colors duration-200 hover:bg-gray-300"
                     >
                       <X className="h-5 w-5" />
                       <span className="text-sm font-semibold">Cancel</span>
@@ -115,7 +130,7 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
                 ) : (
                   <Button
                     onClick={onEditToggle}
-                    className="flex items-center justify-center space-x-2 rounded-xl transition-colors duration-200 py-2 px-4 bg-[#92E3A9] hover:bg-[#7ED196]"
+                    className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
                   >
                     <Edit2 className="h-5 w-5" />
                     <span className="text-sm font-semibold">Edit Profile</span>
@@ -128,21 +143,21 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
         </div>
       </div>
 
-      <div className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center justify-center sm:space-x-8 md:space-x-16 lg:space-x-24">
-        <div className="flex flex-col items-center mb-4 sm:mb-0">
+      <div className="mt-6 flex flex-col items-center justify-center sm:flex-row sm:space-x-8 md:mt-8 md:space-x-16 lg:space-x-24">
+        <div className="mb-4 flex flex-col items-center sm:mb-0">
           <p className="text-xl font-bold text-gray-800">80</p>
           <p className="text-sm text-gray-500">InternShips</p>
         </div>
-        
-        <div className="hidden sm:block w-px h-10 bg-gray-200"></div>
-        
-        <div className="flex flex-col items-center mb-4 sm:mb-0">
+
+        <div className="hidden h-10 w-px bg-gray-200 sm:block"></div>
+
+        <div className="mb-4 flex flex-col items-center sm:mb-0">
           <p className="text-xl font-bold text-gray-800">{user?.date_joined}</p>
           <p className="text-sm text-gray-500">Member Since</p>
         </div>
-        
-        <div className="hidden sm:block w-px h-10 bg-gray-200"></div>
-        
+
+        <div className="hidden h-10 w-px bg-gray-200 sm:block"></div>
+
         <div className="flex flex-col items-center">
           <p className="text-xl font-bold text-gray-800">60%</p>
           <p className="text-sm text-gray-500">Profile Strength</p>
