@@ -4,10 +4,11 @@ import { Edit2, Trash2 } from 'lucide-react';
 import InfoCard from '../InfoCard';
 import AddItemModal from '../modals/AddItemModal';
 import { ExperienceData } from '@/modules/shared/store/userStore';
+import { useProfileUpdate } from '../../hooks/useUserService';
 
 interface ExperienceProps {
   isEditing: boolean;
-  userExperiences:ExperienceData[];
+  userExperiences: ExperienceData[];
 }
 
 interface ExperienceItem {
@@ -18,12 +19,15 @@ interface ExperienceItem {
   endDate:string;
 }
 
-const Experience = ({ isEditing ,userExperiences}: ExperienceProps) => {
+const Experience = ({ isEditing, userExperiences }: ExperienceProps) => {
   const [experiences, setExperiences] = useState<ExperienceData[]>(userExperiences);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { updateProfile, isLoading } = useProfileUpdate();
 
   const handleDelete = (id: string) => {
-    setExperiences(experiences.filter(exp => exp.id !== id));
+    const updatedExperiences = experiences.filter(exp => exp.id !== id);
+    setExperiences(updatedExperiences);
+    updateProfile({ experience: updatedExperiences });
   };
 
   const handleAdd = () => {
@@ -31,21 +35,23 @@ const Experience = ({ isEditing ,userExperiences}: ExperienceProps) => {
   };
 
   const handleModalSubmit = (data: any) => {
-    const newExperience: ExperienceData= {
+    const newExperience: ExperienceData = {
       id: Date.now().toString(),
       role: data.role,
       company: data.company,
-      startDate:data.startDate,
-      endDate:data.endDate
+      startDate: data.startDate,
+      endDate: data.endDate
     };
-    setExperiences([...experiences, newExperience]);
+    const updatedExperiences = [...experiences, newExperience];
+    setExperiences(updatedExperiences);
+    updateProfile({ experience: updatedExperiences });
     setIsModalOpen(false);
   };
 
   return (
     <>
       <InfoCard
-        icon={'/assets/bag.svg'}
+        icon="/assets/bag.svg"
         name={'Internship Experience'}
         isAddeable={isEditing}
         onAdd={handleAdd}
@@ -61,16 +67,19 @@ const Experience = ({ isEditing ,userExperiences}: ExperienceProps) => {
                     <div>
                       <h3 className="font-semibold">{exp.role}</h3>
                       <p className="text-gray-600">{exp.company}</p>
-                      <p className="text-sm text-gray-500">{exp.startDate} -  {exp.endDate}</p>
-
-
+                      <p className="text-sm text-gray-500">{exp.startDate} - {exp.endDate}</p>
                     </div>
                     {isEditing && (
                       <div className="flex space-x-2">
                         <Button variant="ghost" size="sm">
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(exp.id)}>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handleDelete(exp.id)}
+                          disabled={isLoading}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

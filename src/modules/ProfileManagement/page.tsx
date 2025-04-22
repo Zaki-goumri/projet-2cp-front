@@ -45,7 +45,7 @@ const ProfilePage = () => {
             <div className="mt-3 space-y-3 md:space-y-4">
               <AboutMe isEditing={isEditing} aboutMe={data?.description ?? ""} />
               <Experience isEditing={isEditing} userExperiences={data?.experience ?? []} />
-              <Education isEditing={isEditing} />
+              <Education isEditing={isEditing} userEducation={data?.education ?? []} />
               <Resume isEditing={isEditing} />
             </div>
           </div>
