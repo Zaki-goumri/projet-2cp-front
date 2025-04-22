@@ -23,16 +23,7 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/web
 function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePicChange,onSave,isEditingLoading,onCancel }: ProfileInfoProps) {
   const profilePlaceHolder = "/assets/profile-placeholder.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImage, setProfileImage] = useState<string>(profilePlaceHolder);
-
-  const isValidBlobUrl = (url: string): boolean => {
-    try {
-      const parsedUrl = new URL(url);
-      return parsedUrl.protocol === 'blob:' && parsedUrl.origin === window.location.origin;
-    } catch {
-      return false;
-    }
-  };
+  const [profileImage, setProfileImage] = useState<string | null>(user?.profilepic ?? profilePlaceHolder);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   
@@ -60,12 +51,7 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
 
     setError(null);
     setSelectedFile(file);
-    const objectUrl = URL.createObjectURL(file);
-    if (isValidBlobUrl(objectUrl)) {
-      setProfileImage(objectUrl);
-    } else {
-      setError('Invalid file URL');
-    }
+    setProfileImage(URL.createObjectURL(file));
     onProfilePicChange(file);
   };
 
@@ -79,7 +65,7 @@ function ProfileInfo({ isEditing, onEditToggle, user, isUserProfile, onProfilePi
             onClick={handleImageClick}
           >
             <img 
-              src={isValidBlobUrl(profileImage) ? profileImage : profilePlaceHolder} 
+              src={profileImage || profilePlaceHolder} 
               className="w-full h-full object-cover"
             />
             {isEditing && (
