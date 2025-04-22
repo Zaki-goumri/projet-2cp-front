@@ -1,10 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { loginUser } from '../services/singin.services';
-import { User, LoginRequest } from '../types/signin.types';
+import { LoginRequest } from '../types/signin.types';
 import { useUserStore } from '@/modules/shared/store/userStore';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
+import {User} from '@/modules/shared/store/userStore'
 
 const useSignin = (redirectPath?: string) => {
   const setUser = useUserStore((state) => state.login);

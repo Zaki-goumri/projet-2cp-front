@@ -5,7 +5,7 @@ import { Heart, Filter, Code, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
 import { Problem } from '../types/internshipsAndProblems.types';
-
+import { Opportunity } from '../types/opportunity.types';
 interface ProblemsListProps {
   searchQuery: string;
 }
@@ -16,12 +16,11 @@ const ProblemsList: React.FC<ProblemsListProps> = ({ searchQuery }) => {
   // Filter problems based on search query
   const filteredProblems = searchQuery
     ? problems.filter(
-        (problem) =>
+        (problem:Opportunity) =>
           problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          problem.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          problem.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           problem.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          problem.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          problem.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+          problem.category.toLowerCase().includes(searchQuery.toLowerCase()) 
       )
     : problems;
 
@@ -73,7 +72,7 @@ const ProblemsList: React.FC<ProblemsListProps> = ({ searchQuery }) => {
 };
 
 interface ProblemCardProps {
-  problem: Problem;
+  problem: Opportunity;
 }
 
 const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
@@ -89,18 +88,15 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
         <div className="flex items-start gap-4">
           <div className="rounded-lg bg-white p-3 shadow-sm">
             <img
-              src={problem.companyLogo}
+              src={problem.company.profilepic || ''}
               alt={`${problem.company} logo`}
               className="h-10 w-10 object-contain"
             />
           </div>
           <div>
             <h3 className="text-lg font-medium text-gray-900">{problem.title}</h3>
-            <p className="text-primary text-sm">{problem.company}</p>
+            <p className="text-primary text-sm">{problem.company.name}</p>
             <div className="mt-1 flex items-center gap-2">
-              <span className={`text-xs px-2 py-0.5 rounded-full ${difficultyColors[problem.difficulty]}`}>
-                {problem.difficulty}
-              </span>
               <span className="text-muted-foreground text-xs">{problem.category}</span>
             </div>
           </div>
@@ -110,21 +106,10 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
           {problem.description}
         </p>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {problem.tags.map((tag, index) => (
-            <span
-              key={index}
-              className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-800"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="text-muted-foreground h-4 w-4" />
-            <span className="text-muted-foreground">Deadline: {new Date(problem.deadline).toLocaleDateString()}</span>
+            <span className="text-muted-foreground">Deadline: {problem.endday ? new Date(problem.endday).toLocaleDateString() : 'No deadline'}</span>
           </div>
 
           <div className="flex space-x-2">

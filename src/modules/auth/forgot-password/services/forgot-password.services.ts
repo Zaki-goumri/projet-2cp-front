@@ -1,6 +1,7 @@
 import axios from '@/api/axios.config';
 import { Axios, isAxiosError } from 'axios';
 const api: Axios = axios;
+import {ResetEmailDtoRes,ResetPasswordResDto,ResetEmailDtoReq,ResetPasswordReq} from '../types/forget-password.dto'
 export async function forgotPassword({
   email,
 }: ResetEmailDtoReq): Promise<ResetEmailDtoRes> {

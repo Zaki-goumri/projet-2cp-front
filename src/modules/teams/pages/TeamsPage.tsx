@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTeams } from '../hooks/useTeams';
 import { TeamCard } from '../components/TeamCard';
 import { Team } from '../types/teams.types';
@@ -6,9 +6,11 @@ import { ErrorBoundary } from '@/modules/shared/components/error-boundary';
 import { useInvitations } from '../hooks/useInvitations';
 import { InvitationCard } from '../components/InvitationCard';
 import { Invitation } from '../types/teams.types';
-import { Inbox } from 'lucide-react';
+import { Inbox, Plus, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router';
 
 const TeamsPage: React.FC = () => {
+  const [showAllTeams, setShowAllTeams] = useState(false);
   const { teams, isLoading: isLoadingTeams, error: errorTeams } = useTeams();
   const { 
     invitations, 
@@ -40,11 +42,20 @@ const TeamsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white px-6 py-8">
       <div className="mx-auto max-w-7xl">
-        <h1 className="mb-8 text-2xl font-medium text-[#92E3A9]">My Teams</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-medium text-[#92E3A9]">My Teams</h1>
+          <Link 
+            to="/teams/create"
+            className="flex items-center gap-2 px-4 py-2 bg-[#92E3A9] text-white rounded-lg hover:bg-[#7dca8f] transition-colors"
+          >
+            <Plus size={20} />
+            Create Team
+          </Link>
+        </div>
 
         <ErrorBoundary fallback={<p className="text-red-500 text-center"><br/>Something went wrong while loading teams.</p>}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {teams?.map((team: Team) => (
+            {teams?.slice(0, showAllTeams ? teams.length : 6).map((team: Team) => (
               <TeamCard 
                 key={team.id}
                 id={team.id} 
@@ -59,6 +70,16 @@ const TeamsPage: React.FC = () => {
               />
             ))}
           </div>
+          {teams && teams.length > 6 && (
+            <div className="mt-6 text-center">
+              <button 
+                onClick={() => setShowAllTeams(!showAllTeams)}
+                className="text-[#92E3A9] hover:text-[#7dca8f] font-medium"
+              >
+                {showAllTeams ? 'Show Less' : 'View All Teams'}
+              </button>
+            </div>
+          )}
         </ErrorBoundary>
 
         <div className="mt-12">
@@ -66,9 +87,12 @@ const TeamsPage: React.FC = () => {
             Team Invitations
           </h2>
           {errorInvitations && ( 
-            <p className="text-red-500 text-center">
-              Error loading invitations: {errorInvitations.message}
-            </p>
+            <div className="flex flex-col items-center justify-center gap-2">
+              <AlertCircle className="h-8 w-8 text-[#92E3A9]" />
+              <p className="text-[#92E3A9] text-center">
+                Could not load team invitations. Please try again later.
+              </p>
+            </div>
           )}
           {!errorInvitations && invitations.length === 0 && !isLoadingInvitations && (
             <div className="text-center py-10 px-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -94,7 +118,6 @@ const TeamsPage: React.FC = () => {
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

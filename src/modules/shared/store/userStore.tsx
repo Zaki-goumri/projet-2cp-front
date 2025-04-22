@@ -19,9 +19,19 @@ export interface User {
   role: 'Student' | 'Professional' | 'Admin';
   description:string 
   skills: string[];
-  education: ExperienceData[];
+  education: EducationData[];
   experience: ExperienceData[],
   date_joined:string
+  category:string
+  number:string|null
+}
+
+interface EducationData{
+  id:string;
+  degree:string;
+  institution:string;
+  startDate:string;
+  endDate:string|null;
 }
 
 interface UserStore {

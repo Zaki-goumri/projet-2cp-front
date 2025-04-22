@@ -13,10 +13,10 @@ export default defineConfig({
     tailwindcss(),
     visualizer({ open: true }) as PluginOption,
     viteCompression({
-      algorithm: 'gzip', // or 'brotliCompress' for better compression
-      ext: '.gz', // .br for Brotli
-      threshold: 10240, // Compress assets > 10KB
-      deleteOriginFile: false, // Keep original files
+      algorithm: 'gzip',
+      ext: '.gz',
+      threshold: 10240,
+      deleteOriginFile: false,
     }),
     viteCompression({ algorithm: 'brotliCompress', ext: '.br' }),
   ],
@@ -27,16 +27,12 @@ export default defineConfig({
   },
   preview: {
     port: 8080,
-    strictPort: true,
-    https: {
-      key: './certs/localhost-key.pem',
-      cert: './certs/localhost.pem',
-    },
+    strictPort: false,
   },
   server: {
     port: 8080,
-    strictPort: true,
+    strictPort: false,
     host: true,
-    origin: 'https://localhost:8080', // Ensure HTTPS origin for local dev
+    origin: 'http://localhost:8080',
   },
 });

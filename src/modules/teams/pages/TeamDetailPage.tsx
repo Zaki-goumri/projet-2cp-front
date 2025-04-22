@@ -27,36 +27,9 @@ interface Project {
 }
 
 // Default team data to use if API fails
-const DEFAULT_TEAM: Team = {
-  id: '0',
-  name: 'The Hackers',
-  members: 12,
-  projects: 4,
-  status: 'ACTIVE',
-  description: "Our web development team is a group of passionate designers, developers, and problem-solvers dedicated to building seamless, user-friendly digital experiences. We specialize in creating responsive, high-performance websites that combine functionality with modern design."
-};
+
 
 // Mock projects data
-const DEFAULT_PROJECTS: Project[] = [
-  {
-    id: '1',
-    name: 'E-Commerce Platform',
-    members: 7,
-    description: 'Mobile app development and testing'
-  },
-  {
-    id: '2',
-    name: 'Food Delivery App',
-    members: 5,
-    description: 'Mobile app development and testing'
-  },
-  {
-    id: '3',
-    name: 'Job Finder Website',
-    members: 4,
-    description: 'Web app development and testing'
-  }
-];
 
 const TeamDetailPage: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -67,14 +40,9 @@ const TeamDetailPage: React.FC = () => {
   const [confirmLeaveDialogOpen, setConfirmLeaveDialogOpen] = useState<boolean>(false);
   const [isLeaving, setIsLeaving] = useState<boolean>(false);
 
-  // Handle projects loading
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        // In a real app, fetch projects from API
-        // const data = await projectsService.getTeamProjects(teamId);
-        // setProjects(data);
-        setProjects(DEFAULT_PROJECTS);
         setProjectsError(false);
       } catch (err) {
         console.error("Error loading projects:", err);
@@ -158,7 +126,7 @@ const TeamDetailPage: React.FC = () => {
   }
 
   // Use team data or default data if properties are missing
-  const teamData = team || DEFAULT_TEAM;
+  const teamData = team ;
 
   return (
     <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
@@ -166,7 +134,7 @@ const TeamDetailPage: React.FC = () => {
         {/* Header */}
         <div className="mb-8 flex flex-col justify-between sm:flex-row sm:items-center">
           <h1 className="mb-4 flex items-center text-2xl font-bold sm:mb-0">
-            <span className="text-black">{teamData.name}</span>
+            <span className="text-black">{teamData?.name}</span>
             <span className="text-[#92E3A9]">Teams</span>
           </h1>
           <button
@@ -183,7 +151,7 @@ const TeamDetailPage: React.FC = () => {
             <span className="mr-2">👉</span> Team Description
           </h2>
           <p className="text-gray-600">
-            {teamData.description}
+            {teamData?.description}
           </p>
         </div>
 
@@ -197,25 +165,11 @@ const TeamDetailPage: React.FC = () => {
             {[
               {
                 icon: UsersRound,
-                value: teamData.members,
+                value: teamData?.students.length ,
                 label: 'Team Members',
                 buttonText: 'See All',
                 link: '/dashboard'
               },
-              {
-                icon: BarChart2,
-                value: teamData.projects,
-                label: 'Active Projects',
-                buttonText: 'See All',
-                link: '/dashboard'
-              },
-              {
-                icon: Calendar,
-                value: 0,
-                label: 'Upcoming Meetings',
-                buttonText: 'See All',
-                link: '/dashboard'
-              }
             ].map((stat, index) => (
               <div key={index} className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md shadow-primary/20">
                 <div className="mb-4 rounded-full bg-green-100 p-4">

@@ -8,6 +8,7 @@ const OAuthCallback = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const setUser = useUserStore((state) => state.login);
+  const user = useUserStore((state) => state.user);
   useEffect(() => {
     const handleAuthentication = async () => {
       try {
@@ -26,9 +27,9 @@ const OAuthCallback = () => {
 
         const response = await axios.post(`${baseUrl}/Auth/google`, formData);
 
-        setUser(response.data.user);
-        document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=3600`;
-        document.cookie = `refreshToken=${response.data.refreshToken}; path=/; max-age=2592000`;
+        setUser({...response.data.user});
+        document.cookie = `accessToken=${response.data.access}; path=/; max-age=3600`;
+        document.cookie = `refreshToken=${response.data.refresh}; path=/; max-age=2592000`;
 
         navigate('/home');
       } catch (error) {
