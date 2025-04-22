@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Edit2, Trash2 } from 'lucide-react';
 import InfoCard from '../InfoCard';
 import AddItemModal from '../modals/AddItemModal';
-import { useProfileUpdate } from '../../hooks/useUserService';
 
 interface Education {
   id: string;
@@ -15,18 +14,16 @@ interface Education {
 
 interface EducationProps {
   isEditing: boolean;
-  userEducation: Education[];
+  education: Education[];
+  onEducationChange: (education: Education[]) => void;
 }
 
-const Education = ({ isEditing, userEducation }: EducationProps) => {
-  const [education, setEducation] = useState<Education[]>(userEducation);
+const Education = ({ isEditing, education, onEducationChange }: EducationProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { updateProfile, isLoading } = useProfileUpdate();
 
   const handleDelete = (id: string) => {
     const updatedEducation = education.filter(edu => edu.id !== id);
-    setEducation(updatedEducation);
-    updateProfile({ education: updatedEducation });
+    onEducationChange(updatedEducation);
   };
 
   const handleAdd = () => {
@@ -42,8 +39,7 @@ const Education = ({ isEditing, userEducation }: EducationProps) => {
       endDate: data.endDate
     };
     const updatedEducation = [...education, newEducation];
-    setEducation(updatedEducation);
-    updateProfile({ education: updatedEducation });
+    onEducationChange(updatedEducation);
     setIsModalOpen(false);
   };
 
@@ -77,7 +73,6 @@ const Education = ({ isEditing, userEducation }: EducationProps) => {
                           variant="ghost" 
                           size="sm" 
                           onClick={() => handleDelete(edu.id)}
-                          disabled={isLoading}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

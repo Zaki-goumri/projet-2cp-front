@@ -1,4 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Upload } from 'lucide-react';
 import InfoCard from '../InfoCard';
 
 interface ResumeFile {
@@ -7,6 +9,11 @@ interface ResumeFile {
   type: string;
   date: string;
   size: string;
+}
+
+interface ResumeProps {
+  isEditing: boolean;
+  onResumeChange: (file: File) => void;
 }
 
 const ResumeList = ({isEditing}:ResumeProps) => {
@@ -104,19 +111,59 @@ const ResumeList = ({isEditing}:ResumeProps) => {
   );
 };
 
-interface ResumeProps{
-  isEditing:Boolean
-}
-const Resume = ({isEditing}:ResumeProps) => {
+const Resume = ({ isEditing, onResumeChange }: ResumeProps) => {
+  const [fileName, setFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+      onResumeChange(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <InfoCard
-      icon={'/assets/resume.svg'}
+      icon="/assets/resume.svg"
       name={'Resume'}
       isAddeable={false}
-      onAdd={()=>{}}
+      onAdd={() => {}}
     >
-      <div className="p-3">
-        <ResumeList isEditing={isEditing} />
+      <div className="px-6 py-4">
+        {isEditing ? (
+          <div className="space-y-4">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept=".pdf,.doc,.docx"
+              className="hidden"
+            />
+            <Button
+              onClick={handleUploadClick}
+              className="w-full flex items-center justify-center space-x-2"
+            >
+              <Upload className="h-4 w-4" />
+              <span>{fileName || 'Upload Resume'}</span>
+            </Button>
+            <p className="text-sm text-gray-500">
+              Accepted formats: PDF, DOC, DOCX
+            </p>
+          </div>
+        ) : (
+          <div className="text-center py-4">
+            {fileName ? (
+              <p className="text-gray-700">{fileName}</p>
+            ) : (
+              <p className="text-gray-500">No resume uploaded yet.</p>
+            )}
+          </div>
+        )}
       </div>
     </InfoCard>
   );

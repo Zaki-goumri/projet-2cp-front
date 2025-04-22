@@ -13,7 +13,7 @@ export function useUserInfo(id: string) {
   return { isLoading, isError, data };
 }
 
-export function useUpdateUser() {
+export function useUpdateUser(onSuccess: () => void) {
   const queryClient = useQueryClient();
   const { user, login } = useUserStore();
 
@@ -36,8 +36,8 @@ export function useUpdateUser() {
 }
 
 // Hook to collect all section data for update
-export function useProfileUpdate() {
-  const { mutate: updateProfile, isLoading } = useUpdateUser();
+export function useProfileUpdate(onSuccess: () => void) {
+  const { mutate: updateProfile, isLoading } = useUpdateUser(onSuccess);
   const { user } = useUserStore();
 
   const handleProfileUpdate = (sectionData: Partial<UpdateUserData>) => {
