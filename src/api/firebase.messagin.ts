@@ -6,7 +6,7 @@ const messaging = getMessaging(firebaseApp);
 
 export const requestFcmToken = async () => {
   try {
-    const vapidKey = 'BHi08OMiEDnghewVmkhpbfwEh8UCTV4XA1Ay46pOVY-uYEo0jphBhG_vk9AsaKt1o7WkpaCs7TIaai_3D2ydYqU';
+    const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
     const token = await getToken(messaging, { vapidKey });
     if (token) {   
       console.log('fmc', token);

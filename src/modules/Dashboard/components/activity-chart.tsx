@@ -82,6 +82,8 @@ export const ActivityChart: React.FC<ActivityChartProps> = ({
     },
     scales: {
       y: {
+        min: 0,
+        max: 30,
         beginAtZero: true,
         grid: {
           color: 'rgba(229, 231, 235, 0.5)', // Lighter grid lines

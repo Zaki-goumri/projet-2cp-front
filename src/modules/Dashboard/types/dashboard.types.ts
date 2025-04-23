@@ -1,4 +1,3 @@
-// src/modules/features/dashboards/types.ts
 export interface RevenueData {
   total: number;
   change: number;
@@ -86,9 +85,9 @@ export interface DashboardData {
   refused_count: number;
   accepted_ratio: number;
   refused_ratio: number;
-  daily_count: number[]; // Assuming array of numbers for days 0-6
-  teams: any[]; // Placeholder type - refine if structure is known
-  applications: any[]; // Placeholder type - refine if structure is known
+  daily_count: number[]; 
+  teams: any[]; 
+  applications: any[];
 }
 
 export interface DashboardContextType {

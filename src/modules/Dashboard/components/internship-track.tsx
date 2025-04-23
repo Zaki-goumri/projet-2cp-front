@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-// Ensure InternshipData matches the structure in dashboardData.applications
-// Might need to import the actual Opportunity type or define a matching interface here
-// For now, assuming it has company: { name: string }, status: string, created_at: string
 interface InternshipLikeData {
-  id: string | number; // Add id for key
+  id: string | number; 
   company: { name: string };
-  status: string; // 'Accepted', 'Refused', 'On Hold', 'Pending'?
-  created_at: string; // Assuming application date is created_at
+  status: string; 
+  created_at: string;
 }
 
 interface InternshipTrackProps {
