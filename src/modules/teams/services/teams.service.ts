@@ -1,5 +1,5 @@
 import axios from '@/api/axios.config';
-import { TeamResponse, Team, CreateTeamRequest } from '../types/teams.types';
+import { TeamResponse, Team } from '../types/teams.types';
 import { Invitation } from '../types/teams.types';
 
 export const teamsService = {
@@ -13,14 +13,13 @@ export const teamsService = {
     return response.data;
   },
 
-
   async post_team_create(data: {
     name: string;
     emails: string[];
     description: string;
     category: string;
   }): Promise<Team> {
-    const response = await axios.post(`/post/team/`, data );
+    const response = await axios.post(`/post/team/`, data);
     return response.data;
   },
 
@@ -29,7 +28,10 @@ export const teamsService = {
   },
 
   async getInvitations(): Promise<Invitation[]> {
-    const response = await axios.get<Invitation[]>('/teams/invitations');
+    const response = await axios.get<Invitation[]>('post/team/inviter/', {
+      params: { page: 1, limit: 5 },
+    });
+    console.log(response.data);
     return response.data;
   },
 

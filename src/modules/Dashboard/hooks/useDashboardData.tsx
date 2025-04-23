@@ -1,25 +1,31 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchDashboardData, TimeRange } from '../services/dashboardService';
-// Remove strict typing to match actual data structure returned
-// import { DashboardData } from '../types/dashboard.types';
+// Import the service object and the specific data type
+import dashboardService from '../services/dashboardService';
+import { DashboardData } from '../types/dashboard.types';
 
 export const useDashboardData = () => {
-  const [timeRange, setTimeRange] = useState<TimeRange>('weekly');
+  // Remove timeRange state if not needed for fetching by the new endpoint
+  // const [timeRange, setTimeRange] = useState<TimeRange>('weekly');
 
   const {
     data: dashboardData,
     isLoading,
     error,
     refetch,
-  } = useQuery(['dashboard'], () => fetchDashboardData(timeRange));
+    // Update queryKey and queryFn
+  } = useQuery<DashboardData, Error>({ // Add explicit types for data and error
+    queryKey: ['dashboardData'], 
+    queryFn: dashboardService.fetchDashboardData, // Call the correct service function
+    // Add other React Query options as needed (e.g., staleTime, cacheTime)
+  });
 
   return {
     dashboardData,
     isLoading,
     error,
-    timeRange,
-    setTimeRange,
+    // Remove timeRange and setTimeRange if state was removed
+    // timeRange,
+    // setTimeRange,
     refetch,
   };
 }; 

@@ -6,7 +6,7 @@ import { ErrorBoundary } from '@/modules/shared/components/error-boundary';
 import { useInvitations } from '../hooks/useInvitations';
 import { InvitationCard } from '../components/InvitationCard';
 import { Invitation } from '../types/teams.types';
-import { Inbox, Plus, AlertCircle } from 'lucide-react';
+import { Inbox, Plus, AlertCircle, UsersRound } from 'lucide-react';
 import { Link } from 'react-router';
 
 const TeamsPage: React.FC = () => {
@@ -75,7 +75,7 @@ const TeamsPage: React.FC = () => {
                   }
                   icon={
                     <span className="text-lg font-medium text-[#92E3A9]">
-                      {team.leader.student.description}
+                      <UsersRound size={20} />
                     </span>
                   }
                   memberCount={team.students.length}

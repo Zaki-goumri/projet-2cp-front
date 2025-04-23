@@ -30,37 +30,49 @@ interface AcceptanceChartProps {
 }
 
 export const AcceptanceChart: React.FC<AcceptanceChartProps> = ({ data }) => {
-  // Customize data to match the website's theme
   const customData = {
     ...data,
     datasets: data.datasets.map(dataset => ({
       ...dataset,
-      borderColor: '#92E3A9',
-      backgroundColor: 'rgba(146, 227, 169, 0.2)',
+      borderColor: '#92E3A9', 
+      backgroundColor: 'rgba(146, 227, 169, 0.1)',
       pointBackgroundColor: '#92E3A9',
       pointBorderColor: '#ffffff',
+      pointHoverBackgroundColor: '#ffffff',
+      pointHoverBorderColor: '#92E3A9',
+      fill: true, 
+      tension: 0.4,
     }))
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false, // Allow height to be controlled by container
     plugins: {
       legend: {
-        display: false,
+        display: false, // Hide legend as per image
       },
       tooltip: {
         enabled: true,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        titleColor: '#333',
-        bodyColor: '#333',
-        borderColor: '#BFEAC9',
+        mode: 'index' as const, // Show tooltip for the nearest point on hover
+        intersect: false,
+        backgroundColor: '#ffffff', // White tooltip background
+        titleColor: '#6b7280', // Gray title color (Tailwind gray-500)
+        bodyColor: '#111827', // Dark body color (Tailwind gray-900)
+        borderColor: '#e5e7eb', // Light gray border (Tailwind gray-200)
         borderWidth: 1,
         padding: 10,
-        boxPadding: 5,
-        usePointStyle: true,
+        usePointStyle: false, // Don't use point style in tooltip
+        boxPadding: 4,
+        titleFont: { size: 10 },
+        bodyFont: { size: 12, weight: 'bold' as const },
+        // Custom tooltip rendering could be added here if needed for exact styling
         callbacks: {
+          // Format title (e.g., month label) if needed
+          // title: function(tooltipItems: any) { return tooltipItems[0].label; },
           label: function(context: any) {
-            return `Value: ${context.parsed.y}`;
+            // Display the value with a % sign perhaps?
+            return `Rate: ${context.parsed.y.toFixed(1)}%`;
           }
         }
       },
@@ -69,37 +81,55 @@ export const AcceptanceChart: React.FC<AcceptanceChartProps> = ({ data }) => {
       y: {
         beginAtZero: true,
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: 'rgba(229, 231, 235, 0.5)', // Lighter grid lines (Tailwind gray-200)
+          drawBorder: false,
         },
+        ticks: {
+          padding: 10,
+          color: '#6b7280', // Gray axis labels (Tailwind gray-500)
+          font: { size: 10 }
+        }
       },
       x: {
         grid: {
-          display: false,
+          display: false, // Hide vertical grid lines
         },
+        ticks: {
+          padding: 10,
+          color: '#6b7280', // Gray axis labels
+          font: { size: 10 }
+        }
       },
     },
     elements: {
       line: {
-        tension: 0.4,
+        tension: 1, 
       },
       point: {
-        radius: 3,
-        hoverRadius: 6,
+        radius: 0, // Hide points by default
+        hoverRadius: 5, // Show point on hover
+        hoverBorderWidth: 2,
       },
     },
+    interaction: {
+        mode: 'nearest' as const,
+        axis: 'x' as const,
+        intersect: false
+    }
   };
 
   return (
-    <div className="h-fit rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md  sm:p-6">
+    // Container styling: White background, padding, rounded, shadow, border
+    <div className="h-full w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md sm:p-6">
       <div className="mb-4">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+        <h3 className="text-lg font-medium text-gray-900">
           Acceptance
         </h3>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          Average applications
-        </span>
+        
       </div>
-      <Line options={options} data={customData} height={180} />
+      <div className="h-[250px]"> 
+         <Line options={options} data={customData} />
+      </div>
     </div>
   );
 };

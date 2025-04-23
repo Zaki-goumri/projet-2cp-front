@@ -80,21 +80,15 @@ export interface ChartData {
 }
 
 export interface DashboardData {
-  revenue: RevenueData;
-  subscriptions: SubscriptionData;
-  sales: SalesData;
-  activeUsers: UserData;
-  applications: ApplicationData;
-  internships: InternshipData[];
-  teams: TeamData[];
-  monthlyTrend: ChartDataPoint[];
-  weeklyActivity: ChartDataPoint[];
-  acceptanceChart: ChartData;
-  activityChart: ChartData;
-  yearlyOverview: {
-    acceptance: number;
-    refusals: number;
-  };
+  total_application: number;
+  total_application_last_month: number;
+  accepted_count: number;
+  refused_count: number;
+  accepted_ratio: number;
+  refused_ratio: number;
+  daily_count: number[]; // Assuming array of numbers for days 0-6
+  teams: any[]; // Placeholder type - refine if structure is known
+  applications: any[]; // Placeholder type - refine if structure is known
 }
 
 export interface DashboardContextType {

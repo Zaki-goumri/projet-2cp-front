@@ -15,7 +15,7 @@ import {
   OpportunityFilterType,
   OpportunityCardProps,
   EmptyStateProps,
-  ErrorStateProps
+  ErrorStateProps,
 } from './types/opportunity.types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -28,19 +28,15 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const EmptyState = ({
-  filterType,
-  searchQuery,
-}: EmptyStateProps) => {
+const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
   const typeText = {
     internships: 'internships',
     problems: 'problems',
     both: 'opportunities',
   };
-  const message =
-    searchQuery
-      ? `No ${typeText[filterType]} match your search.`
-      : `No ${typeText[filterType]} available at the moment.`;
+  const message = searchQuery
+    ? `No ${typeText[filterType]} match your search.`
+    : `No ${typeText[filterType]} available at the moment.`;
 
   return (
     <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-gray-50 p-12 text-center">
@@ -56,7 +52,7 @@ const EmptyState = ({
 };
 
 const LoadingState = () => (
-  <div className="flex h-64 items-center justify-center rounded-lg ">
+  <div className="flex h-64 items-center justify-center rounded-lg">
     <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
     <span className="ml-3 text-lg font-medium text-gray-600">Loading...</span>
   </div>
@@ -83,12 +79,10 @@ const ErrorState = ({ error }: ErrorStateProps) => (
   </div>
 );
 
-// Helper function to calculate days left
 const calculateDaysLeft = (endDate?: string | null): number | null => {
   if (!endDate) return null;
   const end = new Date(endDate);
   const now = new Date();
-  // Set hours to 0 to compare dates only
   end.setHours(0, 0, 0, 0);
   now.setHours(0, 0, 0, 0);
   const diffTime = end.getTime() - now.getTime();
@@ -97,10 +91,7 @@ const calculateDaysLeft = (endDate?: string | null): number | null => {
   return diffDays;
 };
 
-// Opportunity Card Component based on InternshipCard structure
-const OpportunityCard = ({
-  opportunity,
-}: OpportunityCardProps) => {
+const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -109,12 +100,12 @@ const OpportunityCard = ({
 
   const daysLeft = calculateDaysLeft(opportunity.endday);
 
-  // Prepare description text with "learn more" (adjust length as needed)
   const descriptionSnippet = opportunity.description.substring(0, 70); // Example length
   const showLearnMore = opportunity.description.length > 70;
 
-  // Use optional chaining for logoUrl and provide default
-  const logoUrl = opportunity.company?.logoUrl || `https://via.placeholder.com/80?text=${opportunity.company.name.charAt(0)}`;
+  const logoUrl =
+    opportunity.company?.logoUrl ||
+    `https://via.placeholder.com/80?text=${opportunity.company.name.charAt(0)}`;
 
   return (
     <li
@@ -124,30 +115,33 @@ const OpportunityCard = ({
       onKeyDown={(e) => e.key === 'Enter' && handleCardClick()}
     >
       {/* Top Banner Section - Using a green shade */}
-      <div className="bg-green-200 relative h-28 flex-shrink-0 p-5 pb-12"> {/* Adjusted color */}
-        {/* Content inside banner if needed */}
-      </div>
+      <div className="relative h-28 flex-shrink-0 bg-green-200 p-5 pb-12"></div>
 
-      {/* White Content Section */}
-      <div className="relative -mt-10 flex flex-1 flex-col rounded-t-3xl bg-white px-5 pt-12 pb-6"> {/* Adjusted negative margin and pt */}
-        {/* Logo positioned between banner and white sections */}
-        <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl border-4 border-white bg-white p-2 shadow-md sm:h-20 sm:w-20"> {/* Added border */}
+      <div className="relative -mt-10 flex flex-1 flex-col rounded-t-3xl bg-white px-5 pt-12 pb-6">
+        <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl border-4 border-white bg-white p-2 shadow-md sm:h-20 sm:w-20">
           <img
-            src={logoUrl}
+            src={opportunity.company.profilepic || logoUrl}
             alt={`${opportunity.company.name} Logo`}
             className="h-full w-full object-contain p-1" // Added padding within logo container
           />
         </div>
-
         {/* Text Content Section */}
         <div className="flex flex-1 flex-col justify-between space-y-4">
           {/* Title and Description */}
-          <div className="mt-2 flex items-start justify-between gap-4"> {/* Adjusted margin-top */}
-            <div className="space-y-2 pr-4"> {/* Added padding-right to prevent text overlap */}
-              <h3 className="text-lg font-semibold text-gray-900"> {/* Adjusted font weight/color */}
-                 {opportunity.title}
+          <div className="mt-2 flex items-start justify-between gap-4">
+            {' '}
+            {/* Adjusted margin-top */}
+            <div className="space-y-2 pr-4">
+              {' '}
+              {/* Added padding-right to prevent text overlap */}
+              <h3 className="text-lg font-semibold text-gray-900">
+                {' '}
+                {/* Adjusted font weight/color */}
+                {opportunity.title}
               </h3>
-              <p className="text-sm leading-relaxed text-gray-600"> {/* Adjusted color */}
+              <p className="text-sm leading-relaxed text-gray-600">
+                {' '}
+                {/* Adjusted color */}
                 {descriptionSnippet}
                 {showLearnMore && (
                   <>
@@ -159,27 +153,32 @@ const OpportunityCard = ({
                 )}
               </p>
             </div>
-             {/* Moved ArrowRight to the bottom for layout consistency with image */}
+            {/* Moved ArrowRight to the bottom for layout consistency with image */}
           </div>
 
           {/* Views, Days Left & Arrow */}
-          <div className="flex items-center justify-between gap-4 pt-2 text-sm text-gray-500"> {/* Adjusted color and layout */}
-             <div className="flex flex-wrap items-center gap-x-4 gap-y-1"> {/* Wrap metadata items */}
-               {opportunity.views !== undefined && ( // Check remains useful if property *can* exist but be undefined
+          <div className="flex items-center justify-between gap-4 pt-2 text-sm text-gray-500">
+            {' '}
+            {/* Adjusted color and layout */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              {' '}
+              {/* Wrap metadata items */}
+              {opportunity.views !== undefined && ( // Check remains useful if property *can* exist but be undefined
                 <div className="flex items-center gap-1.5">
                   <Eye className="h-4 w-4" />
                   {/* Use optional chaining ?.views just in case type is inaccurate, or default to 0 */}
                   <span>{opportunity.views ?? 0} views</span>
                 </div>
-               )}
-               {daysLeft !== null && ( // Check if daysLeft was calculated
+              )}
+              {daysLeft !== null && ( // Check if daysLeft was calculated
                 <div className="flex items-center gap-1.5">
                   <Timer className="h-4 w-4" /> {/* Using Timer icon */}
                   <span>{daysLeft} Days left</span>
                 </div>
-               )}
-             </div>
-             <ArrowRight className="h-5 w-5 flex-shrink-0 text-gray-600" /> {/* Arrow on the right */}
+              )}
+            </div>
+            <ArrowRight className="h-5 w-5 flex-shrink-0 text-gray-600" />{' '}
+            {/* Arrow on the right */}
           </div>
         </div>
       </div>
@@ -209,23 +208,23 @@ const OpportunitiesPage = () => {
   const renderContent = () => {
     if (isLoading && opportunities.length === 0) return <LoadingState />;
     if (error) return <ErrorState error={error} />;
-    if (isEmpty) return <EmptyState filterType={filterType} searchQuery={searchQuery} />;
+    if (isEmpty)
+      return <EmptyState filterType={filterType} searchQuery={searchQuery} />;
 
     return (
-      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"> {/* Adjusted gap */}
-        {isLoading && (
+      <ul className="3xl:grid-cols-4 3xl:grid-cols-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3">
+        {' '}
+        {/* Adjusted gap */}
+        {isLoading &&
           Array.from({ length: 4 }).map((_, index) => (
             <Skeleton key={index} className="h-[300px] w-full rounded-3xl" /> // Adjusted skeleton to match card shape/size
-          ))
-        )}
-        {!isLoading && opportunities.map((opportunity: Opportunity) => {
-          return (
-            <OpportunityCard
-              key={opportunity.id}
-              opportunity={opportunity}
-            />
-          );
-        })}
+          ))}
+        {!isLoading &&
+          opportunities.map((opportunity: Opportunity) => {
+            return (
+              <OpportunityCard key={opportunity.id} opportunity={opportunity} />
+            );
+          })}
       </ul>
     );
   };
@@ -258,10 +257,7 @@ const OpportunitiesPage = () => {
         </div>
 
         <div className="w-full max-w-xs sm:w-auto sm:shrink-0">
-          <Select
-            value={filterType}
-            onValueChange={handleFilterChange}
-          >
+          <Select value={filterType} onValueChange={handleFilterChange}>
             <SelectTrigger className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
               <SelectValue placeholder="Filter by type" />
             </SelectTrigger>
@@ -276,11 +272,10 @@ const OpportunitiesPage = () => {
         </div>
       </div>
 
-      <div className="mt-6">
-        {renderContent()}
-      </div>
+      <div className="mt-6">{renderContent()}</div>
     </div>
   );
 };
 
-export default OpportunitiesPage; 
+export default OpportunitiesPage;
+
