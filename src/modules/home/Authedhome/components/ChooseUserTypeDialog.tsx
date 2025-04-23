@@ -14,7 +14,7 @@ import { Link } from 'react-router';
 interface ChooseUserTypeDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSelectType: (type: 'Student' | 'Professional') => Promise<void>;
+  onSelectType: (type: 'Student' | 'Company') => Promise<void>;
 }
 
 export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({
@@ -23,16 +23,16 @@ export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({
   onSelectType,
 }) => {
   const [selectedType, setSelectedType] = useState<
-    'Student' | 'Professional' | null
+    'Student' | 'Company' | null
   >(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const userTypes = [
     { id: 'Student', label: 'Student' },
-    { id: 'Professional', label: 'Company' },
+    { id: 'Company', label: 'Company' },
   ];
 
-  const handleSelect = (type: 'Student' | 'Professional') => {
+  const handleSelect = (type: 'Student' | 'Company') => {
     setSelectedType(type);
   };
 
@@ -61,7 +61,7 @@ export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={() => { }}>
       <DialogContent
         className="!bg-white sm:max-w-md [&>button]:hidden"
         onInteractOutside={handleInteractOutside}
@@ -80,7 +80,7 @@ export const ChooseUserTypeDialog: React.FC<ChooseUserTypeDialogProps> = ({
               key={type.id}
               variant={selectedType === type.id ? 'default' : 'outline'}
               onClick={() =>
-                handleSelect(type.id as 'Student' | 'Professional')
+                handleSelect(type.id as 'Student' | 'Company')
               }
               className={`h-12 rounded-full text-lg ${selectedType === type.id ? '!bg-primary !text-white' : '!text-primary !border-none !bg-gray-100/30'}`}
             >

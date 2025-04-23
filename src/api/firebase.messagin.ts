@@ -6,9 +6,9 @@ const messaging = getMessaging(firebaseApp);
 
 export const requestFcmToken = async () => {
   try {
-    const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
+    const vapidKey = 'BHi08OMiEDnghewVmkhpbfwEh8UCTV4XA1Ay46pOVY-uYEo0jphBhG_vk9AsaKt1o7WkpaCs7TIaai_3D2ydYqU';
     const token = await getToken(messaging, { vapidKey });
-    if (token) {
+    if (token) {   
       console.log('fmc', token);
       const response = await axios.post('/Auth/Fcm', { token });
       console.log(response.data);

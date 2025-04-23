@@ -22,27 +22,23 @@ ChartJS.register(
 
 interface ActivityChartProps {
   data: ChartData;
-  timeRange: 'weekly' | 'monthly' | 'yearly';
-  onTimeRangeChange: (range: 'weekly' | 'monthly' | 'yearly') => void;
 }
 
 export const ActivityChart: React.FC<ActivityChartProps> = ({
   data,
-  timeRange,
-  onTimeRangeChange,
 }) => {
-  // Customize data to match website theme colors
   const customData = {
     ...data,
     datasets: data.datasets.map(dataset => ({
       ...dataset,
       backgroundColor: data.labels.map((_, index) => 
-        index === 4 ? 'rgba(146, 227, 169, 0.8)' : 'rgba(191, 234, 201, 0.4)'
+        index === 4 ? 'rgba(146, 227, 169, 0.8)' : 'rgba(191, 234, 201, 0.4)' 
       ),
       hoverBackgroundColor: data.labels.map((_, index) => 
-        index === 4 ? 'rgba(146, 227, 169, 1)' : 'rgba(191, 234, 201, 0.7)'
+        index === 4 ? 'rgba(146, 227, 169, 1)' : 'rgba(191, 234, 201, 0.7)' // Darker hover for highlighted bar
       ),
       borderRadius: 6,
+      barThickness: 20, // Adjust bar thickness if needed
     }))
   };
 
@@ -51,21 +47,35 @@ export const ActivityChart: React.FC<ActivityChartProps> = ({
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: false, // Hide legend
       },
       tooltip: {
         enabled: true,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        titleColor: '#333',
-        bodyColor: '#333',
-        borderColor: '#BFEAC9',
+        mode: 'index' as const, // Show tooltip for the bar index
+        intersect: false,
+        backgroundColor: '#ffffff', // White tooltip background
+        titleColor: '#6b7280', // Gray title color (Tailwind gray-500)
+        bodyColor: '#111827', // Dark body color (Tailwind gray-900)
+        borderColor: '#e5e7eb', // Light gray border (Tailwind gray-200)
         borderWidth: 1,
         padding: 10,
-        boxPadding: 5,
-        usePointStyle: true,
+        usePointStyle: false,
+        boxPadding: 4,
+        titleFont: { size: 10 },
+        bodyFont: { size: 12, weight: 'bold' as const },
+        // Add a caret like in the image
+        caretSize: 6,
+        caretPadding: 5,
+        // Adjust position if needed (e.g., 'nearest', 'average')
+        position: 'average' as const, 
         callbacks: {
+          // Tooltip title (e.g., day label)
+          title: function(tooltipItems: any) { 
+            return tooltipItems[0].label;
+          },
           label: function(context: any) {
-            return `Applications: ${context.parsed.y}`;
+            // Just show the value
+            return `${context.parsed.y} Applications`;
           }
         }
       },
@@ -74,43 +84,46 @@ export const ActivityChart: React.FC<ActivityChartProps> = ({
       y: {
         beginAtZero: true,
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: 'rgba(229, 231, 235, 0.5)', // Lighter grid lines
+          drawBorder: false,
         },
+        ticks: {
+          padding: 10,
+          color: '#6b7280',
+          font: { size: 10 }
+        }
       },
       x: {
         grid: {
-          display: false,
+          display: false, // Hide vertical grid lines
         },
+        ticks: {
+          padding: 10,
+          color: '#6b7280',
+          font: { size: 10 }
+        }
       },
     },
+     interaction: {
+        mode: 'index' as const, // Ensure interaction mode is index for bars
+        intersect: false,
+    }
   };
 
   return (
-    <div className="h-full max-h-[530px] w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md sm:p-6">
+    // Container styling: White background, padding, rounded, shadow, border
+    <div className="h-full w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md sm:p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+          <h3 className="text-lg font-medium text-gray-900">
             Activity
           </h3>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          <span className="text-sm text-gray-500">
             Average applications
           </span>
         </div>
-        <div className="relative">
-          <select
-            className="rounded-lg border border-gray-200 px-4 py-2 text-sm focus:border-[#92E3A9] focus:outline-none focus:ring-2 focus:ring-[#BFEAC9]/20"
-            value={timeRange}
-            onChange={(e) =>
-              onTimeRangeChange(e.target.value as 'weekly' | 'monthly' | 'yearly')
-            }
-          >
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
-        </div>
       </div>
-      <div className=" h-full pb-16 flex justify-center items-center">
+       <div className="h-[250px]">
         <Bar options={options} data={customData} />
       </div>
     </div>
