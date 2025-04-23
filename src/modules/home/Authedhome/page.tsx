@@ -9,9 +9,10 @@ const SearchSection = lazy(
 const Oppertunities = lazy(
   () => import('@/modules/home/Authedhome/components/oppertunities')
 );
+import { setType } from './services/set-type.service';
 
 const AuthedHome = () => {
-  const { user, updateUser } = useUserStore();
+  const { user, login } = useUserStore();
   const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -20,14 +21,13 @@ const AuthedHome = () => {
     }
   }, [user]);
 
-  const handleTypeSelect = async (type: 'Student' | 'Professional') => {
+  const handleTypeSelect = async (type: 'Student' | 'Company') => {
     if (!user) return;
-
     try {
-      updateUser({ type });
-      // updateUser(updatedUser);
+      const updatedUser = await setType(type);
+      login(updatedUser);
     } catch (error) {
-      console.error("Failed to update user type from page:", error);
+      console.error('Failed to update user type from page:', error);
       throw error;
     }
   };

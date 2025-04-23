@@ -22,7 +22,7 @@ export interface User {
   name: string;
   profilepic: string | null;
   type: string;
-  role: 'Student' | 'Professional' | 'Admin';
+  role: 'Student' | 'Company' | 'Admin';
   description: string;
   skills: string[];
   education: EducationData[];

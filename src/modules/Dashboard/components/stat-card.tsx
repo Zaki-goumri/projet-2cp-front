@@ -20,37 +20,29 @@ const StatCard: React.FC<StatCardProps> = ({
   value,
   icon,
   trend,
-  valueColor = 'text-gray-900',
-  iconBgColor = 'bg-[#BFEAC9]/20',
+  valueColor = 'text-gray-700',
+  iconBgColor = 'bg-green-100',
 }) => {
-  const getValueColor = () => {
-    if (title === 'Applied' || title === 'Acceptance' || title === 'Total Applications') {
-      return 'text-[#92E3A9]';
-    }
-    return valueColor;
-  };
+  const TrendIcon = trend?.direction === 'up' ? TrendUpIcon : TrendDownIcon;
+  const trendTextColor = trend?.color || (trend?.direction === 'up' ? 'text-green-600' : 'text-red-600');
 
   return (
-    <div className="flex flex-col rounded-lg border border-gray-200 p-4 shadow-sm transition-all duration-300 hover:shadow-md bg-white sm:p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+    <div className="flex flex-col rounded-lg border border-gray-100 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-5">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500">
             {title}
           </h3>
-          <div className={`text-2xl font-bold ${getValueColor()}`}>{value}</div>
-          {trend && (
-            <p className={`mt-1 flex items-center text-sm ${trend.color}`}>
-              {trend.direction === 'up' ? (
-                <TrendUpIcon />
-              ) : (
-                <TrendDownIcon />
-              )}
-              {trend.value}
-            </p>
-          )}
+          <div className={`mt-1 text-2xl font-semibold ${valueColor}`}>{value}</div>
         </div>
-        {icon && <div className={`rounded-full ${iconBgColor} p-3`}>{icon}</div>}
+        {icon && <div className={`ml-4 flex-shrink-0 rounded-md ${iconBgColor} p-2`}>{icon}</div>}
       </div>
+      {trend && (
+        <div className={`mt-2 flex items-center text-xs ${trendTextColor}`}>
+          <TrendIcon className="mr-1 h-3 w-3" />
+          <span>{trend.value}</span>
+        </div>
+      )}
     </div>
   );
 };
