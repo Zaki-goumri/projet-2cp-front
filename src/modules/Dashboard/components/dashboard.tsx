@@ -1,19 +1,17 @@
 import React from 'react';
 import { FolderIcon, CheckCircleIcon, XCircleIcon, FileTextIcon } from 'lucide-react';
 import StatCard from './stat-card';
-// Uncomment chart imports
 import { AcceptanceChart } from './acceptance-chart';
 import { ActivityChart } from './activity-chart';
 import { InternshipTrack } from './internship-track';
 import { TeamsList } from './teams-list';
-// Uncomment yearly overview import
 import { YearlyOverview } from './yearly-overview';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { ChartData } from '../types/dashboard.types'; // Import ChartData type
 
 export const Dashboard: React.FC = () => {
   const { dashboardData, isLoading, error } = useDashboardData();
-
+  console.log('dashboardData', dashboardData);
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -83,7 +81,7 @@ export const Dashboard: React.FC = () => {
         backgroundColor: 'rgba(146, 227, 169, 0.8)',
         borderColor: '#92E3A9',
         fill: false,
-        tension: 0.1
+        tension: 0.4
       },
     ],
   };
@@ -93,7 +91,7 @@ export const Dashboard: React.FC = () => {
     datasets: [
       {
         label: 'Acceptance Rate',
-        data: [dashboardData.accepted_ratio * 100],
+        data: [dashboardData.daily_count.length],
         backgroundColor: 'rgba(146, 227, 169, 0.5)',
         borderColor: '#92E3A9',
         fill: true,
@@ -124,7 +122,7 @@ export const Dashboard: React.FC = () => {
       </div>
 
       <div className="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <AcceptanceChart data={acceptanceChartData} />
+        <AcceptanceChart data={dashboardData.daily_count} />
         <ActivityChart data={activityChartData} />
       </div>
 
@@ -132,12 +130,12 @@ export const Dashboard: React.FC = () => {
         <div className="lg:col-span-1">
           <InternshipTrack internships={dashboardData.applications as any} />
         </div>
-        <div className="lg:col-span-1">
-          <YearlyOverview 
-            accepted_ratio={dashboardData.accepted_ratio} 
-            refused_ratio={dashboardData.refused_ratio} 
-          />
-        </div>
+          <div className="lg:col-span-1">
+            <YearlyOverview 
+              accepted_ratio={dashboardData.accepted_ratio} 
+              refused_ratio={dashboardData.refused_ratio} 
+            />
+          </div>
         <div className="lg:col-span-1">
           <TeamsList teams={dashboardData.teams as any} />
         </div>
