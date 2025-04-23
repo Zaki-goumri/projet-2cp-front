@@ -52,6 +52,7 @@ export interface OpportunityCardProps {
 export interface EmptyStateProps {
   filterType: OpportunityFilterType;
   searchQuery: string;
+  message?: string;
 }
 
 // Props for ErrorState component (from page.tsx)
