@@ -4,10 +4,6 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 
 export const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const MAX_RETRY_ATTEMPTS = 3;
-const RETRY_DELAY_MS = 1000; 
-const REFRESH_RETRY_ATTEMPTS = 2;
-
 const instance = axios.create({
   baseURL: baseUrl,
   headers: {
@@ -31,66 +27,47 @@ instance.interceptors.request.use(
   }
 );
 
-const clearAuthCookies = () => {
-  document.cookie = serialize('accessToken', '', {
-    httpOnly: true,
-    expires: new Date(0),
-  });
-  document.cookie = serialize('refreshToken', '', {
-    httpOnly: true,
-    expires: new Date(0),
-  });
-  useUserStore.getState().logout();
-};
-
-const refreshAuthToken = async (refreshToken: string, retryCount = 0): Promise<{ access: string; refresh?: string }> => {
-  try {
-    const response = await instance.post('/Auth/Refresh', {
-      refresh: refreshToken,
-    });
-    return response.data;
-  } catch (error) {
-    if (retryCount < REFRESH_RETRY_ATTEMPTS) {
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
-      return refreshAuthToken(refreshToken, retryCount + 1);
-    }
-    throw error;
-  }
-};
-
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retryCount = originalRequest._retryCount || 0;
-      
-      if (originalRequest._retryCount >= MAX_RETRY_ATTEMPTS) {
-        clearAuthCookies();
-        return Promise.reject(new Error('Max retry attempts exceeded'));
-      }
-      
+    if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      originalRequest._retryCount += 1;
-      
       try {
         const refreshToken = document.cookie
           .split(';')
           .find((cookie: string) => cookie.includes('refreshToken'))
           ?.split('=')[1];
-
         if (!refreshToken) {
-          clearAuthCookies();
+          document.cookie = serialize('accessToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          document.cookie = serialize('refreshToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          useUserStore.getState().logout();
           return Promise.reject(error);
         }
 
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+        const response = await instance.post('/Auth/refresh', {
+          refreshToken,
+        });
 
-        const { access: newAccessToken, refresh: newRefreshToken } = await refreshAuthToken(refreshToken);
+        const newAccessToken = response.data.access;
+        const newRefreshToken = response.data.newRefresh;
 
         if (!newAccessToken) {
-          clearAuthCookies();
+          document.cookie = serialize('accessToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          document.cookie = serialize('refreshToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+          });
+          useUserStore.getState().logout();
           return Promise.reject(error);
         }
 
@@ -105,12 +82,21 @@ instance.interceptors.response.use(
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           });
         }
+        instance.defaults.headers.common['Authorization'] =
+          `Bearer ${newAccessToken}`;
 
-        instance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
         return instance(originalRequest);
       } catch (refreshError) {
-        clearAuthCookies();
-        return Promise.reject(`error in refreshing: ${refreshError}`);
+        document.cookie = serialize('accessToken', '', {
+          httpOnly: true,
+          expires: new Date(0),
+        });
+        document.cookie = serialize('refreshToken', '', {
+          httpOnly: true,
+          expires: new Date(0),
+        });
+        useUserStore.getState().logout();
+        return Promise.reject(`error in refreaching :${refreshError}`);
       }
     }
     return Promise.reject(error);

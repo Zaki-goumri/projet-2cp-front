@@ -52,9 +52,16 @@ export interface OpportunityCardProps {
 export interface EmptyStateProps {
   filterType: OpportunityFilterType;
   searchQuery: string;
+  message?: string;
 }
 
 // Props for ErrorState component (from page.tsx)
 export interface ErrorStateProps {
   error: Error | null;
+}
+
+// --- Type for Search API Response ---
+export interface SearchResults {
+  opportunity: Opportunity[];
+  company: Company[];
 } 

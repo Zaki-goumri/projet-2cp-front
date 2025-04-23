@@ -7,10 +7,11 @@ import { InternshipTrack } from './internship-track';
 import { TeamsList } from './teams-list';
 import { YearlyOverview } from './yearly-overview';
 import { useDashboardData } from '../hooks/useDashboardData';
+import { ChartData } from '../types/dashboard.types'; // Import ChartData type
 
 export const Dashboard: React.FC = () => {
-  const { dashboardData, isLoading, error, timeRange, setTimeRange } = useDashboardData();
-
+  const { dashboardData, isLoading, error } = useDashboardData();
+  console.log('dashboardData', dashboardData);
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -36,50 +37,77 @@ export const Dashboard: React.FC = () => {
 
   const statCardsData = [
     {
-      title: 'Applied',
-      value: dashboardData.applications.applied,
+      title: 'Total Applications',
+      value: dashboardData.total_application,
       icon: <FolderIcon className="h-5 w-5 text-[#92E3A9]" />,
       iconBgColor: 'bg-[#BFEAC9]/20',
+      trend: dashboardData.total_application_last_month !== undefined ? {
+        value: `${dashboardData.total_application - dashboardData.total_application_last_month} since last month`,
+        direction: dashboardData.total_application >= dashboardData.total_application_last_month ? 'up' as const : 'down' as const,
+        color: dashboardData.total_application >= dashboardData.total_application_last_month ? 'text-[#92E3A9]' : 'text-red-500',
+      } : undefined,
     },
     {
-      title: 'Acceptance',
-      value: dashboardData.applications.acceptance.total,
+      title: 'Accepted',
+      value: dashboardData.accepted_count,
       icon: <CheckCircleIcon className="h-5 w-5 text-[#92E3A9]" />,
       iconBgColor: 'bg-[#BFEAC9]/20',
       trend: {
-        value: `+${dashboardData.applications.acceptance.change}% since last month`,
+        value: `${(dashboardData.accepted_ratio * 100).toFixed(1)}% acceptance`,
         direction: 'up' as const,
         color: 'text-[#92E3A9]',
       },
     },
     {
-      title: 'Refusals',
-      value: dashboardData.applications.refusals.total,
+      title: 'Refused',
+      value: dashboardData.refused_count,
       valueColor: 'text-red-500',
       icon: <XCircleIcon className="h-5 w-5 text-red-500" />,
       iconBgColor: 'bg-red-50',
       trend: {
-        value: `${dashboardData.applications.refusals.change}% since last month`,
+        value: `${(dashboardData.refused_ratio * 100).toFixed(1)}% refusal`,
         direction: 'down' as const,
         color: 'text-red-500',
       },
     },
-    {
-      title: 'Total Applications',
-      value: dashboardData.applications.totalApplications,
-      icon: <FileTextIcon className="h-5 w-5 text-[#92E3A9]" />,
-      iconBgColor: 'bg-[#BFEAC9]/20',
-    },
   ];
 
+  const activityChartData: ChartData = {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [
+      {
+        label: 'Daily Applications',
+        data: dashboardData.daily_count || [],
+        backgroundColor: 'rgba(146, 227, 169, 0.8)',
+        borderColor: '#92E3A9',
+        fill: false,
+        tension: 0.4
+      },
+    ],
+  };
+
+  const acceptanceChartData: ChartData = {
+    labels: ['Acceptance Rate'],
+    datasets: [
+      {
+        label: 'Acceptance Rate',
+        data: [dashboardData.daily_count.length],
+        backgroundColor: 'rgba(146, 227, 169, 0.5)',
+        borderColor: '#92E3A9',
+        fill: true,
+        tension: 0.4
+      },
+    ],
+  };
+  // --- End Prepare Chart Data ---
+
   return (
-    <div className="container mx-auto px-4 py-8 font-sans">
-      <h1 className="mb-8 text-2xl font-bold text-gray-900 ">
+    <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 font-sans">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 ">
         Main <span className="text-[#92E3A9]">Dashboard</span>
       </h1>
-      
-      {/* Stat Cards */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 ">
+
+      <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 ">
         {statCardsData.map((card, index) => (
           <StatCard
             key={index}
@@ -92,26 +120,24 @@ export const Dashboard: React.FC = () => {
           />
         ))}
       </div>
-      {/* Charts */}
-      <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <AcceptanceChart data={dashboardData.acceptanceChart} />
-        <ActivityChart 
-          data={dashboardData.activityChart}
-          timeRange={timeRange}
-          onTimeRangeChange={setTimeRange}
-        />
+
+      <div className="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <AcceptanceChart data={dashboardData.daily_count} />
+        <ActivityChart data={activityChartData} />
       </div>
-      
-      {/* Internship Track, Yearly Overview, and Teams */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div>
-          <InternshipTrack internships={dashboardData.internships as any} />
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-1">
+          <InternshipTrack internships={dashboardData.applications as any} />
         </div>
-        <div>
-          <YearlyOverview data={dashboardData.yearlyOverview} />
-        </div>
-        <div>         
-           <TeamsList teams={dashboardData.teams} />
+          <div className="lg:col-span-1">
+            <YearlyOverview 
+              accepted_ratio={dashboardData.accepted_ratio} 
+              refused_ratio={dashboardData.refused_ratio} 
+            />
+          </div>
+        <div className="lg:col-span-1">
+          <TeamsList teams={dashboardData.teams as any} />
         </div>
       </div>
     </div>

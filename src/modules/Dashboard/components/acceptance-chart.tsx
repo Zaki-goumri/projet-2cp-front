@@ -1,4 +1,3 @@
-// acceptance-chart.tsx
 import React from 'react';
 import {
   Chart as ChartJS,
@@ -12,7 +11,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { ChartData } from '../types/dashboard.types';
 
 ChartJS.register(
   CategoryScale,
@@ -26,41 +24,67 @@ ChartJS.register(
 );
 
 interface AcceptanceChartProps {
-  data: ChartData;
+  data: number[];
+  labels?: string[];
 }
 
-export const AcceptanceChart: React.FC<AcceptanceChartProps> = ({ data }) => {
-  // Customize data to match the website's theme
-  const customData = {
-    ...data,
-    datasets: data.datasets.map(dataset => ({
-      ...dataset,
-      borderColor: '#92E3A9',
-      backgroundColor: 'rgba(146, 227, 169, 0.2)',
-      pointBackgroundColor: '#92E3A9',
-      pointBorderColor: '#ffffff',
-    }))
+export const AcceptanceChart: React.FC<AcceptanceChartProps> = ({ data, labels }) => {
+  const getLastSevenDays = () => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
+    const labels = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      labels.push(days[date.getDay()]);
+    }
+    
+    return labels;
+  };
+
+  const chartData = {
+    labels: labels || getLastSevenDays(),
+    datasets: [
+      {
+        label: 'Acceptance Rate',
+        data: data,
+        borderColor: '#92E3A9',
+        backgroundColor: 'rgba(146, 227, 169, 0.3)', // Increased opacity for more visible fill
+        pointBackgroundColor: '#92E3A9',
+        pointBorderColor: '#ffffff',
+        pointHoverBackgroundColor: '#ffffff',
+        pointHoverBorderColor: '#92E3A9',
+        fill: 'start', // Changed to 'start' to fill from the top
+        tension: 0.4,
+      },
+    ],
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
       },
       tooltip: {
         enabled: true,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        titleColor: '#333',
-        bodyColor: '#333',
-        borderColor: '#BFEAC9',
+        mode: 'index' as const,
+        intersect: false,
+        backgroundColor: '#ffffff',
+        titleColor: '#6b7280',
+        bodyColor: '#111827',
+        borderColor: '#e5e7eb',
         borderWidth: 1,
         padding: 10,
-        boxPadding: 5,
-        usePointStyle: true,
+        usePointStyle: false,
+        boxPadding: 4,
+        titleFont: { size: 10 },
+        bodyFont: { size: 12, weight: 'bold' as const },
         callbacks: {
           label: function(context: any) {
-            return `Value: ${context.parsed.y}`;
+            return `Rate: ${context.parsed.y.toFixed(1)}%`;
           }
         }
       },
@@ -68,38 +92,56 @@ export const AcceptanceChart: React.FC<AcceptanceChartProps> = ({ data }) => {
     scales: {
       y: {
         beginAtZero: true,
+        min: 0,
+        max: 30,
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: 'rgba(229, 231, 235, 0.5)',
+          drawBorder: false,
         },
+        ticks: {
+          padding: 10,
+          color: '#6b7280',
+          font: { size: 10 }
+        }
       },
       x: {
         grid: {
           display: false,
         },
+        ticks: {
+          padding: 10,
+          color: '#6b7280',
+          font: { size: 10 }
+        }
       },
     },
     elements: {
       line: {
-        tension: 0.4,
+        tension: 1,
       },
       point: {
-        radius: 3,
-        hoverRadius: 6,
+        radius: 0,
+        hoverRadius: 5,
+        hoverBorderWidth: 2,
       },
     },
+    interaction: {
+      mode: 'nearest' as const,
+      axis: 'x' as const,
+      intersect: false
+    }
   };
 
   return (
-    <div className="h-fit rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md  sm:p-6">
+    <div className="h-full w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md sm:p-6">
       <div className="mb-4">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+        <h3 className="text-lg font-medium text-gray-900">
           Acceptance
         </h3>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          Average applications
-        </span>
       </div>
-      <Line options={options} data={customData} height={180} />
+      <div className="h-[250px]">
+        <Line options={options} data={chartData} />
+      </div>
     </div>
   );
 };

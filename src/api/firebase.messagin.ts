@@ -8,7 +8,7 @@ export const requestFcmToken = async () => {
   try {
     const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
     const token = await getToken(messaging, { vapidKey });
-    if (token) {
+    if (token) {   
       console.log('fmc', token);
       const response = await axios.post('/Auth/Fcm', { token });
       console.log(response.data);

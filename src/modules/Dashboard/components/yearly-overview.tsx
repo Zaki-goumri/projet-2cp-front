@@ -1,24 +1,38 @@
 import React from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
+import { MoreHorizontal } from 'lucide-react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface YearlyOverviewProps {
-  data: {
-    acceptance: number;
-    refusals: number;
-  };
+  accepted_ratio: number;
+  refused_ratio: number;
 }
 
-export const YearlyOverview: React.FC<YearlyOverviewProps> = ({ data }) => {
-  const chartData = {
-    labels: ['Acceptance', 'Refusals'],
+export const YearlyOverview: React.FC<YearlyOverviewProps> = ({ accepted_ratio, refused_ratio }) => {
+  const acceptancePercent = (accepted_ratio * 100).toFixed(0);
+  const refusalPercent = (refused_ratio * 100).toFixed(0);
+  const otherPercent = 100 - parseFloat(acceptancePercent) - parseFloat(refusalPercent);
+
+  const data = {
+    labels: ['Acceptance', 'Refusals', 'Other'],
     datasets: [
       {
-        data: [data.acceptance, data.refusals],
-        backgroundColor: ['#92E3A9', '#ef4444'],
-        borderWidth: 0,
+        label: 'Application Status',
+        data: [acceptancePercent, refusalPercent, otherPercent > 0 ? otherPercent : 0],
+        backgroundColor: [
+          '#92E3A9',
+          '#FCA5A5',
+          '#E5E7EB',
+        ],
+        borderColor: [
+          '#FFFFFF',
+          '#FFFFFF',
+          '#FFFFFF',
+        ],
+        borderWidth: 2,
+        hoverOffset: 4,
       },
     ],
   };
@@ -26,6 +40,7 @@ export const YearlyOverview: React.FC<YearlyOverviewProps> = ({ data }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    cutout: '70%',
     plugins: {
       legend: {
         position: 'bottom' as const,
@@ -33,58 +48,49 @@ export const YearlyOverview: React.FC<YearlyOverviewProps> = ({ data }) => {
           usePointStyle: true,
           boxWidth: 8,
           padding: 20,
-          font: {
-            family: 'Poppins',
-          },
+          generateLabels: (chart: any) => {
+            const datasets = chart.data.datasets;
+            return datasets[0].data.map((data: number, i: number) => ({
+              text: `${chart.data.labels[i]} ${data}%`,
+              fillStyle: datasets[0].backgroundColor[i],
+              strokeStyle: datasets[0].borderColor[i],
+              lineWidth: datasets[0].borderWidth,
+              hidden: isNaN(datasets[0].data[i]) || chart.getDatasetMeta(0).data[i].hidden,
+              index: i
+            }));
+          }
         },
       },
       tooltip: {
+        enabled: true,
         callbacks: {
-          label: function (context: any) {
-            return `${context.label}: ${context.raw}%`;
-          },
-        },
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        titleColor: '#333',
-        bodyColor: '#333',
-        borderColor: '#BFEAC9',
-        borderWidth: 1,
-        padding: 10,
-        boxPadding: 5,
-        usePointStyle: true,
+          label: function(context: any) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed !== null) {
+              label += context.parsed + '%';
+            }
+            return label;
+          }
+        }
       },
     },
   };
 
   return (
-    <div className="h-[382px] rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md  sm:p-6">
+    <div className="h-full w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md sm:p-6">
       <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Yearly Overview
-          </h3>
-        </div>
-        <div className="relative">
-          <select className="rounded-lg border border-gray-200 px-4 py-2 text-sm focus:border-[#92E3A9] focus:outline-none focus:ring-2 focus:ring-[#BFEAC9]/20">
-            <option>Monthly</option>
-            <option>Quarterly</option>
-            <option>Yearly</option>
-          </select>
-        </div>
+        <h3 className="text-lg font-medium text-gray-900">
+          Your Report
+        </h3>
       </div>
-      <div className="flex h-[180px] items-center justify-center">
-        <Pie data={chartData} options={options} />
-      </div>
-      <div className="mt-4 flex justify-center space-x-8">
-        <div className="flex items-center">
-          <div className="h-3 w-3 rounded-full bg-[#92E3A9]"></div>
-          <span className="ml-2 text-sm">{data.acceptance}%</span>
-        </div>
-        <div className="flex items-center">
-          <div className="h-3 w-3 rounded-full bg-red-500"></div>
-          <span className="ml-2 text-sm">{data.refusals}%</span>
-        </div>
+      <div className="mx-auto flex h-[250px] w-full max-w-[250px] items-center justify-center py-4">
+        <Doughnut data={data} options={options} />
       </div>
     </div>
   );
-}; 
+};
+
+export default YearlyOverview; 

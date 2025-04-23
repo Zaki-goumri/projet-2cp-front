@@ -8,8 +8,8 @@ import {
   Bell,
   LayoutDashboard,
   User,
-  Code,
   Users,
+  Briefcase,
   Clock,
   CheckCircle2,
   Menu,
@@ -61,7 +61,7 @@ export default function NavBar() {
 
   const privateNavItems: NavItem[] = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/problems', label: 'Problems', icon: Code },
+    { to: '/opportunities', label: 'opportunities', icon: Briefcase },
     { to: '/teams', label: 'Teams', icon: Users },
     { to: '/chat', label: 'Chat', icon: MessageCircle },
     { to: '/search', label: 'Search', icon: Search },

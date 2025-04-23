@@ -1,4 +1,3 @@
-// src/modules/features/dashboards/types.ts
 export interface RevenueData {
   total: number;
   change: number;
@@ -80,21 +79,15 @@ export interface ChartData {
 }
 
 export interface DashboardData {
-  revenue: RevenueData;
-  subscriptions: SubscriptionData;
-  sales: SalesData;
-  activeUsers: UserData;
-  applications: ApplicationData;
-  internships: InternshipData[];
-  teams: TeamData[];
-  monthlyTrend: ChartDataPoint[];
-  weeklyActivity: ChartDataPoint[];
-  acceptanceChart: ChartData;
-  activityChart: ChartData;
-  yearlyOverview: {
-    acceptance: number;
-    refusals: number;
-  };
+  total_application: number;
+  total_application_last_month: number;
+  accepted_count: number;
+  refused_count: number;
+  accepted_ratio: number;
+  refused_ratio: number;
+  daily_count: number[]; 
+  teams: any[]; 
+  applications: any[];
 }
 
 export interface DashboardContextType {
