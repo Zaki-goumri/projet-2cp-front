@@ -1,17 +1,21 @@
 import { useState, useRef, useEffect } from 'react';
-import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const DateRangePicker = () => {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+interface DatePickerProps {
+  value: Date | null;
+  onChange: (date: Date | null) => void;
+  placeholder?: string;
+}
+
+const DatePicker = ({ value, onChange, placeholder = "Select date" }: DatePickerProps) => {
+  const [showCalendar, setShowCalendar] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [showCalendar, setShowCalendar] = useState<'start' | 'end' | null>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
-        setShowCalendar(null);
+        setShowCalendar(false);
       }
     };
 
@@ -21,11 +25,10 @@ const DateRangePicker = () => {
 
   const formatDate = (date: Date | null) => {
     if (!date) return '';
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const getDaysInMonth = (date: Date) => {
@@ -42,22 +45,8 @@ const DateRangePicker = () => {
       currentMonth.getMonth(),
       day
     );
-
-    if (showCalendar === 'start') {
-      setStartDate(selectedDate);
-      if (endDate && selectedDate > endDate) {
-        setEndDate(null);
-      }
-      setShowCalendar('end');
-    } else if (showCalendar === 'end') {
-      if (startDate && selectedDate < startDate) {
-        setStartDate(selectedDate);
-        setEndDate(null);
-      } else {
-        setEndDate(selectedDate);
-        setShowCalendar(null);
-      }
-    }
+    onChange(selectedDate);
+    setShowCalendar(false);
   };
 
   const handlePrevMonth = () => {
@@ -85,24 +74,16 @@ const DateRangePicker = () => {
         currentMonth.getMonth(),
         day
       );
-      const isSelected =
-        (startDate && date.getTime() === startDate.getTime()) ||
-        (endDate && date.getTime() === endDate.getTime());
-      const isInRange =
-        startDate &&
-        endDate &&
-        date >= startDate &&
-        date <= endDate;
+      const isSelected = value && date.getTime() === value.getTime();
 
       days.push(
         <button
           key={day}
+          type="button"
           onClick={() => handleDateClick(day)}
           className={`h-8 w-8 rounded-full text-sm transition-colors ${
             isSelected
               ? 'bg-[#92E3A9] text-white'
-              : isInRange
-              ? 'bg-[#92E3A9]/10 text-[#92E3A9]'
               : 'hover:bg-[#92E3A9]/5'
           }`}
         >
@@ -116,29 +97,14 @@ const DateRangePicker = () => {
 
   return (
     <div className="relative">
-      <div className="flex gap-4">
-        <div className="relative flex-1">
-          <div
-            className="flex w-full cursor-pointer items-center rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors hover:bg-gray-50"
-            onClick={() => setShowCalendar('start')}
-          >
-            <Calendar className="mr-2 h-4 w-4 text-gray-400" />
-            <span className={startDate ? 'text-gray-900' : 'text-gray-400'}>
-              {formatDate(startDate) || 'Start Date'}
-            </span>
-          </div>
-        </div>
-        <div className="relative flex-1">
-          <div
-            className="flex w-full cursor-pointer items-center rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors hover:bg-gray-50"
-            onClick={() => setShowCalendar('end')}
-          >
-            <Calendar className="mr-2 h-4 w-4 text-gray-400" />
-            <span className={endDate ? 'text-gray-900' : 'text-gray-400'}>
-              {formatDate(endDate) || 'End Date'}
-            </span>
-          </div>
-        </div>
+      <div
+        className="flex w-full cursor-pointer items-center rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors hover:bg-gray-50"
+        onClick={() => setShowCalendar(!showCalendar)}
+      >
+        <CalendarIcon className="mr-2 h-4 w-4 text-gray-400" />
+        <span className={value ? 'text-gray-900' : 'text-gray-400'}>
+          {formatDate(value) || placeholder}
+        </span>
       </div>
 
       {showCalendar && (
@@ -184,4 +150,4 @@ const DateRangePicker = () => {
   );
 };
 
-export default DateRangePicker; 
+export default DatePicker; 
