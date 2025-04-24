@@ -5,13 +5,7 @@ import InfoCard from '../InfoCard';
 import AddItemModal from '../modals/AddItemModal';
 import { EducationData } from '@/modules/shared/types/shared.types';
 
-interface Education {
-  id: string;
-  company: string;
-  role: string;
-  startDate: string;
-  endDate: string | null;
-}
+
 
 interface EducationProps {
   isEditing: boolean;
@@ -35,21 +29,17 @@ const Education = ({
     setIsModalOpen(true);
   };
 
-  const handleModalSubmit = (data: Education) => {
+  const handleModalSubmit = (data: EducationData) => {
     const newEducation: EducationData = {
-      id: Date.now().toString(),
-      company: data.company,
-      role: data.role,
-      startDate: data.startDate,
-      endDate: data.endDate,
-      institution: data.company,
-      degree: data.role,
-      description: '',
-      attachments: [],
-      type: 'education',
+      id:new Date().toISOString(),
+      start: data.start,
+      end: data.end,
+      institution: data.institution,
+      degree: data.start,
     };
     const updatedEducation = [...education, newEducation];
     onEducationChange(updatedEducation);
+    console.log('closing ...')
     setIsModalOpen(false);
   };
 
@@ -70,10 +60,10 @@ const Education = ({
                 <div key={edu.id} className="rounded-lg border-[#92E3A9] p-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-semibold">{edu.company}</h3>
-                      <p className="text-gray-600">{edu.role}</p>
+                      <h3 className="font-semibold">{edu.institution}</h3>
+                      <p className="text-gray-600">{edu.degree}</p>
                       <p className="text-sm text-gray-500">
-                        {edu.startDate} - {edu.endDate}
+                        {edu.start} - {edu.end}
                       </p>
                     </div>
                     {isEditing && (

@@ -48,7 +48,6 @@ export function useProfileUpdate() {
     const updateData: UpdateUserData = {
       ...sectionData,
       // Include existing data if not being updated
-      experience: sectionData.experience || user.experience,
       education: sectionData.education || user.education,
       description: sectionData.description || user.description,
       skills: sectionData.skills || user.skills,
