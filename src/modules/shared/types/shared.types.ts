@@ -35,13 +35,8 @@ export interface EducationData {
   id: string;
   institution: string;
   degree: string;
-  startDate: string;
-  endDate: string | null;
-  description: string;
-  attachments: Attachment[];
-  type: string;
+  start: string;
+  end: string | null;
   createdAt?: string;
   updatedAt?: string;
-  company: string;
-  role: string;
 }

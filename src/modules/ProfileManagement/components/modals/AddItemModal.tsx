@@ -51,18 +51,9 @@ const experienceSchema = z.object({
 const educationSchema = z.object({
   degree: z.string().min(1, 'Degree is required'),
   institution: z.string().min(1, 'Institution is required'),
-  startDate: z.string().min(1, 'Start date is required'),
-  endDate: z.string().min(1, 'End date is required'),
-  description: z.string().optional(),
-  image: z
-    .any()
-    .refine((files) => !files || files?.length === 0 || files?.[0]?.size <= MAX_FILE_SIZE, 'Max file size is 5MB.')
-    .refine(
-      (files) => !files || files?.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      'Only .jpg, .jpeg, .png and .webp formats are supported.'
-    )
-    .optional(),
-});
+  start: z.string().min(1, 'Start date is required'),
+  end: z.string().min(1, 'End date is required'),
+  });
 
 export default function AddItemModal({ isOpen, onClose, onSubmit, type }: AddItemModalProps) {
   const schema = type === 'experience' ? experienceSchema : educationSchema;
@@ -167,7 +158,7 @@ export default function AddItemModal({ isOpen, onClose, onSubmit, type }: AddIte
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="startDate"
+                name="start"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-700 font-medium">Start Date</FormLabel>
@@ -185,7 +176,7 @@ export default function AddItemModal({ isOpen, onClose, onSubmit, type }: AddIte
 
               <FormField
                 control={form.control}
-                name="endDate"
+                name="end"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-700 font-medium">End Date</FormLabel>
@@ -201,27 +192,6 @@ export default function AddItemModal({ isOpen, onClose, onSubmit, type }: AddIte
                 )}
               />
             </div>
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700 font-medium">Description</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      className="border border-gray-200 rounded-lg focus:border-[#92E3A9] focus:ring-1 focus:ring-[#92E3A9] min-h-[120px] resize-none" 
-                      placeholder={type === 'experience' 
-                        ? 'Describe your role and responsibilities...' 
-                        : 'Add any additional details about your education...'}
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-500 text-sm" />
-                </FormItem>
-              )}
-            />
-
             <DialogFooter className="flex justify-end gap-3 pt-2">
               <Button 
                 type="button" 
