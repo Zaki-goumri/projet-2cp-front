@@ -60,11 +60,11 @@ instance.interceptors.response.use(
 
         if (!newAccessToken) {
           document.cookie = serialize('accessToken', '', {
-            httpOnly: true,
+            httpOnly: false,
             expires: new Date(0),
           });
           document.cookie = serialize('refreshToken', '', {
-            httpOnly: true,
+            httpOnly: false,
             expires: new Date(0),
           });
           useUserStore.getState().logout();
@@ -88,11 +88,11 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (refreshError) {
         document.cookie = serialize('accessToken', '', {
-          httpOnly: true,
+          httpOnly: false,
           expires: new Date(0),
         });
         document.cookie = serialize('refreshToken', '', {
-          httpOnly: true,
+          httpOnly: false,
           expires: new Date(0),
         });
         useUserStore.getState().logout();
