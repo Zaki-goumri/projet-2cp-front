@@ -14,7 +14,6 @@ interface ProfileInfoProps {
   isEditingLoading: boolean;
   onCancel: () => void;
 }
-
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
   'image/jpeg',
@@ -36,17 +35,17 @@ function ProfileInfo({
   const profilePlaceHolder = '/assets/profile-placeholder.png';
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [profileImage, setProfileImage] = useState<string | null>(
-    user?.profilepic ?? profilePlaceHolder
-  );
+    user?.profilepic ?? profilePlaceHolder);
   const [, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const handleImageClick = () => {
     if (isEditing) {
+       
       fileInputRef.current?.click();
     }
   };
 
+  console.log('profileImage', profileImage);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;

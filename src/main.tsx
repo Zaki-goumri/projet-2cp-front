@@ -31,9 +31,9 @@ import InternshipsAndProblemsPage from './modules/internships&problems/page';
 import CreateTeamCard from './modules/teams/components/CreateTeamCard';
 const Chat = lazy(() => import('./modules/chat/page'));
 import { QueryProvider } from './providers/QueryProvider';
+import CreateOpportunityPage from './modules/opportunity/opportunity.create';
 
 const root = document.getElementById('root');
-
 if (root) {
   ReactDOM.createRoot(root).render(
     <main>
@@ -76,9 +76,19 @@ if (root) {
                   <ProtectedRoute>
                     <LayoutWithoutFooter>
                       <Chat />
+
                     </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
+              />
+
+              <Route path="/opportunity/create" element={
+                <ProtectedRoute>
+                  <LayoutWithoutFooter>
+                    <CreateOpportunityPage />
+                  </LayoutWithoutFooter>
+                </ProtectedRoute>
+              }
               />
               <Route
                 path="/chat/:id"
