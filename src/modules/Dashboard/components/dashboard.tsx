@@ -11,7 +11,6 @@ import { ChartData } from '../types/dashboard.types'; // Import ChartData type
 
 export const Dashboard: React.FC = () => {
   const { dashboardData, isLoading, error } = useDashboardData();
-  console.log('dashboardData', dashboardData);
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -100,21 +99,6 @@ export const Dashboard: React.FC = () => {
       },
     ],
   };
-
-  const acceptanceChartData: ChartData = {
-    labels: ['Acceptance Rate'],
-    datasets: [
-      {
-        label: 'Acceptance Rate',
-        data: [dashboardData.daily_count.length],
-        backgroundColor: 'rgba(146, 227, 169, 0.5)',
-        borderColor: '#92E3A9',
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-  // --- End Prepare Chart Data ---
 
   return (
     <div className="container mx-auto px-4 py-6 font-sans sm:px-6 lg:px-8">

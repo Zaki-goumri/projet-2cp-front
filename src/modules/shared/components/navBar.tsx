@@ -41,11 +41,7 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const logout = useUserStore((state) => state.logout);
-  const { 
-    data: notificationsData,
-    markAllAsRead
-  } = useNotifications();
-
+  const { data: notificationsData, markAllAsRead } = useNotifications();
   const notifications = notificationsData?.notifications || [];
   const unreadCount = notifications.filter(n => !n.read).length;
 

@@ -66,8 +66,7 @@ const SignUpForm = () => {
   const { mutate, isLoading } = useSignup();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const { confirmPassword, phoneNumber, ...registrationData } = values;
-    console.log('Registration Data:', confirmPassword, phoneNumber); //for stopping never used error currently
+    const { confirmPassword, ...registrationData } = values;
     mutate(registrationData as RegisterRequest);
   };
 
