@@ -80,6 +80,7 @@ function ProfileInfo({
             <img
               src={profileImage || profilePlaceHolder}
               className="h-full w-full object-cover"
+              loading="lazy"
             />
             {isEditing && (
               <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center bg-black opacity-0 transition-opacity duration-200 hover:opacity-100">

@@ -104,6 +104,7 @@
     "vite": "^6.0.5",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-mkcert": "^1.17.8",
+    "vite-plugin-pwa": "^1.0.0",
     "vitest": "^3.0.8"
   }
 }
