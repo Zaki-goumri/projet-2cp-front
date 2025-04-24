@@ -59,9 +59,9 @@ export default defineConfig({
         importScripts: ['firebase-messaging-sw.js']
       },
       manifest: {
-        name: 'Your App Name',
-        short_name: 'YourApp',
-        description: 'Description of your awesome application',
+        name: 'Grow up',
+        short_name: 'Grow up',
+        description: 'an application for find job ',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
@@ -70,7 +70,7 @@ export default defineConfig({
         icons: [
           {
             src: 'pwa-192x192.png',
-            sizes: '192x192',
+            sizes: '128x128',
             type: 'image/png',
           },
           {
