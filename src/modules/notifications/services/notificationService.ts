@@ -1,17 +1,17 @@
 import { Notification } from '../types/notification';
-import api from '@/api/axios.config'; 
+import api from '@/api/axios.config';
 import { NotificationsResponse } from '../types/notification';
 
-const NOTIFICATIONS_ENDPOINT = '/Auth/notfi'; 
-const SINGLE_NOTIFICATION_ENDPOINT = '/Auth/notif'; 
+const NOTIFICATIONS_ENDPOINT = '/Auth/test';
+const SINGLE_NOTIFICATION_ENDPOINT = '/Auth/notif';
 
 /**
  * Fetches all notifications for the authenticated user.
  */
 export const getNotifications = async (): Promise<NotificationsResponse> => {
   try {
+    // API returns array directly, wrapping it to match NotificationsResponse type
     const response = await api.get<Notification[]>(NOTIFICATIONS_ENDPOINT);
-    console.log(response.data);
     return { notifications: response.data };
   } catch (error) {
     console.error('Error fetching notifications:', error);
@@ -24,7 +24,6 @@ export const getNotifications = async (): Promise<NotificationsResponse> => {
  */
 export const markAllNotificationsAsRead = async (): Promise<void> => {
   try {
-    // PUT usually doesn't return significant content, returns 200 OK on success
     await api.put(NOTIFICATIONS_ENDPOINT);
   } catch (error) {
     console.error('Error marking all notifications as read:', error);
@@ -43,3 +42,18 @@ export const deleteNotification = async (id: number): Promise<void> => {
     throw error;
   }
 };
+
+export const notificationService = {
+  getNotifications: async (): Promise<NotificationsResponse[]> => {
+    const response = await api.get<NotificationsResponse[]>(
+      NOTIFICATIONS_ENDPOINT
+    );
+    return response.data;
+  },
+
+  markAsRead: async (id: string): Promise<void> => {
+    const response = await api.post(`${NOTIFICATIONS_ENDPOINT}/${id}/read`);
+    return response.data;
+  },
+};
+

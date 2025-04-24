@@ -6,7 +6,6 @@ import SignUp from './modules/auth/signup/page';
 import Loading from './loading';
 import ForgotPassword from './modules/auth/forgot-password/page';
 import ProfilePage from './modules/ProfileManagement/page';
-import { NotificationProvider } from './modules/notifications/context/NotificationContext';
 import MainLayout from './components/layouts/MainLayout';
 import LayoutWithoutFooter from './components/layouts/LayoutWithoutFooter';
 import NotFound from './components/ui/NotFound';
@@ -40,149 +39,144 @@ if (root) {
     <main>
       <Suspense fallback={<Loading />}>
         <QueryProvider>
-          <NotificationProvider>
-            <Router>
-              <Routes>
-                {/* Auth routes */}
-                <Route path="/google/callback" element={<OAuthCallback />} />
-                <Route
-                  path="/linkedin/callback"
-                  element={<LinkedInCallback />}
-                />
-                <Route path="auth">
-                  <Route index element={<div />} />
-                  <Route path="signin" element={<Signin />} />
-                  <Route path="password/forget" element={<ForgotPassword />} />
-                  <Route path="signup" element={<SignUp />} />
-                </Route>
+          <Router>
+            <Routes>
+              {/* Auth routes */}
+              <Route path="/google/callback" element={<OAuthCallback />} />
+              <Route path="/linkedin/callback" element={<LinkedInCallback />} />
+              <Route path="auth">
+                <Route index element={<div />} />
+                <Route path="signin" element={<Signin />} />
+                <Route path="password/forget" element={<ForgotPassword />} />
+                <Route path="signup" element={<SignUp />} />
+              </Route>
 
-                {/* Public routes */}
-                <Route
-                  path="/"
-                  element={
-                    <MainLayout>
-                      <App />
-                    </MainLayout>
-                  }
-                />
-                <Route
-                  path="/home"
-                  element={
-                    <MainLayout>
-                      <Home />
-                    </MainLayout>
-                  }
-                />
+              {/* Public routes */}
+              <Route
+                path="/"
+                element={
+                  <MainLayout>
+                    <App />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/home"
+                element={
+                  <MainLayout>
+                    <Home />
+                  </MainLayout>
+                }
+              />
 
-                {/* Protected routes */}
+              {/* Protected routes */}
+              <Route
+                path="/chat"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <Chat />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/chat/:id"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <Chat />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/notifications"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <NotificationsPage />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/opportunities"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <OpportunitiesPage />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/:userName"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <ProfilePage />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <Dashboard />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <InternshipsAndProblemsPage />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="teams">
                 <Route
-                  path="/chat"
+                  index
                   element={
                     <ProtectedRoute>
                       <LayoutWithoutFooter>
-                        <Chat />
+                        <Teams />
                       </LayoutWithoutFooter>
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path="/chat/:id"
-                  element={
-                    <ProtectedRoute>
-                      <LayoutWithoutFooter>
-                        <Chat />
-                      </LayoutWithoutFooter>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/notifications"
-                  element={
-                    <ProtectedRoute>
-                      <LayoutWithoutFooter>
-                        <NotificationsPage />
-                      </LayoutWithoutFooter>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/opportunities"
-                  element={
-                    <ProtectedRoute>
-                      <LayoutWithoutFooter>
-                        <OpportunitiesPage />
-                      </LayoutWithoutFooter>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profile/:userName"
-                  element={
-                    <ProtectedRoute>
-                      <LayoutWithoutFooter>
-                        <ProfilePage />
-                      </LayoutWithoutFooter>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dashboard"
+                  path="create"
                   element={
                     <ProtectedRoute>
                       <MainLayout>
-                        <Dashboard />
+                        <CreateTeamCard />
                       </MainLayout>
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path="/search"
+                  path=":teamId"
                   element={
                     <ProtectedRoute>
                       <LayoutWithoutFooter>
-                        <InternshipsAndProblemsPage />
+                        <TeamDetail />
                       </LayoutWithoutFooter>
                     </ProtectedRoute>
                   }
                 />
-                <Route path="teams">
-                  <Route
-                    index
-                    element={
-                      <ProtectedRoute>
-                        <LayoutWithoutFooter>
-                          <Teams />
-                        </LayoutWithoutFooter>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="create"
-                    element={
-                      <ProtectedRoute>
-                        <MainLayout>
-                          <CreateTeamCard />
-                        </MainLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path=":teamId"
-                    element={
-                      <ProtectedRoute>
-                        <LayoutWithoutFooter>
-                          <TeamDetail />
-                        </LayoutWithoutFooter>
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
+              </Route>
 
-                {/* Not found route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Router>
-          </NotificationProvider>
+              {/* Not found route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Router>
         </QueryProvider>
       </Suspense>
     </main>

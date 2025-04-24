@@ -27,8 +27,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useUserStore } from '../store/userStore';
-import { useNotifications } from '@/modules/notifications/context/NotificationContext';
+import { useNotifications } from '@/modules/notifications/hooks/useNotifications';
 import { formatDistanceToNow } from 'date-fns';
+import { Notification } from '@/modules/notifications/types/notification';
 
 type NavItem = {
   to: string;
@@ -40,8 +41,14 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const logout = useUserStore((state) => state.logout);
-  const { notifications, unreadCount, markAsRead, markAllAsRead } =
-    useNotifications();
+  const { 
+    data: notificationsData,
+    markAllAsRead
+  } = useNotifications();
+
+  const notifications = notificationsData?.notifications || [];
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -144,14 +151,10 @@ export default function NavBar() {
                         <DropdownMenuSeparator className="!bg-gray-200" />
                         <div className="!max-h-[300px] !overflow-auto">
                           {notifications.length > 0 ? (
-                            notifications.slice(0, 5).map((notification) => (
+                            notifications.slice(0, 5).map((notification: Notification) => (
                               <DropdownMenuItem
                                 key={notification.id}
                                 className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100"
-                                onClick={() =>
-                                  !notification.read &&
-                                  markAsRead(notification.id)
-                                }
                               >
                                 <div className="!flex !w-full !items-start !justify-between">
                                   <span className="!flex !items-center !gap-2 !font-medium !text-black">
@@ -163,7 +166,7 @@ export default function NavBar() {
                                   <span className="!flex !items-center !gap-1 !text-xs !text-gray-500">
                                     <Clock className="!h-3 !w-3" />
                                     {formatDistanceToNow(
-                                      new Date(notification.createdAt),
+                                      new Date(notification.created_at),
                                       { addSuffix: true }
                                     )}
                                   </span>
