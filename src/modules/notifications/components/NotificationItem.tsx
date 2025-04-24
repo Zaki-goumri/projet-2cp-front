@@ -54,11 +54,11 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       case 'message':
         return 'secondary';
       case 'invitation':
-        return 'success';
+        return 'outline';
       case 'other':
-        return 'warning';
+        return 'destructive';
       default:
-        return 'secondary';
+        return 'default';
     }
   };
 
@@ -88,7 +88,16 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <p className="mb-2 text-sm text-gray-600">{message}</p>
 
         <div className="flex items-center justify-between">
-          <Badge variant={getBadgeVariant() as any} className="capitalize">
+          <Badge
+            variant={
+              getBadgeVariant() as
+                | 'secondary'
+                | 'default'
+                | 'destructive'
+                | 'outline'
+            }
+            className="capitalize"
+          >
             {type}
           </Badge>
 
@@ -110,4 +119,3 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 };
 
 export default NotificationItem;
-
