@@ -1,67 +1,45 @@
 import { Notification } from '../types/notification';
+import api from '@/api/axios.config'; 
+import { NotificationsResponse } from '../types/notification';
 
-const mockNotifications: Notification[] = [
-  {
-    id: '1',
-    title: 'Welcome to the platform!',
-    message: 'We are excited to have you here. Start exploring!',
-    type: 'info',
-    read: false,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    title: 'New feature available',
-    message: 'Check out our latest updates and improvements',
-    type: 'success',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(), // 1 hour ago
-  },
-  {
-    id: '3',
-    title: 'System maintenance',
-    message: 'Scheduled maintenance will occur tomorrow at 2 AM',
-    type: 'warning',
-    read: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
-  },
-  {
-    id: '4',
-    title: 'Security alert',
-    message: 'Please update your password for security reasons',
-    type: 'error',
-    read: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(), // 3 days ago
-  },
-];
+const NOTIFICATIONS_ENDPOINT = '/Auth/notfi'; 
+const SINGLE_NOTIFICATION_ENDPOINT = '/Auth/notif'; 
 
-export const notificationService = {
-  getNotifications: async (): Promise<Notification[]> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return mockNotifications;
-  },
+/**
+ * Fetches all notifications for the authenticated user.
+ */
+export const getNotifications = async (): Promise<NotificationsResponse> => {
+  try {
+    const response = await api.get<Notification[]>(NOTIFICATIONS_ENDPOINT);
+    console.log(response.data);
+    return { notifications: response.data };
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    throw error;
+  }
+};
 
-  markAsRead: async (id: string): Promise<void> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const notification = mockNotifications.find(n => n.id === id);
-    if (notification) {
-      notification.read = true;
-    }
-  },
+/**
+ * Marks all notifications as read for the authenticated user.
+ */
+export const markAllNotificationsAsRead = async (): Promise<void> => {
+  try {
+    // PUT usually doesn't return significant content, returns 200 OK on success
+    await api.put(NOTIFICATIONS_ENDPOINT);
+  } catch (error) {
+    console.error('Error marking all notifications as read:', error);
+    throw error;
+  }
+};
 
-  markAllAsRead: async (): Promise<void> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-    mockNotifications.forEach(notification => {
-      notification.read = true;
-    });
-  },
-
-  getUnreadCount: async (): Promise<number> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return mockNotifications.filter(n => !n.read).length;
-  },
+/**
+ * Deletes a specific notification by its ID.
+ */
+export const deleteNotification = async (id: number): Promise<void> => {
+  try {
+    await api.delete(`${SINGLE_NOTIFICATION_ENDPOINT}/${id}/`); 
+  } catch (error) {
+    console.error(`Error deleting notification with ID ${id}:`, error);
+    throw error;
+  }
 };

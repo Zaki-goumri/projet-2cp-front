@@ -1,15 +1,14 @@
-export type NotificationType = 'info' | 'success' | 'warning' | 'error';
+export type NotificationType = 'message' | 'invitation' | 'other';
 
 export interface Notification {
-  id: string;
+  id: number;
   title: string;
   message: string;
-  type: NotificationType;
+  created_at: string; 
   read: boolean;
-  createdAt: string;
+  type: NotificationType;
 }
 
 export interface NotificationsResponse {
   notifications: Notification[];
-  totalUnread: number;
 } 
