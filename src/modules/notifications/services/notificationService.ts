@@ -2,7 +2,7 @@ import { Notification } from '../types/notification';
 import api from '@/api/axios.config';
 import { NotificationsResponse } from '../types/notification';
 
-const NOTIFICATIONS_ENDPOINT = '/Auth/test';
+const NOTIFICATIONS_ENDPOINT = '/Auth/notfi';
 const SINGLE_NOTIFICATION_ENDPOINT = '/Auth/notif';
 
 /**
@@ -36,7 +36,7 @@ export const markAllNotificationsAsRead = async (): Promise<void> => {
  */
 export const deleteNotification = async (id: number): Promise<void> => {
   try {
-    await api.delete(`${SINGLE_NOTIFICATION_ENDPOINT}/${id}/`); 
+    await api.delete(`${SINGLE_NOTIFICATION_ENDPOINT}/${id}/`);
   } catch (error) {
     console.error(`Error deleting notification with ID ${id}:`, error);
     throw error;
@@ -56,4 +56,3 @@ export const notificationService = {
     return response.data;
   },
 };
-
