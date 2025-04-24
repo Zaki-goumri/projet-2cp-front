@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
-import { useNotifications } from '../context/NotificationContext';
+import { useNotifications } from '../hooks/useNotifications';
 import { isToday, isYesterday, startOfWeek, endOfWeek } from 'date-fns';
-import { Button } from '@/components/ui/button';
 import {
   Loader2,
   MessageSquare,
@@ -9,20 +8,25 @@ import {
   Users,
   MoreVertical,
 } from 'lucide-react';
-import { NotificationsResponse } from '../types/notifications.types';
+import { NotificationsResponse, Notification } from '../types/notification';
 
 const NotificationsPage: React.FC = () => {
-  const { notifications, loading, markAsRead, markAllAsRead } =
-    useNotifications();
+  const { 
+    data: notificationsData,
+    isLoading: loading, 
+    markAllAsRead 
+  } = useNotifications();
+
+  const notifications = notificationsData?.notifications || [];
 
   const groupedNotifications = useMemo(() => {
-    const today: any[] = [];
-    const yesterday: any[] = [];
-    const thisWeek: any[] = [];
-    const earlier: any[] = [];
+    const today: Notification[] = [];
+    const yesterday: Notification[] = [];
+    const thisWeek: Notification[] = [];
+    const earlier: Notification[] = [];
 
-    notifications.forEach((notification) => {
-      const notificationDate = new Date(notification?.created_at);
+    notifications.forEach((notification: Notification) => {
+      const notificationDate = new Date(notification.created_at);
 
       if (isToday(notificationDate)) {
         today.push(notification);
@@ -41,10 +45,6 @@ const NotificationsPage: React.FC = () => {
     return { today, yesterday, thisWeek, earlier };
   }, [notifications]);
 
-  const handleMarkAsRead = (id: string) => {
-    markAsRead(id);
-  };
-
   const handleMarkAllAsRead = () => {
     markAllAsRead();
   };
@@ -62,16 +62,15 @@ const NotificationsPage: React.FC = () => {
     }
   };
 
-  const renderNotification = (notification: NotificationsResponse) => {
+  const renderNotification = (notification: Notification) => {
     const type = notification.type || 'message';
-    const formattedTimeAgo = notification.timeAgo || '7 minutes ago';
+    const formattedTimeAgo = new Date(notification.created_at).toLocaleTimeString();
     const isUnread = !notification.read;
 
     return (
       <div
         key={notification.id}
         className={`flex items-start px-2 py-3 ${isUnread ? 'rounded-lg bg-green-50' : ''}`}
-        onClick={() => isUnread && handleMarkAsRead(notification.id)}
       >
         <div className="mr-3 flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg bg-green-50">
           {getNotificationIcon(type)}
@@ -93,7 +92,7 @@ const NotificationsPage: React.FC = () => {
     );
   };
 
-  const renderSection = (title: string, notificationList: any[]) => {
+  const renderSection = (title: string, notificationList: Notification[]) => {
     if (notificationList.length === 0) return null;
 
     return (
