@@ -26,7 +26,8 @@ import {
   MoreVertical,
   Edit,
   Trash,
-  Eye
+  Eye,
+  Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,6 +48,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router';
+import { toast } from 'react-toastify';
 
 // Mock data for charts
 const applicationData = [
@@ -164,7 +166,7 @@ const CompanyDashboard = () => {
     post.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Filter  applications based on status
+  // Filter applications based on status
   const filteredApplications = applications.filter(app => 
     filterStatus === 'all' || app.status === filterStatus
   );
@@ -209,22 +211,122 @@ const CompanyDashboard = () => {
     }
   };
 
+  // Function to convert data to CSV format
+  const convertToCSV = (data: any[], headers: { [key: string]: string }) => {
+    // Create header row
+    const headerRow = Object.values(headers).join(',');
+    
+    // Create data rows
+    const dataRows = data.map(item => {
+      return Object.keys(headers)
+        .map(key => {
+          // Handle values that might contain commas by wrapping in quotes
+          const value = item[key]?.toString() || '';
+          return value.includes(',') ? `"${value}"` : value;
+        })
+        .join(',');
+    });
+    
+    // Combine header and data rows
+    return [headerRow, ...dataRows].join('\n');
+  };
+
+  // Function to download CSV file
+  const downloadCSV = (csvContent: string, filename: string) => {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    
+    // Create a link to download the file
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    
+    // Append to document, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Function to handle export based on active tab
+  const handleExport = () => {
+    try {
+      let csvContent = '';
+      let filename = '';
+      
+      if (activeTab === 'jobs') {
+        // Export job posts
+        const jobHeaders = {
+          id: 'ID',
+          title: 'Job Title',
+          department: 'Department',
+          location: 'Location',
+          type: 'Type',
+          postedDate: 'Posted Date',
+          applications: 'Applications',
+          status: 'Status'
+        };
+        
+        csvContent = convertToCSV(filteredJobPosts, jobHeaders);
+        filename = 'job_posts.csv';
+      } else if (activeTab === 'applications') {
+        // Export applications
+        const applicationHeaders = {
+          id: 'ID',
+          applicantName: 'Applicant Name',
+          position: 'Position',
+          appliedDate: 'Applied Date',
+          status: 'Status',
+          experience: 'Experience',
+          education: 'Education'
+        };
+        
+        csvContent = convertToCSV(filteredApplications, applicationHeaders);
+        filename = 'applications.csv';
+      } else {
+        // Export overview data (combine job posts and applications)
+        const jobHeaders = {
+          id: 'ID',
+          title: 'Job Title',
+          department: 'Department',
+          location: 'Location',
+          type: 'Type',
+          postedDate: 'Posted Date',
+          applications: 'Applications',
+          status: 'Status'
+        };
+        
+        const applicationHeaders = {
+          id: 'ID',
+          applicantName: 'Applicant Name',
+          position: 'Position',
+          appliedDate: 'Applied Date',
+          status: 'Status',
+          experience: 'Experience',
+          education: 'Education'
+        };
+        
+        const jobCSV = convertToCSV(jobPosts, jobHeaders);
+        const applicationCSV = convertToCSV(applications, applicationHeaders);
+        
+        csvContent = `Job Posts\n${jobCSV}\n\nApplications\n${applicationCSV}`;
+        filename = 'dashboard_overview.csv';
+      }
+      
+      downloadCSV(csvContent, filename);
+      toast.success('Data exported successfully!');
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      toast.error('Failed to export data. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white! !bg-white">
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Company Dashboard</h1>
-          <div className="mt-4 md:mt-0 flex space-x-4">
-           <Link to={'/opportunity/create'}> <Button className="bg-[#92E3A9]! text-white! hover:bg-[#7ED196]!">
-              <Briefcase className="mr-2 h-4 w-4" />
-              Post New Job
-            </Button></Link>
-            <Button variant="outline" className="border-[#92E3A9]! text-[#4A9D66]! bg-white! hover:bg-[#92E3A9]/10!">
-              <Users className="mr-2 h-4 w-4" />
-              View Candidates
-            </Button>
-          </div>
-        </div>
+                 </div>
 
         <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-3 mb-8 bg-gray-100!">
@@ -256,7 +358,17 @@ const CompanyDashboard = () => {
                   <p className="text-xs text-gray-500!">This month: {applications.filter(a => new Date(a.appliedDate) > new Date('2023-06-01')).length}</p>
                 </CardContent>
               </Card>
-                            <Card className="border border-gray-200! shadow-sm! hover:shadow-md! transition-shadow! bg-white!">
+              <Card className="border border-gray-200! shadow-sm! hover:shadow-md! transition-shadow! bg-white!">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-500!">Interviews Scheduled</CardTitle>
+                  <Clock className="h-4 w-4 text-[#92E3A9]!" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-gray-900!">{applications.filter(a => a.status === 'interviewed').length}</div>
+                  <p className="text-xs text-gray-500!">Next 7 days: 3</p>
+                </CardContent>
+              </Card>
+              <Card className="border border-gray-200! shadow-sm! hover:shadow-md! transition-shadow! bg-white!">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-500!">Hired Candidates</CardTitle>
                   <CheckCircle className="h-4 w-4 text-[#92E3A9]!" />
@@ -336,26 +448,26 @@ const CompanyDashboard = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-gray-200!">
-                        <th className="text-left py-3 px-4 text-gray-900!">Applicant</th>
-                        <th className="text-left py-3 px-4 text-gray-900!">Position</th>
-                        <th className="text-left py-3 px-4 text-gray-900!">Applied Date</th>
-                        <th className="text-left py-3 px-4 text-gray-900!">Status</th>
-                        <th className="text-left py-3 px-4 text-gray-900!">Actions</th>
+                        <th className="text-left py-3 px-4 text-gray-600!">Applicant</th>
+                        <th className="text-left py-3 px-4 text-gray-600!">Position</th>
+                        <th className="text-left py-3 px-4 text-gray-600!">Applied Date</th>
+                        <th className="text-left py-3 px-4 text-gray-600!">Status</th>
+                        <th className="text-left py-3 px-4 text-gray-600!">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {applications.slice(0, 5).map((app) => (
                         <tr key={app.id} className="border-b border-gray-100! hover:bg-gray-50!">
-                          <td className="py-3 px-4 text-gray-900!">{app.applicantName}</td>
-                          <td className="py-3 px-4 text-gray-900!">{app.position}</td>
-                          <td className="py-3 px-4 text-gray-900!">{app.appliedDate}</td>
-                          <td className="py-3 px-4 text-gray-900!">
+                          <td className="py-3 px-4">{app.applicantName}</td>
+                          <td className="py-3 px-4">{app.position}</td>
+                          <td className="py-3 px-4">{app.appliedDate}</td>
+                          <td className="py-3 px-4">
                             <Badge className={getStatusColor(app.status)}>
                               {getStatusText(app.status)}
                             </Badge>
                           </td>
                           <td className="py-3 px-4">
-                            <Button variant="ghost" size="sm" className="text-[#4A9D66]!">
+                            <Button variant="ghost" size="sm" className="text-[#4A9D66]! hover:text-[#92E3A9]!">
                               <Eye className="h-4 w-4" />
                             </Button>
                           </td>
@@ -378,10 +490,10 @@ const CompanyDashboard = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                               </div>
-              <Button className="bg-[#92E3A9]! text-white! hover:bg-[#7ED196]!">
+              <Link to={'/opportunity/create'}><Button className="bg-[#92E3A9]! text-white! hover:bg-[#7ED196]!">
                 <Briefcase className="mr-2 h-4 w-4" />
                 Post New Job
-              </Button>
+              </Button></Link>
             </div>
 
             <Card className="border border-gray-200! shadow-sm! bg-white!">
@@ -402,22 +514,22 @@ const CompanyDashboard = () => {
                     </thead>
                     <tbody>
                       {filteredJobPosts.map((job) => (
-                        <tr key={job.id} className="border-b border-gray-100! hover:bg-gray-50! bg-white!">
-                          <td className="py-3 px-4 text-gray-900!">{job.title}</td>
+                        <tr key={job.id} className="border-b border-gray-100! hover:bg-gray-50!">
+                          <td className="py-3 px-4  text-gray-900!">{job.title}</td>
                           <td className="py-3 px-4 text-gray-900!">{job.department}</td>
                           <td className="py-3 px-4 text-gray-900!">{job.location}</td>
                           <td className="py-3 px-4 text-gray-900!">{job.type}</td>
                           <td className="py-3 px-4 text-gray-900!">{job.postedDate}</td>
                           <td className="py-3 px-4 text-gray-900!">{job.applications}</td>
-                          <td className="py-3 px-4 text-gray-900!">
+                          <td className="py-3 px-4">
                             <Badge className={getStatusColor(job.status)}>
                               {getStatusText(job.status)}
                             </Badge>
                           </td>
                           <td className="py-3 px-4">
-                            <DropdownMenu >
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="text-gray-600!  hover:bg-white!">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild className='bg-white!'>
+                                <Button variant="ghost" size="sm" className="text-gray-600! ">
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
@@ -461,24 +573,28 @@ const CompanyDashboard = () => {
                 />
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
                   <SelectTrigger className="w-[180px] border-gray-200! focus:border-[#92E3A9]! focus:ring-[#92E3A9]!">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder="Filter by status" className='text-gray-900! hover:bg-[#92E3A9]/20!'/>
                   </SelectTrigger>
-                  <SelectContent className="border-gray-200!">
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="submitted">Submitted</SelectItem>
-                    <SelectItem value="under_review">Under Review</SelectItem>
-                    <SelectItem value="accepted">Accepted</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectContent className="border-gray-200! bg-white! hover:bg-white!">
+                    <SelectItem value="all" className='text-gray-900! hover:bg-[#92E3A9]/20!'>All Status</SelectItem>
+                    <SelectItem value="pending" className='text-gray-900! hover:bg-[#92E3A9]/20!'>Pending</SelectItem>
+                    <SelectItem value="interviewed" className='text-gray-900! hover:bg-[#92E3A9]/20!'>Interviewed</SelectItem>
+                    <SelectItem value="accepted" className='text-gray-900! hover:bg-[#92E3A9]/20!'>Accepted</SelectItem>
+                    <SelectItem value="rejected" className='text-gray-900! hover:bg-[#92E3A9]/20!'>Rejected</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <Button variant="outline" className="border-[#92E3A9]! text-[#4A9D66]! hover:bg-[#92E3A9]/10! bg-white!">
-                <Filter className="mr-2 h-4 w-4" />
+              <Button 
+                variant="outline" 
+                className="border-[#92E3A9]! bg-white! text-[#4A9D66]! hover:bg-[#92E3A9]/10!"
+                onClick={handleExport}
+              >
+                <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
             </div>
 
-            <Card className="border border-gray-200! shadow-sm!">
+            <Card className="border border-gray-200! shadow-sm! bg-white!">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -495,13 +611,13 @@ const CompanyDashboard = () => {
                     </thead>
                     <tbody>
                       {filteredApplications.map((app) => (
-                        <tr key={app.id} className="border-b border-gray-100! hover:bg-gray-50! bg-white!">
+                        <tr key={app.id} className="border-b border-gray-100! hover:bg-gray-50!">
                           <td className="py-3 px-4 text-gray-900!">{app.applicantName}</td>
                           <td className="py-3 px-4 text-gray-900!">{app.position}</td>
                           <td className="py-3 px-4 text-gray-900!">{app.appliedDate}</td>
                           <td className="py-3 px-4 text-gray-900!">{app.experience}</td>
                           <td className="py-3 px-4 text-gray-900!">{app.education}</td>
-                          <td className="py-3 px-4 text-gray-900!">
+                          <td className="py-3 px-4">
                             <Badge className={getStatusColor(app.status)}>
                               {getStatusText(app.status)}
                             </Badge>
