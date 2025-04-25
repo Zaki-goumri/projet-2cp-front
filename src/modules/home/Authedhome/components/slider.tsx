@@ -2,111 +2,25 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { MoveRight, MoveLeft } from 'lucide-react';
+import { MoveRight, MoveLeft, AlertTriangle } from 'lucide-react';
+import { useOpportunities } from '../hooks/useOpportunities';
+import { OpportunityCard } from './OpportunityCard';
+import { Opportunity } from '../types/opportunities.types';
 
-const internships = [
-  {
-    logo: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png',
-    title: 'Software Development Intern',
-    description:
-      'Join TechCorp as a software development intern and work on cutting-edge projects.',
-    views: 245,
-    daysLeft: 15,
-  },
-  {
-    logo: 'https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g',
-    title: 'Marketing Intern',
-    description:
-      'BrandCo is looking for a creative marketing intern to help drive our strategy.',
-    views: 189,
-    daysLeft: 20,
-  },
-  {
-    logo: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31',
-    title: 'Data Science Intern',
-    description:
-      'DataTech offers an exciting internship in data science and ML applications.',
-    views: 312,
-    daysLeft: 30,
-  },
-  {
-    logo: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png',
-    title: 'Software Development Intern',
-    description:
-      'Join TechCorp as a software development intern and work on cutting-edge projects.',
-    views: 245,
-    daysLeft: 15,
-  },
-  {
-    logo: 'https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g',
-    title: 'Marketing Intern',
-    description:
-      'BrandCo is looking for a creative marketing intern to help drive our strategy.',
-    views: 189,
-    daysLeft: 20,
-  },
-  {
-    logo: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31',
-    title: 'Data Science Intern',
-    description:
-      'DataTech offers an exciting internship in data science and ML applications.',
-    views: 312,
-    daysLeft: 30,
-  },
-];
-
-const problems = [
-  {
-    logo: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png',
-    title: 'Software Development Intern',
-    description:
-      'Join TechCorp as a software development intern and work on cutting-edge projects.',
-    views: 245,
-    daysLeft: 15,
-  },
-  {
-    logo: 'https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g',
-    title: 'Marketing Intern',
-    description:
-      'BrandCo is looking for a creative marketing intern to help drive our strategy.',
-    views: 189,
-    daysLeft: 20,
-  },
-  {
-    logo: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31',
-    title: 'Data Science Intern',
-    description:
-      'DataTech offers an exciting internship in data science and ML applications.',
-    views: 312,
-    daysLeft: 30,
-  },
-  {
-    logo: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png',
-    title: 'Software Development Intern',
-    description:
-      'Join TechCorp as a software development intern and work on cutting-edge projects.',
-    views: 245,
-    daysLeft: 15,
-  },
-  {
-    logo: 'https://media.licdn.com/dms/image/v2/C4E0BAQE_hQWza3WDsw/company-logo_200_200/company-logo_200_200/0/1657089111162?e=1747872000&v=beta&t=kGfFj8WqGkAiszIlv4XwQ6b4JEUkVZIuqFsL5hFpJ4g',
-    title: 'Marketing Intern',
-    description:
-      'BrandCo is looking for a creative marketing intern to help drive our strategy.',
-    views: 189,
-    daysLeft: 20,
-  },
-  {
-    logo: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31',
-    title: 'Data Science Intern',
-    description:
-      'DataTech offers an exciting internship in data science and ML applications.',
-    views: 312,
-    daysLeft: 30,
-  },
-];
 
 const SliderOfOpp = () => {
+  const { 
+    opportunities: internships, 
+    isLoading: isLoadingInternships, 
+    error: errorInternships 
+  } = useOpportunities('Internship');
+  
+  const { 
+    opportunities: problems, 
+    isLoading: isLoadingProblems, 
+    error: errorProblems 
+  } = useOpportunities('Problem');
+
   const sliderSettings = {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -154,6 +68,46 @@ const SliderOfOpp = () => {
       },
     ],
   };
+
+  const renderSliderContent = (
+    data: Opportunity[], 
+    isLoading: boolean, 
+    error: Error | null
+  ) => {
+    if (isLoading) {
+      return (
+        <div className="flex space-x-4 px-1.5">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex-1 animate-pulse rounded-lg border border-gray-200 bg-gray-100 p-4" style={{ height: '150px' }}>
+              <div className="h-6 w-3/4 rounded bg-gray-300 mb-2"></div>
+              <div className="h-4 w-1/2 rounded bg-gray-300"></div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="flex items-center justify-center rounded border border-red-200 bg-red-50 p-4 text-red-600">
+          <AlertTriangle size={18} className="mr-2" /> Failed to load data.
+        </div>
+      );
+    }
+
+    if (data.length === 0) {
+      return <p className="text-center text-gray-500 px-1.5">No items found.</p>;
+    }
+
+    return (
+      <Slider {...sliderSettings}>
+        {data.map((item: Opportunity) => (
+          <OpportunityCard key={item.id} opportunity={item} />
+        ))}
+      </Slider>
+    );
+  };
+
   return (
     <main>
       <section className="mx-3 sm:mx-6 md:mx-8 lg:mx-16">
@@ -162,24 +116,9 @@ const SliderOfOpp = () => {
             <span className="text-primary">Internships</span> for you
           </h2>
         </div>
-        <Slider {...sliderSettings}>
-          {internships.map((internship, index) => (
-            <div
-              key={index}
-              className="px-1.5 duration-150 ease-linear hover:scale-[105%]"
-            ></div>
-          ))}
-        </Slider>
+        {renderSliderContent(internships, isLoadingInternships, errorInternships)}
       </section>
-      <span className="mt-2 flex flex-col items-center space-y-2">
-        <button
-          className="bg-primary hover:bg-primary/90 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors"
-          type="button"
-        >
-          Load More
-        </button>
-        <hr className="mx-auto my-8 w-2/3 opacity-20" />
-      </span>
+      <hr className="mx-auto my-8 w-2/3 opacity-20" />
       <section className="mx-3 sm:mx-6 md:mx-8 lg:mx-16">
         <div className="mb-4 flex flex-col items-start justify-between md:mb-6 md:flex-row md:items-center">
           <h2 className="mb-3 text-2xl font-bold md:mb-0 md:text-3xl">
@@ -188,23 +127,9 @@ const SliderOfOpp = () => {
             <span className="text-black">to solve</span>
           </h2>
         </div>
-        <Slider {...sliderSettings}>
-          {problems.map((problem, index) => (
-            <div
-              key={index}
-              className="px-1.5 duration-150 ease-linear hover:scale-[105%]"
-            ></div>
-          ))}
-        </Slider>
+        {renderSliderContent(problems, isLoadingProblems, errorProblems)}
       </section>
-      <span className="mt-2 mb-16 flex flex-col items-center space-y-2">
-        <button
-          className="bg-primary hover:bg-primary/90 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors"
-          type="button"
-        >
-          Check more
-        </button>
-      </span>
+      <div className="mb-16"></div>
     </main>
   );
 };
@@ -212,33 +137,33 @@ const SliderOfOpp = () => {
 export default SliderOfOpp;
 
 interface ArrowProps {
-  className: string;
-  style: React.CSSProperties;
-  onClick: () => void;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
-const NextArrow = (props: Partial<ArrowProps>) => {
+const NextArrow = (props: ArrowProps) => {
   const { className, style, onClick } = props;
   return (
     <div
       className={className}
-      style={{ ...style, display: 'block', background: 'transparent' }}
+      style={{ ...style, display: 'block', right: '-10px' }}
       onClick={onClick}
     >
-      <MoveRight className="text-primary hover:text-primary/90" size={20} />
+      <MoveRight className="text-primary hover:text-primary/90" size={24} />
     </div>
   );
 };
 
-const PrevArrow = (props: Partial<ArrowProps>) => {
+const PrevArrow = (props: ArrowProps) => {
   const { className, style, onClick } = props;
   return (
     <div
       className={className}
-      style={{ ...style, display: 'block', background: 'transparent' }}
+      style={{ ...style, display: 'block', left: '-10px', zIndex: 1 }}
       onClick={onClick}
     >
-      <MoveLeft className="text-primary hover:text-primary/90" size={20} />
+      <MoveLeft className="text-primary hover:text-primary/90" size={24} />
     </div>
   );
 };

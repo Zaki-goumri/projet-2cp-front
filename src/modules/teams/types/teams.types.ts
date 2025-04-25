@@ -1,18 +1,22 @@
-import { User } from '@/modules/shared/types/shared.types';
+import { User, Attachment } from '@/modules/shared/types/shared.types';
 
 export interface Student extends User {
   number: string | null;
-  student: {
-    education: any[]; 
-    gendre: string;
-    description: string | null;
-    skills: string[];
-    rating: number;
-    category: string | null;
-    cv: string | null;
-    experience: any[]; 
-    savedposts: number[];
-  };
+  education: any[];
+  gendre: string;
+  skills: string[];
+  rating: number;
+  category: string | null;
+  cv: Attachment | undefined | null;
+  experience: any[];
+  savedposts?: number[];
+  links?: any;
+  location?: any;
+}
+
+export interface TeamResponse {
+  data: Team;
+  
 }
 
 export interface Team {
