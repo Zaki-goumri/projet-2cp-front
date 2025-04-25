@@ -32,6 +32,9 @@ import CreateTeamCard from './modules/teams/components/CreateTeamCard';
 const Chat = lazy(() => import('./modules/chat/page'));
 import { QueryProvider } from './providers/QueryProvider';
 import CreateOpportunityPage from './modules/opportunity/opportunity.create';
+const QAPage = lazy(() => import('./modules/qa/page'));
+const ContactPage = lazy(() => import('./modules/contact/page'));
+const CompanyDashboardTest = lazy(() => import('./modules/company/test/page'));
 
 const root = document.getElementById('root');
 if (root) {
@@ -65,6 +68,30 @@ if (root) {
                 element={
                   <MainLayout>
                     <Home />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/qa"
+                element={
+                  <MainLayout>
+                    <QAPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <MainLayout>
+                    <ContactPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/company/test"
+                element={
+                  <MainLayout>
+                    <CompanyDashboardTest />
                   </MainLayout>
                 }
               />
