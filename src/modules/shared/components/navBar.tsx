@@ -30,6 +30,7 @@ import { useUserStore } from '../store/userStore';
 import { useNotifications } from '@/modules/notifications/hooks/useNotifications';
 import { formatDistanceToNow } from 'date-fns';
 import { Notification } from '@/modules/notifications/types/notification';
+import { clearAuthTokens } from '@/api/axios.config';
 
 type NavItem = {
   to: string;
@@ -71,6 +72,7 @@ export default function NavBar() {
   ];
 
   const handleSignOut = () => {
+    clearAuthTokens()
     logout();
     window.location.href = '/auth/signin';
   };
