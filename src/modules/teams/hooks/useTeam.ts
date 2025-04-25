@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { teamsService } from '../services/teams.service';
-import { Team, TeamApiError } from '../types/teams.types';
+import { Team, TeamApiError, TeamResponse } from '../types/teams.types';
 
 export const useTeam = (id: string) => {
-  const [team, setTeam] = useState<Team | null>(null);
+  const [team, setTeam] = useState<TeamResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<TeamApiError | null>(null);
   const [networkError, setNetworkError] = useState(false);
@@ -22,7 +22,6 @@ export const useTeam = (id: string) => {
       } catch (err) {
         console.error('Error fetching team:', err);
         
-        // Check if it's a network error
         if (err instanceof Error && (
           err.message.includes('network') || 
           err.message.includes('connection') ||
@@ -49,7 +48,6 @@ export const useTeam = (id: string) => {
     fetchTeam();
   }, [id]);
 
-  // Retry function to reload team data
   const retryFetch = async () => {
     try {
       setIsLoading(true);

@@ -16,6 +16,7 @@ export interface ExperienceData {
   startDate: string;
   endDate: string | null;
 }
+
 export interface User {
   id: number;
   email: string;
@@ -28,7 +29,7 @@ export interface User {
   education: EducationData[];
   experience: ExperienceData[];
   date_joined: string;
-  cv?: Attachment;
+  cv?: Attachment | null;
 }
 
 export interface EducationData {

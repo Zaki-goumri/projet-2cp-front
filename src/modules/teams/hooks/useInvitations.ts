@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Invitation, InvitationResponse } from '../types/teams.types';  
 import { teamsService } from '../services/teams.service';
+import { toast } from 'react-toastify';
 
 const DEFAULT_LIMIT = 5;
 
@@ -19,6 +20,7 @@ export const useInvitations = () => {
       setIsLoading(true);
       setError(null);
       const response: InvitationResponse = await teamsService.getInvitations(page, DEFAULT_LIMIT);
+      console.log(response);
       setInvitations(response.results);
       setTotalCount(response.count);
       setTotalPages(Math.ceil(response.count / DEFAULT_LIMIT));
@@ -62,25 +64,25 @@ export const useInvitations = () => {
     }
   };
 
-  const handleAccept = async (invitationId: string) => {
+  const handleAccept = async (invitationId: number) => {
     try {
       await teamsService.acceptInvitation(invitationId);
-      // Refetch current page to reflect the change
+      toast.success('Invitation accepted successfully!');
       fetchInvitations(currentPage);
     } catch (err) {
       console.error("Failed to accept invitation:", err);
-      // Optionally: set an error state specific to this action
+      toast.error('Failed to accept invitation. Please try again.');
     }
   };
 
-  const handleDecline = async (invitationId: string) => {
+  const handleDecline = async (invitationId: number) => {
     try {
       await teamsService.declineInvitation(invitationId);
-      // Refetch current page to reflect the change
+      toast.success('Invitation declined.');
       fetchInvitations(currentPage);
     } catch (err) {
       console.error("Failed to decline invitation:", err);
-      // Optionally: set an error state specific to this action
+      toast.error('Failed to decline invitation. Please try again.');
     }
   };
 

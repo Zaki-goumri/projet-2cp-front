@@ -6,11 +6,13 @@ import { ErrorBoundary } from '@/modules/shared/components/error-boundary';
 import { useInvitations } from '../hooks/useInvitations';
 import { InvitationCard } from '../components/InvitationCard';
 import { Invitation } from '../types/teams.types';
-import { Inbox, Plus, AlertCircle, UsersRound, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Inbox, Plus, AlertCircle, UsersRound, ChevronLeft, ChevronRight, Send } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
+import { useSentInvitations } from '../hooks/useSentInvitations';
+import { SentInvitationCard } from '../components/SentInvitationCard';
+import { useUserStore } from '@/modules/shared/store/userStore';
 
-// Helper component for Pagination Controls
 interface PaginationControlsProps {
   currentPage: number;
   totalPages: number;
@@ -86,9 +88,26 @@ const TeamsPage: React.FC = () => {
     goToPreviousPage: goToPreviousInvPage,
   } = useInvitations();
 
-  console.log(invitations);
+  const {
+    sentInvitations,
+    isLoading: isLoadingSentInvitations,
+    error: errorSentInvitations,
+    cancelInvitation,
+    isLoadingCancellation,
+    currentPage: sentInvCurrentPage,
+    totalPages: sentInvTotalPages,
+    hasNext: sentInvHasNext,
+    hasPrevious: sentInvHasPrevious,
+    goToNextPage: goToNextSentInvPage,
+    goToPreviousPage: goToPreviousSentInvPage,
+  } = useSentInvitations();
 
-  if (isLoadingTeams || isLoadingInvitations) {
+  const { user } = useUserStore();
+
+  
+  const isLoading = isLoadingTeams || isLoadingInvitations || isLoadingSentInvitations;
+
+  if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-[#92E3A9]"></div>
@@ -97,7 +116,6 @@ const TeamsPage: React.FC = () => {
   }
 
   if (errorTeams) {
-    // Check if the error message indicates a 403 status code
     const isForbidden = errorTeams.message.includes('403');
     const errorMessage = isForbidden
       ? "You do not have permission to view teams. Please contact an administrator if you believe this is an error."
@@ -154,26 +172,32 @@ const TeamsPage: React.FC = () => {
               />
             ))}
           </div>
-          <PaginationControls
-            currentPage={teamsCurrentPage}
-            totalPages={teamsTotalPages}
-            hasNext={teamsHasNext}
-            hasPrevious={teamsHasPrevious}
-            onNext={goToNextTeamPage}
-            onPrevious={goToPreviousTeamPage}
-          />
+          {teams && teams.length > 0 && (
+            <PaginationControls
+              currentPage={teamsCurrentPage}
+              totalPages={teamsTotalPages}
+              hasNext={teamsHasNext}
+              hasPrevious={teamsHasPrevious}
+              onNext={goToNextTeamPage}
+              onPrevious={goToPreviousTeamPage}
+            />
+          )}
+          {teams?.length === 0 && !isLoadingTeams && (
+            <p className="mt-6 text-center text-gray-500">You are not part of any teams yet.</p>
+          )}
         </ErrorBoundary>
 
         <div className="mt-12">
-          <h2 className="mb-6 text-lg font-medium text-gray-700">
-            Team Invitations
+          <h2 className="mb-6 text-lg font-medium text-gray-700 flex items-center gap-2">
+            <Inbox size={20} /> Team Invitations Received
           </h2>
           {errorInvitations && (
-            <div className="flex flex-col items-center justify-center gap-2">
-              <AlertCircle className="h-8 w-8 text-[#92E3A9]" />
-              <p className="text-center text-[#92E3A9]">
-                Could not load team invitations. Please try again later.
+            <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+              <AlertCircle className="h-8 w-8 text-red-500" />
+              <p className="font-medium text-red-700">
+                Could not load received invitations.
               </p>
+              <p className="text-sm text-red-600">Please try again later.</p>
             </div>
           )}
           {!errorInvitations &&
@@ -195,8 +219,8 @@ const TeamsPage: React.FC = () => {
                 <InvitationCard
                   key={invitation.id}
                   invitation={invitation}
-                  onAccept={() => acceptInvitation(invitation.id)}
-                  onDecline={() => declineInvitation(invitation.id)}
+                  onAccept={() => acceptInvitation(Number(invitation.id))}
+                  onDecline={() => declineInvitation(Number(invitation.id))}
                 />
               ))}
             </div>
@@ -209,6 +233,58 @@ const TeamsPage: React.FC = () => {
               hasPrevious={invHasPrevious}
               onNext={goToNextInvPage}
               onPrevious={goToPreviousInvPage}
+            />
+          )}
+        </div>
+
+        <div className="mt-12">
+          <h2 className="mb-6 text-lg font-medium text-gray-700 flex items-center gap-2">
+            <Send size={20} /> Sent Invitations
+          </h2>
+          {errorSentInvitations && (
+            <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+              <AlertCircle className="h-8 w-8 text-red-500" />
+              <p className="font-medium text-red-700">
+                Could not load sent invitations.
+              </p>
+              <p className="text-sm text-red-600">Please try again later.</p>
+            </div>
+          )}
+          {!errorSentInvitations &&
+            sentInvitations.length === 0 &&
+            !isLoadingSentInvitations && (
+              <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-10 text-center">
+                <Send className="mx-auto h-12 w-12 text-gray-400" />
+                <p className="mt-4 text-lg font-medium text-gray-600">
+                  No Sent Invitations
+                </p>
+                <p className="mt-1 text-sm text-gray-500">
+                  You haven't sent any team invitations yet.
+                </p>
+              </div>
+            )}
+          {!errorSentInvitations && sentInvitations.length > 0 && (
+            <div className="space-y-3">
+              {sentInvitations
+                .filter((invitation: Invitation) => invitation.receiver?.id !== user?.id)
+                .map((invitation: Invitation) => (
+                  <SentInvitationCard
+                    key={invitation.id}
+                    invitation={invitation}
+                    onCancel={cancelInvitation}
+                    isCanceling={isLoadingCancellation}
+                  />
+                ))}
+            </div>
+          )}
+          {!errorSentInvitations && sentInvitations.length > 0 &&  (
+            <PaginationControls
+              currentPage={sentInvCurrentPage}
+              totalPages={sentInvTotalPages}
+              hasNext={sentInvHasNext}
+              hasPrevious={sentInvHasPrevious}
+              onNext={goToNextSentInvPage}
+              onPrevious={goToPreviousSentInvPage}
             />
           )}
         </div>

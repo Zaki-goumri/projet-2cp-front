@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'react-toastify';
+import api from '@/api/axios.config';
 
 interface TeamCardProps {
   id: number;
@@ -34,16 +36,62 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 }) => {
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [email, setEmail] = useState('');
+  const [emails, setEmails] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInvite = () => {
     setShowInviteDialog(true);
   };
 
-  const handleSendInvite = () => {
-    // Here you would implement your email sending logic
-    console.log(`Inviting ${email} to team ${name}`);
+  const addEmail = () => {
+    if (!email) return;
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    
+    if (emails.includes(email)) {
+      toast.warning('This email is already in the list');
+      return;
+    }
+    
+    setEmails([...emails, email]);
     setEmail('');
-    setShowInviteDialog(false);
+  };
+
+  const removeEmail = (emailToRemove: string) => {
+    setEmails(emails.filter(e => e !== emailToRemove));
+  };
+
+  const handleSendInvite = async () => {
+    if (emails.length === 0 && !email) {
+      toast.error('Please add at least one email address');
+      return;
+    }
+
+    if (email) {
+      addEmail();
+    }
+
+    setIsLoading(true);
+    try {
+      await api.post(`/post/team/inviter/`, {
+        team_id: id,
+        invited_email: emails[0]
+      });
+      
+      toast.success('Invitations sent successfully');
+      setEmails([]);
+      setEmail('');
+      setShowInviteDialog(false);
+    } catch (error) {
+      console.error('Error sending invitations:', error);
+      toast.error('Failed to send invitations. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -87,7 +135,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
           <DialogHeader>
             <DialogTitle>Invite to {name}</DialogTitle>
             <DialogDescription className="text-gray-500">
-              Send an invitation email to join this team.
+              Send invitation emails to join this team.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -95,22 +143,63 @@ export const TeamCard: React.FC<TeamCardProps> = ({
               <Label htmlFor="email" className="text-right">
                 Email
               </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="colleague@example.com"
-                className="col-span-3 border-none shadow-sm"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div className="col-span-3 flex gap-2">
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="colleague@example.com"
+                  className="border-none shadow-sm"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addEmail();
+                    }
+                  }}
+                />
+                <Button 
+                  type="button" 
+                  onClick={addEmail}
+                  className="!bg-primary !text-white"
+                >
+                  Add
+                </Button>
+              </div>
             </div>
+            
+            {emails.length > 0 && (
+              <div className="mt-2">
+                <Label className="mb-2 block">Invitation List:</Label>
+                <div className="flex flex-wrap gap-2 p-2 border rounded-md">
+                  {emails.map((email, index) => (
+                    <div key={index} className="flex items-center bg-gray-100 rounded-full px-3 py-1">
+                      <span className="text-sm">{email}</span>
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        className="h-5 w-5 p-0 ml-1"
+                        onClick={() => removeEmail(email)}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setShowInviteDialog(false)} className="border-none shadow-sm !bg-gray-100 hover:!bg-gray-200 !text-gray-700">
               Cancel
             </Button>
-            <Button type="button" onClick={handleSendInvite} className="!bg-primary hover:!primary/90 !text-white">
-              Send Invitation
+            <Button 
+              type="button" 
+              onClick={handleSendInvite} 
+              className="!bg-primary hover:!primary/90 !text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Sending...' : 'Send Invitations'}
             </Button>
           </DialogFooter>
         </DialogContent>
