@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import ProfileInfo from './components/profileInfo';
 import AboutMe from './components/sections/AboutMe';
 import Experience from './components/sections/Experience';
@@ -10,7 +10,7 @@ import { useUserInfo, useProfileUpdate } from './hooks/useUserService';
 import ErrorBoundary from './components/ErrorBoundary';
 import Spinner from '../shared/components/Spinner';
 import UserNotFound from './components/UserNotFound';
-
+import { EducationData, ExperienceData } from '../shared/types/shared.types';
 type ParamsType = { userName: string };
 
 const ProfilePage = () => {
@@ -22,12 +22,18 @@ const ProfilePage = () => {
   const sameUser = userName === user?.name;
 
   // State for all sections
-  const [aboutMe, setAboutMe] = useState(data?.description || '');
-  const [experiences, setExperiences] = useState(data?.experience || []);
-  const [education, setEducation] = useState(data?.education || []);
+  const [aboutMe, setAboutMe] = useState('');
+  const [experiences, setExperiences] = useState<ExperienceData[]>([]);
+  const [education, setEducation] = useState<EducationData[]>([]);
   const [resume, setResume] = useState<File | null>(null);
   const [profilePic, setProfilePic] = useState<File | null>(null);
 
+  useEffect(() => {
+    setEducation(data?.education || []);
+    setExperiences(data?.experience || []);
+    setAboutMe(data?.description || '');
+    setIsEditing(false);
+  }, [data]);
   // const handleEditToggle = () => {
   //   if (isEditing) {
   //     // Save changes when exiting edit mode
