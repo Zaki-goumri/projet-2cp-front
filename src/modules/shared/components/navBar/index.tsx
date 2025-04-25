@@ -6,7 +6,8 @@ import {
   Code,
   Users,
   MessageCircle,
-  Search
+  Search,
+  Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUserStore } from '../../store/userStore';
@@ -42,8 +43,8 @@ export default function NavBar() {
 
   const privateNavItems: NavItem[] = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/enterprises', label: 'Enterprises', icon: Building2 },
-    { to: '/problems', label: 'Problems', icon: Code },
+    { to: '/opportunities', label: 'opportunities', icon: Briefcase },
+    { to: '/qa', label: 'Q&A', icon: MessageCircle },
     { to: '/teams', label: 'Teams', icon: Users },
     { to: '/chat', label: 'Chat', icon: MessageCircle },
     { to: '/search', label: 'Search', icon: Search },
