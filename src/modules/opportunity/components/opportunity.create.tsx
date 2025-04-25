@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import DatePicker from './components/DateRangePicker';
-import StatusSelect from './components/StatusSelect';
-import TypeSelect from './components/TypeSelect';
-import WorkTypeSelect from './components/WorkTypeSelect';
-import SkillsInput from './components/SkillsInput';
-import DescriptionInput from './components/DescriptionInput';
+import DatePicker from './DateRangePicker';
+import StatusSelect from './StatusSelect';
+import TypeSelect from './TypeSelect';
+import WorkTypeSelect from './WorkTypeSelect';
+import SkillsInput from './SkillsInput';
+import DescriptionInput from './DescriptionInput';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'react-toastify';
-import { useOpportunity } from './hooks/useOpportunity';
+import { useOpportunity } from '../hooks/useOpportunity';
 
 // Form type for internal use
 type FormValues = {
