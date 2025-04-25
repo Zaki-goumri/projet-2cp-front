@@ -3,14 +3,14 @@ import { User } from '@/modules/shared/types/shared.types';
 export interface Student extends User {
   number: string | null;
   student: {
-    education: any[]; // to do
+    education: any[]; 
     gendre: string;
     description: string | null;
     skills: string[];
     rating: number;
     category: string | null;
     cv: string | null;
-    experience: any[]; // to do
+    experience: any[]; 
     savedposts: number[];
   };
 }
@@ -55,13 +55,18 @@ export interface TeamProjectProps {
   onViewDetails?: () => void;
 }
 
-// Added Invitation type
 export interface Invitation {
-  id: string; // Or number, depending on API
-  team: {
-    id: number;
-    name: string;
-  };
-  // Add inviter info if available from API
-  // inviter?: { id: number; name: string };
+  id: number;
+  inviter: Student;
+  receiver: Student;
+  team: Team;
+  status: string;
+  createdate: string;
+}
+
+export interface InvitationResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Invitation[];
 }
