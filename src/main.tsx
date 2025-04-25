@@ -14,7 +14,7 @@ const Dashboard = lazy(() => import('./modules/Dashboard/page'));
 const App = lazy(() => import('./App'));
 const Signin = lazy(() => import('./modules/auth/signin/page'));
 const Home = lazy(() => import('./modules/home/page'));
-const OpportunityDetailOld = lazy(() => import('./modules/opportunity/page'));
+const OpportunityDetaitls = lazy(() => import('./modules/opportunity/page'));
 const OpportunitiesPage = lazy(() => import('./modules/opportunities/page'));
 const OAuthCallback = lazy(
   () => import('./modules/auth/signin/components/googleCallback')
@@ -116,6 +116,16 @@ if (root) {
                   <ProtectedRoute>
                     <LayoutWithoutFooter>
                       <OpportunitiesPage />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/opportunities/:id"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <OpportunityDetaitls />
                     </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }

@@ -6,8 +6,8 @@ import { Check, X } from 'lucide-react'; // Icons for buttons
 
 interface InvitationCardProps {
   invitation: Invitation;
-  onAccept: (id: string) => void;
-  onDecline: (id: string) => void;
+  onAccept: (id: number) => void;
+  onDecline: (id: number) => void;
 }
 
 export const InvitationCard: React.FC<InvitationCardProps> = ({ 
@@ -22,8 +22,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
           You have been invited to join the team:
         </p>
         <p className="font-semibold text-black">{invitation.team.name}</p>
-        {/* Optionally display inviter name if available */}
-        {/* invitation.inviter && <p className="text-xs text-gray-400">Invited by: {invitation.inviter.name}</p> */}
+       
       </div>
       <div className="flex gap-2">
         <Button

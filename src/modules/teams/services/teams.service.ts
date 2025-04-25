@@ -1,11 +1,12 @@
 import axios from '@/api/axios.config';
-import { TeamResponse, Team } from '../types/teams.types';
-import { Invitation } from '../types/teams.types';
+import { TeamResponse, Team, InvitationResponse, Invitation } from '../types/teams.types';
 
 export const teamsService = {
-  async getTeams(): Promise<Team[]> {
-    const response = await axios.get<TeamResponse>(`/post/team/`);
-    return response.data.results;
+  async getTeams(page: number = 1, limit: number = 6): Promise<TeamResponse> {
+    const response = await axios.get<TeamResponse>(`/post/team/`, {
+      params: { page, limit },
+    });
+    return response.data;
   },
 
   async getTeamById(id: string): Promise<Team> {
@@ -27,20 +28,19 @@ export const teamsService = {
     await axios.post(`/teams/${teamId}/invite`, { emails });
   },
 
-  async getInvitations(): Promise<Invitation[]> {
-    const response = await axios.get<Invitation[]>('post/team/inviter/', {
-      params: { page: 1, limit: 5 },
+  async getInvitations(page: number = 1, limit: number = 5): Promise<InvitationResponse> {
+    const response = await axios.get<InvitationResponse>('post/team/inviter/', {
+      params: { page, limit },
     });
-    console.log(response.data);
     return response.data;
   },
 
   async acceptInvitation(invitationId: string): Promise<void> {
-    await axios.post(`/teams/invitations/${invitationId}/accept`);
+    await axios.post('/post/team/receiver/', { invite_id: invitationId });
   },
 
   async declineInvitation(invitationId: string): Promise<void> {
-    await axios.post(`/teams/invitations/${invitationId}/decline`);
+    await axios.delete('/post/team/receiver/', { data: { invite_id: invitationId } });
   },
 
   async joinTeam(teamId: string): Promise<void> {

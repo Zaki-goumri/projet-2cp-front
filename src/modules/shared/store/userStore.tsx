@@ -30,8 +30,8 @@ export const useUserStore = create<UserStore>()(
         })),
     }),
     {
-      name: 'user-storage',
-      storage: createJSONStorage(() => localStorage),
+      name:`user-storage-`,
+      storage: createJSONStorage(() => sessionStorage),
       migrate: (persistedState, version) => {
         if (version !== 0) return persistedState;
         return persistedState as UserStore;

@@ -30,6 +30,7 @@ import { useUserStore } from '../store/userStore';
 import { useNotifications } from '@/modules/notifications/hooks/useNotifications';
 import { formatDistanceToNow } from 'date-fns';
 import { Notification } from '@/modules/notifications/types/notification';
+import { clearAuthTokens } from '@/api/axios.config';
 
 type NavItem = {
   to: string;
@@ -41,11 +42,7 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const logout = useUserStore((state) => state.logout);
-  const { 
-    data: notificationsData,
-    markAllAsRead
-  } = useNotifications();
-
+  const { data: notificationsData, markAllAsRead } = useNotifications();
   const notifications = notificationsData?.notifications || [];
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -75,6 +72,7 @@ export default function NavBar() {
   ];
 
   const handleSignOut = () => {
+    clearAuthTokens()
     logout();
     window.location.href = '/auth/signin';
   };
