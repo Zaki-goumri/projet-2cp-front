@@ -31,7 +31,7 @@ import InternshipsAndProblemsPage from './modules/internships&problems/page';
 import CreateTeamCard from './modules/teams/components/CreateTeamCard';
 const Chat = lazy(() => import('./modules/chat/page'));
 import { QueryProvider } from './providers/QueryProvider';
-import CreateOpportunityPage from './modules/opportunity/opportunity.create';
+import CreateOpportunityPage from './modules/opportunity/components/opportunity.create';
 const QAPage = lazy(() => import('./modules/qa/page'));
 const ContactPage = lazy(() => import('./modules/contact/page'));
 const CompanyDashboardTest = lazy(() => import('./modules/company/test/page'));

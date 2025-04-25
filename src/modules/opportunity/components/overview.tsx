@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { MapPin, Calendar, Heart, Share2, Clock } from 'lucide-react';
-import {InternshipListingProps} from '../opportunity.types'
+import {InternshipListingProps} from './opportunity.types'
 
 export default function InternshipListing({
   logoSrc = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png',
