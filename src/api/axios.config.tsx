@@ -4,6 +4,23 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 
 export const baseUrl = import.meta.env.VITE_BASE_URL;
 
+/**
+ * Clears both access and refresh tokens from cookies
+ * This should be called during logout or when tokens are invalid
+ */
+export const clearAuthTokens = (): void => {
+  const cookieOptions = {
+    httpOnly: false,
+    path: '/',
+    expires: new Date(0) 
+  };  
+
+  document.cookie = serialize('accessToken', '', cookieOptions);
+  document.cookie = serialize('refreshToken', '', cookieOptions);
+  
+  delete instance.defaults.headers.common['Authorization'];
+};
+
 const instance = axios.create({
   baseURL: baseUrl,
   headers: {
@@ -14,91 +31,71 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (request) => {
     const accessToken = document.cookie
-      .split(';')
-      .find((cookie: string) => cookie.includes('accessToken'))
+      .split('; ')
+      .find((cookie) => cookie.startsWith('accessToken='))
       ?.split('=')[1];
+      
     if (accessToken) {
       request.headers['Authorization'] = `Bearer ${accessToken}`;
     }
     return request;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      
       try {
         const refreshToken = document.cookie
-          .split(';')
-          .find((cookie: string) => cookie.includes('refreshToken'))
+          .split('; ')
+          .find((cookie) => cookie.startsWith('refreshToken='))
           ?.split('=')[1];
+
         if (!refreshToken) {
-          document.cookie = serialize('accessToken', '', {
-            httpOnly: false,
-            expires: new Date(0),
-          });
-          document.cookie = serialize('refreshToken', '', {
-            httpOnly: false,
-            expires: new Date(0),
-          });
+          clearAuthTokens();
           useUserStore.getState().logout();
+          window.location.href = '/auth/signin';
           return Promise.reject(error);
         }
 
-        const response = await instance.post('/Auth/refresh', {
-          refreshToken,
-        });
-
-        const newAccessToken = response.data.access;
-        const newRefreshToken = response.data.newRefresh;
+        const response = await instance.post('/Auth/refresh', { refresh: refreshToken });
+        const { access: newAccessToken, refresh: newRefreshToken } = response.data;
 
         if (!newAccessToken) {
-          document.cookie = serialize('accessToken', '', {
-            httpOnly: false,
-            expires: new Date(0),
-          });
-          document.cookie = serialize('refreshToken', '', {
-            httpOnly: false,
-            expires: new Date(0),
-          });
+          clearAuthTokens();
           useUserStore.getState().logout();
           return Promise.reject(error);
         }
 
         document.cookie = serialize('accessToken', newAccessToken, {
           httpOnly: false,
-          expires: new Date(Date.now() + 60 * 60 * 1000),
+          path: '/',
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         });
 
         if (newRefreshToken) {
           document.cookie = serialize('refreshToken', newRefreshToken, {
             httpOnly: false,
+            path: '/',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           });
         }
-        instance.defaults.headers.common['Authorization'] =
-          `Bearer ${newAccessToken}`;
-
+        instance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+        
         return instance(originalRequest);
       } catch (refreshError) {
-        document.cookie = serialize('accessToken', '', {
-          httpOnly: false,
-          expires: new Date(0),
-        });
-        document.cookie = serialize('refreshToken', '', {
-          httpOnly: false,
-          expires: new Date(0),
-        });
+        clearAuthTokens();
         useUserStore.getState().logout();
-        return Promise.reject(`error in refreaching :${refreshError}`);
+        return Promise.reject(new Error(`Refresh token failed: ${refreshError}`));
       }
     }
+    
     return Promise.reject(error);
   }
 );

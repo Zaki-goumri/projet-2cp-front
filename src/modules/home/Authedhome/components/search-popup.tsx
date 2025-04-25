@@ -1,9 +1,10 @@
 import React from 'react';
 import { X, Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useSearch } from '@/hooks/useSearch';
 import { OpportunityResultItem, CompanyResultItem } from '@/types/search';
+import { Link } from 'react-router';
 
 interface SearchPopupProps {
   isOpen: boolean;
@@ -26,7 +27,8 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
   };
 
   // Determine if there are any results to show (based on API response)
-  const hasOpportunities = results?.opportunity && results.opportunity.length > 0;
+  const hasOpportunities =
+    results?.opportunity && results.opportunity.length > 0;
   const hasCompanies = results?.company && results.company.length > 0;
   const hasAnyResults = hasOpportunities || hasCompanies;
 
@@ -41,7 +43,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
         </button>
 
         <div className="mb-4">
-          <h2 className="mb-2 text-xl font-semibold">Search Opportunities & Companies</h2>
+          <h2 className="mb-2 text-xl font-semibold">
+            Search Opportunities & Companies
+          </h2>
           <div className="relative">
             <Search className="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
             <Input
@@ -65,7 +69,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
           {error && !isLoading && (
             <div className="py-12 text-center text-red-600">
               <p>Error loading results:</p>
-              <p className="mt-1 text-sm">{error.message || 'An unknown error occurred'}</p>
+              <p className="mt-1 text-sm">
+                {error.message || 'An unknown error occurred'}
+              </p>
             </div>
           )}
 
@@ -73,14 +79,19 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
             <>
               {hasOpportunities && (
                 <div className="space-y-3">
-                  <h4 className="mb-2 text-sm font-semibold text-gray-600">Opportunities</h4>
+                  <h4 className="mb-2 text-sm font-semibold text-gray-600">
+                    Opportunities
+                  </h4>
                   {results.opportunity.map((item: OpportunityResultItem) => (
+                    <Link to={`/opportunities/${item.id}`}>
                     <div
                       key={`opp-${item.id}`}
                       onClick={() => handleOpportunityClick(item.id)}
                       className="cursor-pointer rounded-md border border-gray-200 p-3 transition-colors hover:bg-[#E8F9EB]"
                     >
-                      <h3 className="font-medium text-gray-900">{item.title}</h3>
+                      <h3 className="font-medium text-gray-900">
+                        {item.title}
+                      </h3>
                       <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
                         <span>{item.company?.name || 'N/A'}</span>
                         <span>•</span>
@@ -91,21 +102,25 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
                         </span>
                       </div>
                     </div>
+                    </Link>
                   ))}
                 </div>
               )}
 
               {hasCompanies && (
                 <div className={`space-y-3 ${hasOpportunities ? 'mt-4' : ''}`}>
-                  <h4 className="mb-2 text-sm font-semibold text-gray-600">Companies</h4>
+                  <h4 className="mb-2 text-sm font-semibold text-gray-600">
+                    Companies
+                  </h4>
                   {results.company.map((comp: CompanyResultItem) => (
                     <div
                       key={`comp-${comp.id}`}
                       className="cursor-pointer rounded-md border border-gray-200 p-3 transition-colors hover:bg-gray-50"
-                      // onClick={() => handleCompanyClick(comp.id)} // Example
                     >
                       <h3 className="font-medium text-gray-900">{comp.name}</h3>
-                      <p className="text-sm text-gray-500">{comp.location || 'N/A'}</p>
+                      <p className="text-sm text-gray-500">
+                        {comp.location || 'N/A'}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -113,8 +128,12 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
 
               {!hasAnyResults && (
                 <div className="py-12 text-center">
-                  <p className="text-gray-500">No results found for "{searchTerm}"</p>
-                  <p className="mt-1 text-sm text-gray-400">Try different keywords.</p>
+                  <p className="text-gray-500">
+                    No results found for "{searchTerm}"
+                  </p>
+                  <p className="mt-1 text-sm text-gray-400">
+                    Try different keywords.
+                  </p>
                 </div>
               )}
             </>
@@ -122,7 +141,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
 
           {!isLoading && !error && !searchTerm && (
             <div className="py-12 text-center">
-              <p className="text-gray-500">Enter a search term to find opportunities or companies.</p>
+              <p className="text-gray-500">
+                Enter a search term to find opportunities or companies.
+              </p>
             </div>
           )}
         </div>
@@ -132,3 +153,4 @@ const SearchPopup: React.FC<SearchPopupProps> = ({ isOpen, onClose }) => {
 };
 
 export default SearchPopup;
+

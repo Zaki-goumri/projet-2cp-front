@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTeams } from '../hooks/useTeams';
 import { TeamCard } from '../components/TeamCard';
 import { Team } from '../types/teams.types';
@@ -6,19 +6,87 @@ import { ErrorBoundary } from '@/modules/shared/components/error-boundary';
 import { useInvitations } from '../hooks/useInvitations';
 import { InvitationCard } from '../components/InvitationCard';
 import { Invitation } from '../types/teams.types';
-import { Inbox, Plus, AlertCircle, UsersRound } from 'lucide-react';
+import { Inbox, Plus, AlertCircle, UsersRound, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
+import { Button } from '@/components/ui/button';
+
+// Helper component for Pagination Controls
+interface PaginationControlsProps {
+  currentPage: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  onNext: () => void;
+  onPrevious: () => void;
+}
+
+const PaginationControls: React.FC<PaginationControlsProps> = ({
+  currentPage,
+  totalPages,
+  hasNext,
+  hasPrevious,
+  onNext,
+  onPrevious,
+}) => {
+  if (totalPages <= 1) return null; 
+
+  return (
+    <div className="mt-6 flex items-center justify-center space-x-4">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onPrevious}
+        disabled={!hasPrevious}
+        className="flex items-center gap-1 disabled:opacity-50"
+      >
+        <ChevronLeft size={16} />
+        Previous
+      </Button>
+      <span className="text-sm text-gray-600">
+        Page {currentPage} of {totalPages}
+      </span>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onNext}
+        disabled={!hasNext}
+        className="flex items-center gap-1 disabled:opacity-50"
+      >
+        Next
+        <ChevronRight size={16} />
+      </Button>
+    </div>
+  );
+};
 
 const TeamsPage: React.FC = () => {
-  const [showAllTeams, setShowAllTeams] = useState(false);
-  const { teams, isLoading: isLoadingTeams, error: errorTeams } = useTeams();
+  const {
+    teams,
+    isLoading: isLoadingTeams,
+    error: errorTeams,
+    currentPage: teamsCurrentPage,
+    totalPages: teamsTotalPages,
+    hasNext: teamsHasNext,
+    hasPrevious: teamsHasPrevious,
+    goToNextPage: goToNextTeamPage,
+    goToPreviousPage: goToPreviousTeamPage,
+  } = useTeams();
+
   const {
     invitations,
     isLoading: isLoadingInvitations,
     error: errorInvitations,
     acceptInvitation,
     declineInvitation,
+    currentPage: invCurrentPage,
+    totalPages: invTotalPages,
+    hasNext: invHasNext,
+    hasPrevious: invHasPrevious,
+    goToNextPage: goToNextInvPage,
+    goToPreviousPage: goToPreviousInvPage,
   } = useInvitations();
+
+  console.log(invitations);
 
   if (isLoadingTeams || isLoadingInvitations) {
     return (
@@ -29,11 +97,17 @@ const TeamsPage: React.FC = () => {
   }
 
   if (errorTeams) {
+    // Check if the error message indicates a 403 status code
+    const isForbidden = errorTeams.message.includes('403');
+    const errorMessage = isForbidden
+      ? "You do not have permission to view teams. Please contact an administrator if you believe this is an error."
+      : errorTeams.message;
+
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center text-red-500">
           <h2 className="text-2xl font-bold">Error Loading Teams</h2>
-          <p>{errorTeams.message}</p>
+          <p>{errorMessage}</p>
         </div>
       </div>
     );
@@ -62,36 +136,32 @@ const TeamsPage: React.FC = () => {
           }
         >
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {teams
-              ?.slice(0, showAllTeams ? teams.length : 6)
-              .map((team: Team) => (
-                <TeamCard
-                  key={team.id}
-                  id={team.id}
-                  name={team.name}
-                  status={
-                    team.category.charAt(0).toUpperCase() +
-                    team.category.slice(1)
-                  }
-                  icon={
-                    <span className="text-lg font-medium text-[#92E3A9]">
-                      <UsersRound size={20} />
-                    </span>
-                  }
-                  memberCount={team.students.length}
-                />
-              ))}
+            {teams?.map((team: Team) => (
+              <TeamCard
+                key={team.id}
+                id={team.id}
+                name={team.name}
+                status={
+                  team.category.charAt(0).toUpperCase() +
+                  team.category.slice(1)
+                }
+                icon={
+                  <span className="text-lg font-medium text-[#92E3A9]">
+                    <UsersRound size={20} />
+                  </span>
+                }
+                memberCount={team.students.length}
+              />
+            ))}
           </div>
-          {teams && teams.length > 6 && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => setShowAllTeams(!showAllTeams)}
-                className="font-medium text-[#92E3A9] hover:text-[#7dca8f]"
-              >
-                {showAllTeams ? 'Show Less' : 'View All Teams'}
-              </button>
-            </div>
-          )}
+          <PaginationControls
+            currentPage={teamsCurrentPage}
+            totalPages={teamsTotalPages}
+            hasNext={teamsHasNext}
+            hasPrevious={teamsHasPrevious}
+            onNext={goToNextTeamPage}
+            onPrevious={goToPreviousTeamPage}
+          />
         </ErrorBoundary>
 
         <div className="mt-12">
@@ -125,11 +195,21 @@ const TeamsPage: React.FC = () => {
                 <InvitationCard
                   key={invitation.id}
                   invitation={invitation}
-                  onAccept={acceptInvitation}
-                  onDecline={declineInvitation}
+                  onAccept={() => acceptInvitation(invitation.id)}
+                  onDecline={() => declineInvitation(invitation.id)}
                 />
               ))}
             </div>
+          )}
+          {!errorInvitations && invitations.length > 0 && (
+            <PaginationControls
+              currentPage={invCurrentPage}
+              totalPages={invTotalPages}
+              hasNext={invHasNext}
+              hasPrevious={invHasPrevious}
+              onNext={goToNextInvPage}
+              onPrevious={goToPreviousInvPage}
+            />
           )}
         </div>
       </div>
