@@ -7,31 +7,6 @@ import { Application, ApplicationResponse } from '../types/application.types';
 export const useInternshipsAndProblems = (searchQuery: string = '') => {
   const [activeTab, setActiveTab] = useState('internships');
 
-  const {
-    data: internships = [],
-    isLoading: isInternshipsLoading,
-    error: internshipsError,
-  } = useQuery({
-    queryKey: ['internships'],
-    queryFn: () => internshipsAndProblemsService.fetchInternships(),
-    enabled: activeTab === 'internships',
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
-
-  const {
-    data: problems = [],
-    isLoading: isProblemsLoading,
-    error: problemsError,
-  } = useQuery({
-    queryKey: ['problems'],
-    queryFn: () => internshipsAndProblemsService.fetchProblems(),
-    enabled: activeTab === 'problems',
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
 
   const {
     data: savedPosts = [],
@@ -63,7 +38,7 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
 
   const filteredData = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    if (!query) return { internships, problems, savedPosts, appliedInternships };
+    if (!query) return {savedPosts, appliedInternships };
 
     const filterOpportunities = (opportunities: Opportunity[]) =>
       opportunities.filter((opp) => {
@@ -91,34 +66,20 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
       });
 
     return {
-      internships: filterOpportunities(internships),
-      problems: filterOpportunities(problems),
       savedPosts: filterOpportunities(savedPosts),
       appliedInternships: filterApplications(appliedInternships),
     };
-  }, [searchQuery, internships, problems, savedPosts, appliedInternships]);
+  }, [searchQuery, savedPosts, appliedInternships]);
 
   const isLoading =
-    (activeTab === 'internships' && isInternshipsLoading) ||
-    (activeTab === 'problems' && isProblemsLoading) ||
     (activeTab === 'saved' && isSavedPostsLoading) ||
     (activeTab === 'applied' && isAppliedPostsLoading);
 
   const hasError =
-    (activeTab === 'internships' && internshipsError) ||
-    (activeTab === 'problems' && problemsError) ||
     (activeTab === 'saved' && savedPostsError) ||
     (activeTab === 'applied' && appliedPostsError);
 
-  const isEmpty = {
-    internships:
-      filteredData.internships.length === 0 &&
-      !isInternshipsLoading &&
-      !internshipsError,
-    problems:
-      filteredData.problems.length === 0 &&
-      !isProblemsLoading &&
-      !problemsError,
+  const isEmpty = {  
     savedPosts:
       filteredData.savedPosts.length === 0 &&
       !isSavedPostsLoading &&
@@ -132,8 +93,6 @@ export const useInternshipsAndProblems = (searchQuery: string = '') => {
   };
 
   return {
-    internships: filteredData.internships,
-    problems: filteredData.problems,
     savedPosts: filteredData.savedPosts,
     appliedInternships: filteredData.appliedInternships,
     users: [],

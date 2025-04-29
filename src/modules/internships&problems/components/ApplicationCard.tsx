@@ -7,12 +7,14 @@ import {
   Users,
   Clock,
   ExternalLink,
+  Trash2,
 } from 'lucide-react';
 import { Application } from '../types/application.types';
 import { formatDistanceToNow } from 'date-fns';
 
 interface ApplicationCardProps {
   application: Application;
+  onDelete?: (id: number) => void;
 }
 
 const StatusBadge = ({ status }: { status: Application['status'] }) => {
@@ -46,7 +48,7 @@ const StatusBadge = ({ status }: { status: Application['status'] }) => {
   );
 };
 
-export const ApplicationCard = ({ application }: ApplicationCardProps) => {
+export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps) => {
   const { post } = application;
   const submittedDate = new Date(post.created_at);
 
@@ -68,7 +70,18 @@ export const ApplicationCard = ({ application }: ApplicationCardProps) => {
             </span>
           </div>
         </div>
-        <StatusBadge status={application.status} />
+        <div className="flex flex-col items-end gap-2">
+          <StatusBadge status={application.status} />
+          {onDelete && (
+            <button
+              className="mt-2 rounded-full p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition"
+              title="Delete Application"
+              onClick={() => onDelete(application.id)}
+            >
+              <Trash2 className="h-5 w-5" />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mb-4 space-y-4">

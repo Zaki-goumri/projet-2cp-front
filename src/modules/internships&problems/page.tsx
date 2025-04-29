@@ -17,6 +17,8 @@ import { useInternshipsAndProblems } from './hooks/useInternshipsAndProblems';
 import { Opportunity } from './types/opportunity.types';
 import { Application } from './types/application.types';
 import ApplicationCard from './components/ApplicationCard';
+import { useQueryClient } from '@tanstack/react-query';
+import internshipsAndProblemsService from './services/internshipsAndProblems.service';
 
 type EmptyStateProps = {
   type: 'saved' | 'applied';
@@ -229,9 +231,15 @@ const InternshipsAndProblemsPage = () => {
     activeTab,
     setActiveTab,
   } = useInternshipsAndProblems(searchQuery);
+  const queryClient = useQueryClient();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleDeleteApplication = async (id: number) => {
+    await internshipsAndProblemsService.deleteApplication(id);
+    queryClient.invalidateQueries(['appliedPosts']);
   };
 
   return (
@@ -325,6 +333,7 @@ const InternshipsAndProblemsPage = () => {
                 <ApplicationCard
                   key={application.id}
                   application={application}
+                  onDelete={handleDeleteApplication}
                 />
               ))}
             </div>
