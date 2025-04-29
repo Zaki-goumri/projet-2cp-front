@@ -10,9 +10,8 @@ const SINGLE_NOTIFICATION_ENDPOINT = '/Auth/notif';
  */
 export const getNotifications = async (): Promise<NotificationsResponse> => {
   try {
-    // API returns array directly, wrapping it to match NotificationsResponse type
-    //const response = await api.get<Notification[]>(NOTIFICATIONS_ENDPOINT);
-    //return { notifications: response.data };
+    const response = await api.get<Notification[]>(NOTIFICATIONS_ENDPOINT);
+    return { notifications: response.data };
   } catch (error) {
     console.error('Error fetching notifications:', error);
     throw error;

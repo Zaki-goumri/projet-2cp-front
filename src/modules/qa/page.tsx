@@ -5,31 +5,38 @@ import { ChevronDown } from 'lucide-react';
 const faqs = [
   {
     question: 'What is InternFlow?',
-    answer: 'InternFlow is a platform that connects students with internship opportunities and helps companies find talented interns. We streamline the internship search and application process.',
+    answer:
+      'InternFlow is a platform that connects students with internship opportunities and helps companies find talented interns. We streamline the internship search and application process.',
   },
   {
     question: 'How do I apply for an internship?',
-    answer: 'To apply for an internship, first create an account and complete your profile. Then browse available opportunities and click the "Apply" button on any internship that interests you. You can track your applications in your dashboard.',
+    answer:
+      'To apply for an internship, first create an account and complete your profile. Then browse available opportunities and click the "Apply" button on any internship that interests you. You can track your applications in your dashboard.',
   },
   {
     question: 'Can I post internship opportunities?',
-    answer: 'Yes! Companies can post internship opportunities by creating an employer account. Once verified, you can post opportunities, review applications, and manage your internship listings.',
+    answer:
+      'Yes! Companies can post internship opportunities by creating an employer account. Once verified, you can post opportunities, review applications, and manage your internship listings.',
   },
   {
     question: 'Is the platform free to use?',
-    answer: 'Yes, InternFlow is completely free for both students and companies. We believe in making internship opportunities accessible to everyone.',
+    answer:
+      'Yes, InternFlow is completely free for both students and companies. We believe in making internship opportunities accessible to everyone.',
   },
   {
     question: 'How do I build my profile?',
-    answer: 'Your profile is your digital resume. Add your education, skills, experience, and a professional photo. A complete profile increases your chances of getting noticed by employers.',
+    answer:
+      'Your profile is your digital resume. Add your education, skills, experience, and a professional photo. A complete profile increases your chances of getting noticed by employers.',
   },
   {
     question: 'What types of internships are available?',
-    answer: 'We offer a wide range of internships across different fields including technology, business, marketing, design, and more. You can find both remote and on-site opportunities.',
+    answer:
+      'We offer a wide range of internships across different fields including technology, business, marketing, design, and more. You can find both remote and on-site opportunities.',
   },
   {
     question: 'How can I contact support?',
-    answer: 'For any questions or issues, you can reach our support team through the contact form in your dashboard or email us at support@internflow.com. We typically respond within 24 hours.',
+    answer:
+      'For any questions or issues, you can reach our support team through the contact form in your dashboard or email us at support@internflow.com. We typically respond within 24 hours.',
   },
 ];
 
@@ -90,11 +97,14 @@ const QAPage = () => {
             Still have questions?
           </h2>
           <p className="mt-2 text-sm text-gray-500">
-            Can't find the answer you're looking for? Please contact our support team.
+            Can't find the answer you're looking for? Please contact our support
+            team.
           </p>
           <button
-            className="mt-4 rounded-lg bg-[#92E3A9] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#7ED196] focus:outline-none focus:ring-2 focus:ring-[#92E3A9] focus:ring-offset-2"
-            onClick={() => window.location.href = 'mailto:bouroumanamoundher@gmail.com'}
+            className="mt-4 rounded-lg bg-[#92E3A9] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#7ED196] focus:ring-2 focus:ring-[#92E3A9] focus:ring-offset-2 focus:outline-none"
+            onClick={() =>
+              (window.location.href = 'mailto:bouroumanamoundher@gmail.com')
+            }
           >
             Contact Support
           </button>
@@ -104,4 +114,5 @@ const QAPage = () => {
   );
 };
 
-export default QAPage; 
+export default QAPage;
+

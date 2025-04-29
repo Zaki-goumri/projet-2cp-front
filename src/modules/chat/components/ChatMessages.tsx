@@ -4,12 +4,16 @@ import { Message, Conversation } from '../types';
 interface ChatMessagesProps {
   messages: Message[];
   activeConversation: Conversation | null;
+  currentUser?: { id: number; name: string; type: string } | null;
 }
 
-const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
+const ChatMessages = ({
+  messages,
+  activeConversation,
+  currentUser,
+}: ChatMessagesProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -23,14 +27,14 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
   }
 
   // Group messages by date
-  const groupedMessages: { [key: string]: Message[] } = {};
-  messages.forEach((message) => {
-    const date = new Date(message.timestamp).toLocaleDateString();
-    if (!groupedMessages[date]) {
-      groupedMessages[date] = [];
+  const groupedMessages = messages.reduce<Record<string, Message[]>>((groups, message) => {
+    const date = new Date(message.sentTime).toLocaleDateString();
+    if (!groups[date]) {
+      groups[date] = [];
     }
-    groupedMessages[date].push(message);
-  });
+    groups[date].push(message);
+    return groups;
+  }, {});
 
   return (
     <div className="h-full overflow-y-auto p-4">
@@ -42,14 +46,9 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
               alt={activeConversation.name}
               className="h-full w-full rounded-full"
             />
-            {activeConversation.isOnline && (
-              <span className="absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-white bg-green-500"></span>
-            )}
           </div>
-          <h2 className="text-lg font-semibold">{activeConversation.name}</h2>
-          <p className="text-sm text-gray-500">
-            {activeConversation.isOnline ? 'Online' : 'Offline'}
-          </p>
+          <h3 className="text-lg font-semibold">{activeConversation.name}</h3>
+          <p className="text-sm text-gray-500">{activeConversation.userType}</p>
         </div>
       </div>
 
@@ -62,14 +61,13 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
           </div>
 
           {groupedMessages[date].map((message) => {
-            const isCurrentUser = message.senderId === 'current-user-id';
-
+            const isSentByCurrentUser = currentUser?.id === message.sender;
             return (
               <div
                 key={message.id}
-                className={`mb-4 flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
+                className={`mb-4 flex ${isSentByCurrentUser ? 'justify-end' : 'justify-start'}`}
               >
-                {!isCurrentUser && (
+                {!isSentByCurrentUser && (
                   <div className="mr-2 flex-shrink-0">
                     <img
                       src={activeConversation.avatar || '/default-avatar.png'}
@@ -81,23 +79,42 @@ const ChatMessages = ({ messages, activeConversation }: ChatMessagesProps) => {
 
                 <div
                   className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                    isCurrentUser
+                    isSentByCurrentUser
                       ? 'rounded-br-none bg-blue-500 text-white'
                       : 'rounded-bl-none bg-gray-200 text-gray-800'
                   }`}
                 >
-                  <p>{message.content}</p>
+                  {!isSentByCurrentUser && (
+                    <p className="mb-1 text-xs font-medium text-gray-600">
+                      {activeConversation.name}
+                    </p>
+                  )}
+                  <p>{message.message}</p>
                   <div
                     className={`mt-1 text-xs ${
-                      isCurrentUser ? 'text-blue-100' : 'text-gray-500'
+                      isSentByCurrentUser ? 'text-blue-100' : 'text-gray-500'
                     }`}
                   >
-                    {new Date(message.timestamp).toLocaleTimeString([], {
+                    {new Date(message.sentTime).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
                   </div>
                 </div>
+
+                {isSentByCurrentUser && (
+                  <div className="ml-2 flex-shrink-0">
+                    <img
+                      src={
+                        currentUser?.type === 'Company'
+                          ? '/assets/servicesOfsignup/company.svg'
+                          : '/assets/servicesOfsignup/profilePicTemp.png'
+                      }
+                      alt={currentUser?.name || 'Me'}
+                      className="h-8 w-8 rounded-full"
+                    />
+                  </div>
+                )}
               </div>
             );
           })}
