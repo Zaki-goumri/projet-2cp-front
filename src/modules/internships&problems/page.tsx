@@ -12,6 +12,7 @@ import {
   MapPin,
   SearchX,
   SlidersHorizontal,
+  BookmarkX,
 } from 'lucide-react';
 import { useInternshipsAndProblems } from './hooks/useInternshipsAndProblems';
 import { Opportunity } from './types/opportunity.types';
@@ -37,6 +38,7 @@ type StatsProps = {
 type OpportunityCardProps = {
   opportunity: Opportunity;
   type: 'saved' | 'applied';
+  onUnsave?: (id: number) => Promise<void>;
 };
 
 // Empty state component for better reusability
@@ -142,10 +144,16 @@ const Stats = ({ savedCount, appliedCount }: StatsProps) => (
   </div>
 );
 
-const OpportunityCard = ({ opportunity, type }: OpportunityCardProps) => {
+const OpportunityCard = ({ opportunity, type, onUnsave }: OpportunityCardProps) => {
   const daysUntilDeadline = opportunity.endday
     ? Math.ceil((new Date(opportunity.endday).getTime() - new Date().getTime()) / (1000 * 3600 * 24))
     : null;
+
+  const handleUnsave = async () => {
+    if (onUnsave) {
+      await onUnsave(opportunity.id);
+    }
+  };
 
   return (
     <div className="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm transition-all hover:shadow-md">
@@ -215,6 +223,15 @@ const OpportunityCard = ({ opportunity, type }: OpportunityCardProps) => {
           ))}
         </div>
       )}
+
+      {type === 'saved' && (
+        <button
+          onClick={handleUnsave}
+          className="absolute right-4 top-4 text-red-500 hover:text-red-700"
+        >
+          <BookmarkX className="h-4 w-4" />
+        </button>
+      )}
     </div>
   );
 };
@@ -240,6 +257,12 @@ const InternshipsAndProblemsPage = () => {
   const handleDeleteApplication = async (id: number) => {
     await internshipsAndProblemsService.deleteApplication(id);
     queryClient.invalidateQueries(['appliedPosts']);
+  };
+
+  // Unsave handler for saved posts
+  const handleUnsavePost = async (id: number) => {
+    await internshipsAndProblemsService.unsavePost(id);
+    queryClient.invalidateQueries(['savedPosts']);
   };
 
   return (
@@ -314,6 +337,7 @@ const InternshipsAndProblemsPage = () => {
                   key={post.id}
                   opportunity={post}
                   type="saved"
+                  onUnsave={handleUnsavePost}
                 />
               ))}
             </div>
