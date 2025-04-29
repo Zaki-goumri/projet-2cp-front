@@ -28,6 +28,10 @@ const internshipsAndProblemsService = {
     const response = await axios.get(API_ENDPOINTS.APPLIED_POSTS);
     return response.data || { application: [] };
   },
+
+  async deleteApplication(id: number): Promise<void> {
+    await axios.delete(`/app/applications/${id}/`);
+  },
 };
 
 export default internshipsAndProblemsService;
