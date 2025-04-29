@@ -15,6 +15,7 @@ import {
   Menu,
   MessageCircle,
   Search,
+  Save,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -68,7 +69,6 @@ export default function NavBar() {
     { to: '/opportunities', label: 'opportunities', icon: Briefcase },
     { to: '/teams', label: 'Teams', icon: Users },
     { to: '/chat', label: 'Chat', icon: MessageCircle },
-    { to: '/search', label: 'Search', icon: Search },
   ];
 
   const handleSignOut = () => {
@@ -221,17 +221,42 @@ export default function NavBar() {
                       My Account
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="!bg-gray-200" />
-                    <Link to={`/profile/${user.name}`}>
-                      {' '}
-                      <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
-                        <User className="h-4 w-4" />
-                        Profile
-                      </DropdownMenuItem>
-                    </Link>{' '}
-                    <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
-                      <Users className="h-4 w-4" />
-                      Team Settings
-                    </DropdownMenuItem>
+                    {[
+                      {
+                        to: `/profile/${user.name}`,
+                        icon: <User className="h-4 w-4" />,
+                        label: "Profile",
+                        isExternal: false
+                      },
+                      {
+                        to: "#",
+                        icon: <Users className="h-4 w-4" />,
+                        label: "Team Settings",
+                        isExternal: false
+                      },
+                      {
+                        to: "/search",
+                        icon: <Save className="h-4 w-4" />,
+                        label: "Applied & saved ",
+                        isExternal: false
+                      }
+                    ].map((item, index) => (
+                      item.isExternal ? (
+                        <a href={item.to} key={index} target="_blank" rel="noopener noreferrer">
+                          <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                            {item.icon}
+                            {item.label}
+                          </DropdownMenuItem>
+                        </a>
+                      ) : (
+                        <Link to={item.to} key={index}>
+                          <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                            {item.icon}
+                            {item.label}
+                          </DropdownMenuItem>
+                        </Link>
+                      )
+                    ))}
                     <DropdownMenuSeparator className="!bg-gray-200" />
                     <DropdownMenuItem
                       onClick={handleSignOut}

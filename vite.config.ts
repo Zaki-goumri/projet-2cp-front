@@ -7,7 +7,7 @@ import viteCompression from 'vite-plugin-compression';
 import { VitePWA } from 'vite-plugin-pwa';
 import electron from 'vite-plugin-electron';
 import electronRenderer from 'vite-plugin-electron-renderer';
-
+import fs from 'fs';
 export default defineConfig(({ mode }) => {
   const isElectron = mode === 'electron';
 
@@ -127,6 +127,10 @@ export default defineConfig(({ mode }) => {
       strictPort: false,
     },
     server: {
+      //https: {
+      //key: fs.readFileSync('localhost-key.pem'),
+      //cert: fs.readFileSync('localhost.pem'),
+      //},
       port: 8080,
       strictPort: false,
       host: true,

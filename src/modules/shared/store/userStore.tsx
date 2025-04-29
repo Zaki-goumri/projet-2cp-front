@@ -3,7 +3,6 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { logoutUser } from '@/modules/auth/signin/services/singin.services';
 import { User } from '../types/shared.types';
 
-
 interface UserStore {
   user: User | null;
   login: (userData: User) => void;
@@ -30,8 +29,8 @@ export const useUserStore = create<UserStore>()(
         })),
     }),
     {
-      name:`user-storage-`,
-      storage: createJSONStorage(() => sessionStorage),
+      name: `user-storage`,
+      storage: createJSONStorage(() => localStorage),
       migrate: (persistedState, version) => {
         if (version !== 0) return persistedState;
         return persistedState as UserStore;
