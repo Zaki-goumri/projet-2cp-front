@@ -1,16 +1,5 @@
 import { Company } from './internshipsAndProblems.types';
-// export interface Company {
-//   id: number;
-//   name: string;
-//   email: string;
-//   number: string | null;
-//   type: string;
-//   profilepic: string | null;
-//   links: string | null;
-//   date_joined: string;
-//   location: string | null;
-//   category: string | null;
-// }
+
 
 export interface Opportunity {
   id: number;
