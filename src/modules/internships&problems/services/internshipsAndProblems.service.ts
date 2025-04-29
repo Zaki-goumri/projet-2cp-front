@@ -32,6 +32,10 @@ const internshipsAndProblemsService = {
   async deleteApplication(id: number): Promise<void> {
     await axios.delete(`/app/applications/${id}/`);
   },
+
+  async unsavePost(id: number): Promise<void> {
+    await axios.delete(`/Auth/post/${id}/`);
+  },
 };
 
 export default internshipsAndProblemsService;
