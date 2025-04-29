@@ -2,9 +2,9 @@ import axios from 'axios';
 import { serialize } from 'cookie';
 import { RegisterRequest, RegisterResponse } from '../types/signup.types';
 import { baseUrl } from '@/api/axios.config';
-import { User } from '@/modules/shared/types/shared.types';
+import { Student, Company } from '@/modules/shared/types/shared.types';
 
-export const registerUser = async (data: RegisterRequest): Promise<User> => {
+export const registerUser = async (data: RegisterRequest): Promise<Student | Company> => {
   try {
     const response = await axios.post<RegisterResponse>(
       `${baseUrl}/Auth/Signup`,

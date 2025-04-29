@@ -103,19 +103,20 @@ if (root) {
                   <ProtectedRoute>
                     <LayoutWithoutFooter>
                       <Chat />
-
                     </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
 
-              <Route path="/opportunity/create" element={
-                <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <CreateOpportunityPage />
-                  </LayoutWithoutFooter>
-                </ProtectedRoute>
-              }
+              <Route
+                path="/opportunity/create"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <CreateOpportunityPage />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/chat/:id"

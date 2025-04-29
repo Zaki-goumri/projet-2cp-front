@@ -1,6 +1,6 @@
 import axios from '@/api/axios.config';
 import { serialize } from 'cookie';
-import { User } from '@/modules/shared/types/shared.types';
+import { Student, Company } from '@/modules/shared/types/shared.types';
 
 type OAuthResponse = {
   message: string;
@@ -15,7 +15,7 @@ type OAuthResponse = {
 };
 
 
-export const googleAuth = async (idToken: string): Promise<Omit<User, 'role' | 'description' | 'skills' | 'education' | 'experience' >> => {
+export const googleAuth = async (idToken: string): Promise<Omit<Student | Company, 'id' | 'location' | 'links' | 'role' | 'description' | 'skills' | 'education' | 'experience'| 'number'>> => {
   try {
     const response = await axios.post<OAuthResponse>('/Auth/google', {
       id_token: idToken
@@ -34,7 +34,6 @@ export const googleAuth = async (idToken: string): Promise<Omit<User, 'role' | '
     });
 
     return {
-      id: 0,
       name: response.data.user.name,
       email: response.data.user.email,
       type: response.data.user.type,
@@ -51,7 +50,7 @@ export const googleAuth = async (idToken: string): Promise<Omit<User, 'role' | '
  * Authenticate user with LinkedIn OAuth
  * @param accessToken LinkedIn access token
  */
-export const linkedinAuth = async (accessToken: string): Promise<Omit<User, 'role' | 'description' | 'skills' | 'education' | 'experience'>> => {
+export const linkedinAuth = async (accessToken: string): Promise<Omit<Student | Company, 'id' | 'location' | 'links' | 'role' | 'description' | 'skills' | 'education' | 'experience'| 'number'>> => {
   try {
     const response = await axios.post<OAuthResponse>('/Auth/linkedin', {
       access_token: accessToken
@@ -72,7 +71,6 @@ export const linkedinAuth = async (accessToken: string): Promise<Omit<User, 'rol
 
     // Return user data
     return {
-      id: 0, // ID will be assigned by backend
       name: response.data.user.name,
       email: response.data.user.email,
       type: response.data.user.type,

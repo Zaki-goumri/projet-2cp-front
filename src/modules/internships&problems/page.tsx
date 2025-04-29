@@ -4,66 +4,72 @@ import {
   Search,
   AlertTriangle,
   BookmarkCheck,
-  Briefcase,
-  Users,
-  Building,
-  SearchX,
+  ClipboardCheck,
   Loader2,
   Calendar,
   Clock,
+  Building,
+  MapPin,
+  SearchX,
+  SlidersHorizontal,
+  BookmarkX,
 } from 'lucide-react';
 import { useInternshipsAndProblems } from './hooks/useInternshipsAndProblems';
 import { Opportunity } from './types/opportunity.types';
-import { User } from './types/user.types';
-import { Company } from './types/internshipsAndProblems.types';
+import { Application } from './types/application.types';
+import ApplicationCard from './components/ApplicationCard';
+import { useQueryClient } from '@tanstack/react-query';
+import internshipsAndProblemsService from './services/internshipsAndProblems.service';
+
+type EmptyStateProps = {
+  type: 'saved' | 'applied';
+  searchQuery: string;
+};
+
+type StatusBadgeProps = {
+  status: string;
+};
+
+type StatsProps = {
+  savedCount: number;
+  appliedCount: number;
+};
+
+type OpportunityCardProps = {
+  opportunity: Opportunity;
+  type: 'saved' | 'applied';
+  onUnsave?: (id: number) => Promise<void>;
+};
 
 // Empty state component for better reusability
-const EmptyState = ({
-  type,
-  searchQuery,
-}: {
-  type: string;
-  searchQuery: string;
-}) => {
+const EmptyState = ({ type, searchQuery }: EmptyStateProps) => {
   const messages = {
-    internships: {
-      empty: 'No internships available at the moment',
-      notFound: 'No internships match your search',
-    },
-    problems: {
-      empty: 'No problems available at the moment',
-      notFound: 'No problems match your search',
-    },
     saved: {
-      empty: "You haven't saved any posts yet",
-      notFound: 'None of your saved posts match your search',
+      empty: "You haven't saved any opportunities yet",
+      notFound: 'None of your saved opportunities match your search',
     },
     applied: {
-      empty: "You haven't applied to any posts yet",
-      notFound: 'None of your applied posts match your search',
-    },
-    users: {
-      empty: 'No users found',
-      notFound: 'No users match your search',
-    },
-    companies: {
-      empty: 'No companies available',
-      notFound: 'No companies match your search',
+      empty: "You haven't applied to any opportunities yet",
+      notFound: 'None of your applications match your search',
     },
   };
 
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-12">
-      <SearchX className="mb-4 h-12 w-12 text-gray-400" />
-      <h3 className="mb-2 text-lg font-medium text-gray-900">
+    <div className="flex flex-col items-center justify-center px-4 py-16">
+      <div className="mb-6 rounded-full bg-gray-50 p-4">
+        <SearchX className="h-12 w-12 text-gray-400" />
+      </div>
+      <h3 className="mb-2 text-xl font-semibold text-gray-900">
         {searchQuery
-          ? messages[type as keyof typeof messages].notFound
-          : messages[type as keyof typeof messages].empty}
+          ? messages[type].notFound
+          : messages[type].empty}
       </h3>
       <p className="max-w-sm text-center text-sm text-gray-500">
         {searchQuery
-          ? 'Try adjusting your search terms or removing some filters'
-          : 'Check back later for new opportunities'}
+          ? 'Try adjusting your search terms or filters'
+          : type === 'saved'
+          ? 'Browse opportunities and bookmark the ones that interest you'
+          : 'Your applications will appear here once you apply for opportunities'}
       </p>
     </div>
   );
@@ -71,7 +77,7 @@ const EmptyState = ({
 
 // Loading state component
 const LoadingState = () => (
-  <div className="flex items-center justify-center py-12">
+  <div className="flex items-center justify-center py-16">
     <Loader2 className="text-primary h-8 w-8 animate-spin" />
     <span className="ml-3 text-gray-600">Loading...</span>
   </div>
@@ -79,328 +85,284 @@ const LoadingState = () => (
 
 // Error state component
 const ErrorState = () => (
-  <div className="flex flex-col items-center justify-center px-4 py-12 text-red-500">
-    <div className="mb-4 rounded-full bg-red-100 p-3">
-      <AlertTriangle className="h-6 w-6" />
+  <div className="flex flex-col items-center justify-center px-4 py-16">
+    <div className="mb-6 rounded-full bg-red-50 p-4">
+      <AlertTriangle className="h-12 w-12 text-red-400" />
     </div>
-    <h3 className="mb-2 text-lg font-medium">Something went wrong</h3>
-    <p className="max-w-sm text-center text-sm">
-      We're having trouble loading the data. Please try again later.
+    <h3 className="mb-2 text-xl font-semibold text-gray-900">Something went wrong</h3>
+    <p className="max-w-sm text-center text-sm text-gray-500">
+      We're having trouble loading your data. Please try again later.
     </p>
   </div>
 );
 
+// Status badge component
+const StatusBadge = ({ status }: StatusBadgeProps) => {
+  const statusStyles = {
+    pending: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+    accepted: 'bg-green-50 text-green-700 border-green-200',
+    rejected: 'bg-red-50 text-red-700 border-red-200',
+    default: 'bg-gray-50 text-gray-700 border-gray-200',
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${
+        statusStyles[status as keyof typeof statusStyles] || statusStyles.default
+      }`}
+    >
+      {status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
+  );
+};
+
+// Stats component
+const Stats = ({ savedCount, appliedCount }: StatsProps) => (
+  <div className="mb-8 grid grid-cols-2 gap-4">
+    <div className="rounded-xl bg-blue-50 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-blue-600">Saved Opportunities</p>
+          <p className="mt-2 text-3xl font-semibold text-blue-900">{savedCount}</p>
+        </div>
+        <div className="rounded-full bg-blue-100 p-3">
+          <BookmarkCheck className="h-6 w-6 text-blue-600" />
+        </div>
+      </div>
+    </div>
+    <div className="rounded-xl bg-purple-50 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-purple-600">Active Applications</p>
+          <p className="mt-2 text-3xl font-semibold text-purple-900">{appliedCount}</p>
+        </div>
+        <div className="rounded-full bg-purple-100 p-3">
+          <ClipboardCheck className="h-6 w-6 text-purple-600" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const OpportunityCard = ({ opportunity, type, onUnsave }: OpportunityCardProps) => {
+  const daysUntilDeadline = opportunity.endday
+    ? Math.ceil((new Date(opportunity.endday).getTime() - new Date().getTime()) / (1000 * 3600 * 24))
+    : null;
+
+  const handleUnsave = async () => {
+    if (onUnsave) {
+      await onUnsave(opportunity.id);
+    }
+  };
+
+  return (
+    <div className="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm transition-all hover:shadow-md">
+      {type === 'applied' && (
+        <div className="absolute right-4 top-4">
+          <StatusBadge status={opportunity.status || 'pending'} />
+        </div>
+      )}
+      
+      <div className="mb-4">
+        <h3 className="mb-2 text-lg font-medium text-gray-900 group-hover:text-blue-600 line-clamp-1">
+          {opportunity.title}
+        </h3>
+        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+          <span className="flex items-center">
+            <Building className="mr-1.5 h-4 w-4" />
+            {opportunity.company.name}
+          </span>
+          <span className="flex items-center">
+            <MapPin className="mr-1.5 h-4 w-4" />
+            {opportunity.worktype}
+          </span>
+        </div>
+      </div>
+      
+      <p className="mb-4 text-sm text-gray-600 line-clamp-2">
+        {opportunity.description}
+      </p>
+      
+      <div className="space-y-3">
+        {opportunity.duration && (
+          <div className="flex items-center text-sm text-gray-600">
+            <Clock className="mr-2 h-4 w-4 text-gray-400" />
+            {opportunity.duration}
+          </div>
+        )}
+        {opportunity.endday && (
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center text-gray-600">
+              <Calendar className="mr-2 h-4 w-4 text-gray-400" />
+              {new Date(opportunity.endday).toLocaleDateString()}
+            </div>
+            {daysUntilDeadline !== null && daysUntilDeadline > 0 && (
+              <span className={`rounded-full px-2 py-1 text-xs font-medium ${
+                daysUntilDeadline <= 3
+                  ? 'bg-red-50 text-red-700'
+                  : daysUntilDeadline <= 7
+                  ? 'bg-yellow-50 text-yellow-700'
+                  : 'bg-green-50 text-green-700'
+              }`}>
+                {daysUntilDeadline} days left
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {opportunity.skills?.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {opportunity.skills.map((skill, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-600"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {type === 'saved' && (
+        <button
+          onClick={handleUnsave}
+          className="absolute right-4 top-4 text-red-500 hover:text-red-700"
+        >
+          <BookmarkX className="h-4 w-4" />
+        </button>
+      )}
+    </div>
+  );
+};
+
 const InternshipsAndProblemsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
   const {
-    internships,
-    problems,
     savedPosts,
     appliedInternships,
-    users,
-    companies,
     isLoading,
     hasError,
     isEmpty,
     activeTab,
     setActiveTab,
   } = useInternshipsAndProblems(searchQuery);
+  const queryClient = useQueryClient();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  console.log(appliedInternships);
+  const handleDeleteApplication = async (id: number) => {
+    await internshipsAndProblemsService.deleteApplication(id);
+    queryClient.invalidateQueries(['appliedPosts']);
+  };
+
+  // Unsave handler for saved posts
+  const handleUnsavePost = async (id: number) => {
+    await internshipsAndProblemsService.unsavePost(id);
+    queryClient.invalidateQueries(['savedPosts']);
+  };
+
   return (
-    <div className="container mx-auto py-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div className="relative max-w-sm flex-1">
+    <div className="container mx-auto max-w-7xl px-4 py-8">
+      <Stats savedCount={savedPosts.length} appliedCount={appliedInternships.length} />
+
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex-1">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <Search className="h-5 w-5 text-gray-400" />
+          </div>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search opportunities..."
             value={searchQuery}
             onChange={handleSearch}
-            className="w-full rounded-lg border py-2 pr-4 pl-10 focus:border-blue-500 focus:outline-none"
+            className="block w-full rounded-lg border-gray-200 bg-gray-50 py-3 pl-10 pr-4 text-sm placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
-          <Search className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="h-5 w-5 text-gray-400" />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="rounded-lg border-gray-200 bg-gray-50 py-2 pl-3 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="newest">Newest First</option>
+              <option value="deadline">Deadline</option>
+              <option value="company">Company</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-8 grid w-full grid-cols-6 !bg-white shadow-sm">
-          <TabsTrigger value="internships" className="flex items-center">
-            <Briefcase className="mr-2 h-4 w-4" /> Internships
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+        <TabsList className="inline-flex h-11 items-center justify-center space-x-2 rounded-lg bg-gray-100/80 p-1 !bg-white !border-none shadow-sm [&>[data-state=active]]:bg-primary [&>[data-state=active]]:text-white">
+          <TabsTrigger
+            value="saved"
+            className="inline-flex items-center space-x-2 rounded-md px-4 py-2"
+          >
+            <BookmarkCheck className="h-5 w-5" />
+            <span>Saved</span>
+            <span className="ml-1.5 rounded-full bg-gray-200/30 text-gray-600/30 px-2 py-0.5 text-xs font-medium">
+              {savedPosts.length}
+            </span>
           </TabsTrigger>
-          <TabsTrigger value="problems" className="flex items-center">
-            <BookmarkCheck className="mr-2 h-4 w-4" /> Problems
-          </TabsTrigger>
-          <TabsTrigger value="saved" className="flex items-center">
-            <BookmarkCheck className="mr-2 h-4 w-4" /> Saved
-          </TabsTrigger>
-          <TabsTrigger value="applied" className="flex items-center">
-            <BookmarkCheck className="mr-2 h-4 w-4" /> Applied
-          </TabsTrigger>
-          <TabsTrigger value="users" className="flex items-center">
-            <Users className="mr-2 h-4 w-4" /> Users
-          </TabsTrigger>
-          <TabsTrigger value="companies" className="flex items-center">
-            <Building className="mr-2 h-4 w-4" /> Companies
+          <TabsTrigger
+            value="applied"
+            className="inline-flex items-center space-x-2 rounded-md px-4 py-2"
+          >
+            <ClipboardCheck className="h-5 w-5" />
+            <span>Applications</span>
+            <span className="ml-1.5 rounded-full bg-gray-200/30 text-gray-600/30 px-2 py-0.5 text-xs font-medium">
+              {appliedInternships.length}
+            </span>
           </TabsTrigger>
         </TabsList>
 
-        <div className="space-y-4">
-          <TabsContent value="internships">
-            {isLoading ? (
-              <LoadingState />
-            ) : hasError ? (
-              <ErrorState />
-            ) : isEmpty.internships ? (
-              <EmptyState type="internships" searchQuery={searchQuery} />
-            ) : (
-              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {internships.map((internship: Opportunity) => (
-                  <li
-                    key={internship.id}
-                    className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <h3 className="mb-2 text-lg font-medium">
-                      {internship.title}
-                    </h3>
-                    <p className="mb-3 text-sm text-gray-600">
-                      {internship.company.name} - {internship.worktype}
-                    </p>
-                    <p className="mb-3 line-clamp-2 text-sm text-gray-600">
-                      {internship.description}
-                    </p>
-                    {internship.duration && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Clock className="mr-2 h-4 w-4" />
-                        Duration: {internship.duration}
-                      </div>
-                    )}
-                    {internship.endday && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        Ends: {new Date(internship.endday).toLocaleDateString()}
-                      </div>
-                    )}
-                    {internship.skills.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {internship.skills.map((skill, index) => (
-                          <span
-                            key={index}
-                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </TabsContent>
+        <TabsContent value="saved">
+          {isLoading ? (
+            <LoadingState />
+          ) : hasError ? (
+            <ErrorState />
+          ) : isEmpty.savedPosts ? (
+            <EmptyState type="saved" searchQuery={searchQuery} />
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {savedPosts.map((post: Opportunity) => (
+                <OpportunityCard
+                  key={post.id}
+                  opportunity={post}
+                  type="saved"
+                  onUnsave={handleUnsavePost}
+                />
+              ))}
+            </div>
+          )}
+        </TabsContent>
 
-          <TabsContent value="problems">
-            {isLoading ? (
-              <LoadingState />
-            ) : hasError ? (
-              <ErrorState />
-            ) : isEmpty.problems ? (
-              <EmptyState type="problems" searchQuery={searchQuery} />
-            ) : (
-              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {problems.map((problem: Opportunity) => (
-                  <li
-                    key={problem.id}
-                    className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <h3 className="mb-2 text-lg font-medium">
-                      {problem.title}
-                    </h3>
-                    <p className="mb-3 text-sm text-gray-600">
-                      {problem.company.name} - {problem.worktype}
-                    </p>
-                    <p className="mb-3 line-clamp-2 text-sm text-gray-600">
-                      {problem.description}
-                    </p>
-                    {problem.duration && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Clock className="mr-2 h-4 w-4" />
-                        Duration: {problem.duration}
-                      </div>
-                    )}
-                    {problem.endday && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        Ends: {new Date(problem.endday).toLocaleDateString()}
-                      </div>
-                    )}
-                    {problem.skills.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {problem.skills.map((skill, index) => (
-                          <span
-                            key={index}
-                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </TabsContent>
-
-          <TabsContent value="saved">
-            {isLoading ? (
-              <LoadingState />
-            ) : hasError ? (
-              <ErrorState />
-            ) : isEmpty.savedPosts ? (
-              <EmptyState type="saved" searchQuery={searchQuery} />
-            ) : (
-              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {savedPosts.map((post: Opportunity) => (
-                  <li
-                    key={post.id}
-                    className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <h3 className="mb-2 text-lg font-medium">{post.title}</h3>
-                    <p className="mb-3 text-sm text-gray-600">
-                      {post.company.name} - {post.worktype}
-                    </p>
-                    <p className="mb-3 line-clamp-2 text-sm text-gray-600">
-                      {post.description}
-                    </p>
-                    {post.duration && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Clock className="mr-2 h-4 w-4" />
-                        Duration: {post.duration}
-                      </div>
-                    )}
-                    {post.endday && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        Ends: {new Date(post.endday).toLocaleDateString()}
-                      </div>
-                    )}
-                    {post.skills.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {post.skills.map((skill, index) => (
-                          <span
-                            key={index}
-                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </TabsContent>
-
-          <TabsContent value="applied">
-            {isLoading ? (
-              <LoadingState />
-            ) : hasError ? (
-              <ErrorState />
-            ) : isEmpty.appliedInternships ? (
-              <EmptyState type="applied" searchQuery={searchQuery} />
-            ) : (
-              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {appliedInternships.map((post: Opportunity) => (
-                  <li
-                    key={post.id}
-                    className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <h3 className="mb-2 text-lg font-medium">{post.title}</h3>
-                    <p className="mb-3 text-sm text-gray-600">
-                      {post.company.name} - {post.worktype}
-                    </p>
-                    <p className="mb-3 line-clamp-2 text-sm text-gray-600">
-                      {post.description}
-                    </p>
-                    {post.duration && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Clock className="mr-2 h-4 w-4" />
-                        Duration: {post.duration}
-                      </div>
-                    )}
-                    {post.endday && (
-                      <div className="mb-2 flex items-center text-sm text-gray-600">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        Ends: {new Date(post.endday).toLocaleDateString()}
-                      </div>
-                    )}
-                    {post.skills.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {post.skills.map((skill, index) => (
-                          <span
-                            key={index}
-                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </TabsContent>
-
-          <TabsContent value="users">
-            {isLoading ? (
-              <LoadingState />
-            ) : hasError ? (
-              <ErrorState />
-            ) : users.length === 0 ? (
-              <EmptyState type="users" searchQuery={searchQuery} />
-            ) : (
-              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {users.map((user: User) => (
-                  <li
-                    key={user.id}
-                    className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <h3 className="mb-2 text-lg font-medium">{user.name}</h3>
-                    <p className="text-sm text-gray-600">{user.email}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </TabsContent>
-
-          <TabsContent value="companies">
-            {isLoading ? (
-              <LoadingState />
-            ) : hasError ? (
-              <ErrorState />
-            ) : companies.length === 0 ? (
-              <EmptyState type="companies" searchQuery={searchQuery} />
-            ) : (
-              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {companies.map((company: Company) => (
-                  <li
-                    key={company.id}
-                    className="rounded-lg bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <h3 className="mb-2 text-lg font-medium">{company.name}</h3>
-                    <p className="text-sm text-gray-600">{company.location}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </TabsContent>
-        </div>
+        <TabsContent value="applied">
+          {isLoading ? (
+            <LoadingState />
+          ) : hasError ? (
+            <ErrorState />
+          ) : isEmpty.appliedInternships ? (
+            <EmptyState type="applied" searchQuery={searchQuery} />
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+              {appliedInternships.map((application: Application) => (
+                <ApplicationCard
+                  key={application.id}
+                  application={application}
+                  onDelete={handleDeleteApplication}
+                />
+              ))}
+            </div>
+          )}
+        </TabsContent>
       </Tabs>
     </div>
   );

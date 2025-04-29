@@ -1,34 +1,94 @@
-import { useState, FormEvent, KeyboardEvent } from 'react';
+import { useState, FormEvent, KeyboardEvent, useRef, useEffect } from 'react';
+import { Send, Paperclip, Smile } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (content: string) => void;
 }
 
+const EMOJIS = [
+  '😀',
+  '😂',
+  '😍',
+  '😎',
+  '👍',
+  '🎉',
+  '🙏',
+  '🔥',
+  '🥳',
+  '😢',
+  '😡',
+  '❤️',
+  '😅',
+  '🤔',
+  '🙌',
+];
+
 const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   const [message, setMessage] = useState('');
+  const [showEmojis, setShowEmojis] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!showEmojis) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node) &&
+        emojiButtonRef.current &&
+        !emojiButtonRef.current.contains(event.target as Node)
+      ) {
+        setShowEmojis(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showEmojis]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
-
     onSendMessage(trimmedMessage);
     setMessage('');
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    // Send message on Enter (without shift key for newline)
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
   };
 
+  const handleEmojiClick = (emoji: string) => {
+    if (!message.trim()) {
+      onSendMessage(emoji);
+      setShowEmojis(false);
+      setMessage('');
+      return;
+    }
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newMessage = message.slice(0, start) + emoji + message.slice(end);
+    setMessage(newMessage);
+    setShowEmojis(false);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+    }, 0);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="flex items-end">
+    <form
+      onSubmit={handleSubmit}
+      className="relative flex items-end justify-center"
+    >
       <div className="relative mr-2 flex-1">
         <textarea
+          ref={textareaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -36,68 +96,50 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
           placeholder="Type a message..."
           rows={1}
         />
-        <div className="absolute right-2 bottom-2 flex space-x-1">
+        <div className="absolute top-4 right-2 flex space-x-1">
           <button
             type="button"
             className="text-gray-400 hover:text-gray-600"
             title="Attach a file"
           >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-              />
-            </svg>
+            <Paperclip className="mb-1 h-5 w-5" />
           </button>
-          <button
-            type="button"
-            className="text-gray-400 hover:text-gray-600"
-            title="Add emoji"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+          <div className="relative">
+            <button
+              ref={emojiButtonRef}
+              type="button"
+              className="text-gray-400 hover:text-gray-600"
+              title="Add emoji"
+              onClick={() => setShowEmojis((v) => !v)}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </button>
+              <Smile className="h-5 w-5" />
+            </button>
+            {showEmojis && (
+              <div
+                ref={emojiPickerRef}
+                className="absolute right-0 bottom-12 z-20 mx-auto grid w-64 grid-cols-5 gap-5 rounded-lg bg-white p-2 shadow-lg"
+              >
+                {EMOJIS.map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    className="rounded text-xl hover:bg-gray-100"
+                    onClick={() => handleEmojiClick(emoji)}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <button
         type="submit"
-        className="rounded-full bg-blue-500 p-3 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        className="bg-primary mb-2 rounded-full p-3 text-white"
         disabled={!message.trim()}
       >
-        <svg
-          className="h-5 w-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-          />
-        </svg>
+        <Send className="h-5 w-5" />
       </button>
     </form>
   );

@@ -1,26 +1,34 @@
-export interface Message {
-  id: string;
-  content: string;
-  senderId: string;
-  receiverId: string;
-  timestamp: Date;
-  isRead: boolean;
-}
-
+import { Student, Company } from 'src/modules/shared/types/shared.types';
 export interface Conversation {
-  id: string;
+  id: number;
   name: string;
-  avatar?: string;
-  lastMessage?: string;
-  lastMessageTime?: Date;
-  unreadCount?: number;
-  isOnline?: boolean;
-  email?: string;
-  phoneNumber?: string;
+  avatar: string | null;
+  lastMessage: Message
+  email: string | null;
+  roomName: string;
+  userType: string;
 }
 
-export interface ChatState {
-  messages: Message[];
-  conversations: Conversation[];
-  activeConversation: Conversation | null;
-} 
+export interface ChatUser {
+  id: number;
+  name: string;
+  email: string;
+  number: string | null;
+  type: string;
+  profilepic: string | null;
+}
+export interface Message {
+  id: number;
+  message: string;
+  receiver: number;
+  sender: number;
+  sentTime: Date;
+}
+
+export interface ConversationResponse {
+  id: number;
+  student: Student;
+  company: Company;
+  last_message: Message;
+  room_name: string;
+}
