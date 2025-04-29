@@ -3,7 +3,7 @@ import { Conversation } from '../types';
 import { Search } from 'lucide-react';
 
 interface ChatSidebarProps {
-  conversations: Conversation[];
+  conversations: Conversation[] | null;
   activeConversation: Conversation | null;
   onSelectConversation: (conversation: Conversation) => void;
 }
@@ -15,14 +15,31 @@ const ChatSidebar = ({
 }: ChatSidebarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredConversations = conversations.filter((conversation) =>
+  const filteredConversations = conversations?.filter((conversation) =>
     conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const getMessageText = (lastMessage: string | { message: string }) => {
+    if (!lastMessage) return 'No messages yet';
+
+    if (typeof lastMessage === 'string') {
+      return lastMessage.length > 30
+        ? `${lastMessage.substring(0, 25)}...`
+        : lastMessage;
+    }
+
+    if (typeof lastMessage === 'object' && lastMessage.message) {
+      return lastMessage.message.length > 30
+        ? `${lastMessage.message.substring(0, 25)}...`
+        : lastMessage.message;
+    }
+
+    return 'No messages yet';
+  };
+
   return (
-    <div className="flex h-full flex-col">
-      <div className="border-b border-gray-200 p-4">
-        <h2 className="mb-4 text-xl font-semibold">Messages</h2>
+    <div className="flex h-full flex-col rounded-2xl bg-white shadow-lg">
+      <div className="border-b border-gray-200 bg-white p-4">
         <div className="relative">
           <input
             type="text"
@@ -36,9 +53,9 @@ const ChatSidebar = ({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {filteredConversations.length > 0 ? (
+        {filteredConversations && filteredConversations?.length > 0 ? (
           <ul>
-            {filteredConversations.map((conversation) => (
+            {filteredConversations?.map((conversation) => (
               <li
                 key={conversation.id}
                 className={`cursor-pointer border-b border-gray-100 px-4 py-3 ${
@@ -55,19 +72,17 @@ const ChatSidebar = ({
                       alt={conversation.name}
                       className="h-12 w-12 rounded-full"
                     />
-                    {conversation.isOnline && (
-                      <span className="absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-white bg-green-500"></span>
-                    )}
+                   
                   </div>
                   <div className="ml-3 flex-1">
                     <div className="flex justify-between">
                       <h3 className="text-sm font-medium">
                         {conversation.name}
                       </h3>
-                      {conversation.lastMessageTime && (
+                      {conversation.lastMessage && (  
                         <span className="text-xs text-gray-500">
                           {new Date(
-                            conversation.lastMessageTime
+                            conversation.lastMessage.sentTime
                           ).toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: '2-digit',
@@ -76,18 +91,9 @@ const ChatSidebar = ({
                       )}
                     </div>
                     <p className="mt-1 truncate text-xs text-gray-500">
-                      {conversation.lastMessage
-                        ? conversation.lastMessage.length > 30
-                          ? `${conversation.lastMessage.substring(0, 25)}...`
-                          : conversation.lastMessage
-                        : 'No messages yet'}
+                      {getMessageText(conversation.lastMessage || '')}
                     </p>
                   </div>
-                  {conversation.unreadCount ? (
-                    <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-white">
-                      {conversation.unreadCount}
-                    </span>
-                  ) : null}
                 </div>
               </li>
             ))}

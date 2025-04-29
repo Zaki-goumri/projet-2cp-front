@@ -23,14 +23,23 @@ export interface User {
   name: string;
   profilepic: string | null;
   type: string;
-  role: 'Student' | 'Company' | 'Admin';
-  description: string;
-  skills: string[];
+  role: 'Student' | 'Company';
+  location: string | null;
+  date_joined: string;
+  links: string | null;
+  description: string | null;
+  number: string | null;
+}
+
+export interface Student extends User {
+  cv: Attachment | null;
   education: EducationData[];
   experience: ExperienceData[];
-  date_joined: string;
-  cv?: Attachment | null;
+  skills: string[];
+  gender: string | null;
 }
+
+export interface Company extends User {}
 
 export interface EducationData {
   id: string;

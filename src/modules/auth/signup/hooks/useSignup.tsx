@@ -5,15 +5,14 @@ import { RegisterRequest } from '../types/signup.types';
 import { useUserStore } from '@/modules/shared/store/userStore';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { User } from '@/modules/shared/types/shared.types';
-
+import { Student, Company } from '@/modules/shared/types/shared.types';
 const useSignup = () => {
   const setUser = useUserStore((state) => state.login);
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (values: RegisterRequest) => registerUser(values),
-    onSuccess: (data: User) => {
+      onSuccess: (data: Student | Company) => {
       setUser({ ...data });
       navigate('/home');
     },

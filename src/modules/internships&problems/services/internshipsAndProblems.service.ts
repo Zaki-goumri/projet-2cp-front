@@ -1,6 +1,6 @@
 import axios from '@/api/axios.config';
 import { Opportunity } from '../types/opportunity.types';
-import { Application, ApplicationResponse } from '../types/application.types';
+import { ApplicationResponse } from '../types/application.types';
 
 const API_ENDPOINTS = {
   OPPORTUNITIES: '/post/opportunity',
@@ -10,12 +10,16 @@ const API_ENDPOINTS = {
 
 const internshipsAndProblemsService = {
   async fetchInternships(): Promise<Opportunity[]> {
-    const response = await axios.get(`${API_ENDPOINTS.OPPORTUNITIES}?type=internship`);
+    const response = await axios.get(
+      `${API_ENDPOINTS.OPPORTUNITIES}?type=internship`
+    );
     return response.data || [];
   },
 
   async fetchProblems(): Promise<Opportunity[]> {
-    const response = await axios.get(`${API_ENDPOINTS.OPPORTUNITIES}?type=problem`);
+    const response = await axios.get(
+      `${API_ENDPOINTS.OPPORTUNITIES}?type=problem`
+    );
     return response.data || [];
   },
 
