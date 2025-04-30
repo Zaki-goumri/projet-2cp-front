@@ -27,20 +27,30 @@ const ChatMessages = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef<number>(0);
-
-  // Scroll to bottom on new messages
-  useEffect(() => {
-    if (messages.length > 0) {
-      const container = containerRef.current;
-      if (container) {
-        // Only auto-scroll if we're already near the bottom
-        const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-        if (isNearBottom) {
-          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const bottom =
+    useRef <
+    useEffect(() => {
+      if (messages.length > 0) {
+        const container = containerRef.current;
+        if (container) {
+          // Only auto-scroll if we're already near the bottom
+          const isNearBottom =
+            container.scrollHeight -
+              container.scrollTop -
+              container.clientHeight <
+            100;
+          if (isNearBottom) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       }
-    }
-  }, [messages]);
+    }, [messages]);
+
+  const bottomOnLoad = useRef(null);
+
+  useEffect(() => {
+    bottomOnLoad.current?.scrollIntoView({ behavior: 'auto' });
+  }, []);
 
   // Handle infinite scroll
   const handleScroll = useCallback(() => {
@@ -87,7 +97,7 @@ const ChatMessages = ({
   );
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="h-full overflow-y-auto p-4"
       onScroll={handleScroll}
@@ -178,7 +188,8 @@ const ChatMessages = ({
         </div>
       ))}
 
-      <div ref={messagesEndRef}></div>
+      <div ref={messagesEndRef} />
+      <div ref={bottomOnLoad} />
     </div>
   );
 };
