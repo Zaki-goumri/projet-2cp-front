@@ -1,7 +1,6 @@
 import axios from '@/api/axios.config';
 import { Conversation, ConversationResponse } from '../types';
 import { toast } from 'react-toastify';
-
 const CHAT_ENDPOINT = {
   CONVERSATION: '/chat/',
   CREATE_ROOM: '/chat/',
@@ -22,10 +21,13 @@ export const chatService = {
     return response.data;
   },
 
-  parseConversationList(conversations: ConversationResponse[], user: any): Conversation[] | null  {
-    if(!user){
-      toast.error('your session is expired')
-      return null
+  parseConversationList(
+    conversations: ConversationResponse[],
+    user: any
+  ): Conversation[] | null {
+    if (!user) {
+      toast.error('your session is expired');
+      return null;
     }
     return conversations.map((chat) => {
       return {
