@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { Message, Conversation } from '../types';
 import { chatService } from '../services/chat.service';
@@ -12,8 +12,9 @@ export const useChat = () => {
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [wsService] = useState(() => new WebSocketService());
   const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get current user from local storage
+  // Get current user
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => {
@@ -29,7 +30,7 @@ export const useChat = () => {
         throw new Error('Failed to load user data');
       }
     },
-    staleTime: Infinity, // User info won't change during the session
+    staleTime: Infinity,
   });
 
   // Fetch conversations
@@ -82,6 +83,16 @@ export const useChat = () => {
   const messages = messagesData?.pages
     .flatMap((page) => page.messages)
     .sort((a, b) => new Date(a.sentTime).getTime() - new Date(b.sentTime).getTime()) ?? [];
+
+  // Function to scroll to bottom
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   // Set error state if there's an error with conversations
   useEffect(() => {
@@ -286,5 +297,7 @@ export const useChat = () => {
     selectConversation,
     sendMessage,
     startNewConversation,
+    messagesEndRef,
+    scrollToBottom,
   };
 };
