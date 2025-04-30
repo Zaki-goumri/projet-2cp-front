@@ -8,6 +8,8 @@ const ChatInput = lazy(() => import('./components/ChatInput'));
 const ChatDetails = lazy(() => import('./components/ChatDetails'));
 
 const ChatPage = () => {
+  // Hooks must be called unconditionally in the same order
+  const { id } = useParams();
   const {
     messages,
     conversations,
@@ -17,16 +19,16 @@ const ChatPage = () => {
     startNewConversation,
     currentUser,
     loading,
-    error
+    error,
   } = useChat();
-  const { id } = useParams();
-
   useEffect(() => {
     if (id && conversations) {
-      const existingConversation = conversations.find((conv) => conv.id === parseInt(id));
+      const existingConversation = conversations.find(
+        (conv) => conv.id === parseInt(id)
+      );
       if (existingConversation) {
         selectConversation(existingConversation);
-      } else {
+      } else if (parseInt(id)) {
         startNewConversation(parseInt(id));
       }
     }
@@ -34,7 +36,7 @@ const ChatPage = () => {
 
   if (loading) {
     return (
-      <div className="flex h-[calc(100vh-100px)] w-full items-center justify-center bg-primary/30">
+      <div className="bg-primary/30 flex h-[calc(100vh-100px)] w-full items-center justify-center">
         <div className="text-lg">Loading conversations...</div>
       </div>
     );
@@ -42,7 +44,7 @@ const ChatPage = () => {
 
   if (error) {
     return (
-      <div className="flex h-[calc(100vh-100px)] w-full items-center justify-center bg-primary/30">
+      <div className="bg-primary/30 flex h-[calc(100vh-100px)] w-full items-center justify-center">
         <div className="text-lg text-red-500">{error}</div>
       </div>
     );
@@ -56,7 +58,9 @@ const ChatPage = () => {
           <h2 className="text-lg font-semibold">Messages</h2>
         </div>
         <div className="scrollbar-thin scrollbar-thumb-gray-200 flex-1 overflow-y-auto">
-          <Suspense fallback={<div className="p-4">Loading conversations...</div>}>
+          <Suspense
+            fallback={<div className="p-4">Loading conversations...</div>}
+          >
             <ChatSidebar
               conversations={conversations}
               activeConversation={activeConversation}
@@ -73,20 +77,28 @@ const ChatPage = () => {
           {activeConversation && (
             <>
               <img
-                src={activeConversation.avatar || '/assets/servicesOfsignup/profilePicTemp.png'}
+                src={
+                  activeConversation.avatar ||
+                  '/assets/servicesOfsignup/profilePicTemp.png'
+                }
                 alt="avatar"
                 className="h-10 w-10 rounded-full border object-cover"
               />
               <div>
                 <div className="font-semibold">{activeConversation.name}</div>
-                <div className="text-xs text-green-500">Online</div>
               </div>
             </>
           )}
         </div>
         {/* Messages */}
         <div className="scrollbar-thin scrollbar-thumb-gray-200 flex-1 overflow-y-auto bg-[#f7fafc] px-4 py-6">
-          <Suspense fallback={<div className="flex h-full items-center justify-center">Loading messages...</div>}>
+          <Suspense
+            fallback={
+              <div className="flex h-full items-center justify-center">
+                Loading messages...
+              </div>
+            }
+          >
             <ChatMessages
               messages={messages}
               activeConversation={activeConversation}

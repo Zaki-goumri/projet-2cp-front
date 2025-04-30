@@ -4,7 +4,13 @@ import { Message, Conversation } from '../types';
 interface ChatMessagesProps {
   messages: Message[];
   activeConversation: Conversation | null;
-  currentUser?: { id: number; name: string; type: string } | null;
+  currentUser?: {
+    id: number;
+    email: string;
+    name: string;
+    type: string;
+    profilepic: string | null;
+  } | null;
 }
 
 const ChatMessages = ({
@@ -27,14 +33,17 @@ const ChatMessages = ({
   }
 
   // Group messages by date
-  const groupedMessages = messages.reduce<Record<string, Message[]>>((groups, message) => {
-    const date = new Date(message.sentTime).toLocaleDateString();
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(message);
-    return groups;
-  }, {});
+  const groupedMessages = messages.reduce<Record<string, Message[]>>(
+    (groups, message) => {
+      const date = new Date(message.sentTime).toLocaleDateString();
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(message);
+      return groups;
+    },
+    {}
+  );
 
   return (
     <div className="h-full overflow-y-auto p-4">
@@ -62,15 +71,16 @@ const ChatMessages = ({
 
           {groupedMessages[date].map((message) => {
             const isSentByCurrentUser = currentUser?.id === message.sender;
+            const messageKey = `${message.sender}-${message.message}-${new Date(message.sentTime).getTime()}`;
             return (
               <div
-                key={message.id}
                 className={`mb-4 flex ${isSentByCurrentUser ? 'justify-end' : 'justify-start'}`}
+                key={messageKey}
               >
                 {!isSentByCurrentUser && (
                   <div className="mr-2 flex-shrink-0">
                     <img
-                      src={activeConversation.avatar || '/default-avatar.png'}
+                      src={activeConversation.avatar || ''}
                       alt={activeConversation.name}
                       className="h-8 w-8 rounded-full"
                     />
@@ -105,11 +115,7 @@ const ChatMessages = ({
                 {isSentByCurrentUser && (
                   <div className="ml-2 flex-shrink-0">
                     <img
-                      src={
-                        currentUser?.type === 'Company'
-                          ? '/assets/servicesOfsignup/company.svg'
-                          : '/assets/servicesOfsignup/profilePicTemp.png'
-                      }
+                      src={currentUser.profilepic}
                       alt={currentUser?.name || 'Me'}
                       className="h-8 w-8 rounded-full"
                     />
