@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Message, Conversation } from '../types';
-import { v4 as uuidv4 } from 'uuid';
+
 interface ChatMessagesProps {
   messages: Message[];
   activeConversation: Conversation | null;
@@ -71,10 +71,11 @@ const ChatMessages = ({
 
           {groupedMessages[date].map((message) => {
             const isSentByCurrentUser = currentUser?.id === message.sender;
+            const messageKey = `${message.sender}-${message.message}-${new Date(message.sentTime).getTime()}`;
             return (
               <div
                 className={`mb-4 flex ${isSentByCurrentUser ? 'justify-end' : 'justify-start'}`}
-                key={`${message.id}-${uuidv4()}`}
+                key={messageKey}
               >
                 {!isSentByCurrentUser && (
                   <div className="mr-2 flex-shrink-0">
