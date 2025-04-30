@@ -36,7 +36,6 @@ const ChatSidebar = ({
 
     return 'No messages yet';
   };
-
   return (
     <div className="flex h-full flex-col rounded-2xl bg-white shadow-lg">
       <div className="border-b border-gray-200 bg-white p-4">
@@ -72,14 +71,13 @@ const ChatSidebar = ({
                       alt={conversation.name}
                       className="h-12 w-12 rounded-full"
                     />
-                   
                   </div>
                   <div className="ml-3 flex-1">
                     <div className="flex justify-between">
                       <h3 className="text-sm font-medium">
                         {conversation.name}
                       </h3>
-                      {conversation.lastMessage && (  
+                      {conversation.lastMessage && (
                         <span className="text-xs text-gray-500">
                           {new Date(
                             conversation.lastMessage.sentTime

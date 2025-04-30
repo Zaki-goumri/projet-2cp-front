@@ -1,107 +1,91 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Message, Conversation } from '../types';
 import { chatService } from '../services/chat.service';
 import { WebSocketService } from '../services/websocket.service';
 
 export const useChat = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [conversations, setConversations] = useState<Conversation[]| null>([]);
-  const [activeConversation, setActiveConversation] =
-    useState<Conversation | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [wsService] = useState(() => new WebSocketService());
-  const [currentUser, setCurrentUser] = useState<{
-    id: number;
-    name: string;
-    type: string;
-  } | null>(null);
+  // Initialize query client
+  const queryClient = useQueryClient();
 
-  // Load current user info
-  useEffect(() => {
-    const userInfo = localStorage.getItem('user-storage');
-    if (userInfo) {
+  // Local state for WebSocket and active conversation
+  const [activeConversation, setActiveConversation] = useState(null);
+  const [wsService] = useState(() => new WebSocketService());
+  const [messages, setMessages] = useState([]);
+  const [error, setError] = useState(null);
+
+  // Get current user from local storage
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => {
+      const userInfo = localStorage.getItem('user-storage');
+      if (!userInfo) return null;
       try {
-        const userData = JSON.parse(userInfo);
-        if (userData && userData.id) {
-          setCurrentUser({
-            id: userData.id,
-            name: userData.name || userData.username || '',
-            type: userData.type || (userData.is_company ? 'Company' : 'Student'),
-          });
-        }
+        const parsedUserData = JSON.parse(userInfo);
+        const userData = parsedUserData.state.user;
+        if (userData && userData.id) return userData;
+        return null;
       } catch (err) {
         console.error('Error parsing user data:', err);
-        setError('Failed to load user data');
+        throw new Error('Failed to load user data');
       }
-    }
-  }, []);
+    },
+    staleTime: Infinity, // User info won't change during the session
+  });
 
-  useEffect(() => {
-    const loadConversations = async () => {
-      if (!currentUser) return;
-      
-      setLoading(true);
-      setError(null);
-      
+  // Fetch conversations
+  const {
+    data: conversations,
+    isLoading: conversationsLoading,
+    isError: conversationsError,
+    error: conversationsErrorData,
+  } = useQuery({
+    queryKey: ['conversations'],
+    queryFn: async () => {
       try {
         const data = await chatService.getConversations();
-        const parsedConversations = chatService.parseConversationList(data, currentUser);
-        
-        if (parsedConversations) {
-          setConversations(parsedConversations);
-          if (parsedConversations.length > 0 && !activeConversation) {
-            setActiveConversation(parsedConversations[0]);
-          }
-        }
+        const parsedUser = chatService.parseConversationList(data, currentUser);
+        return parsedUser;
       } catch (err) {
         console.error('Failed to load conversations:', err);
-        setError('Failed to load conversations');
-        setConversations(null);
-      } finally {
-        setLoading(false);
+        throw new Error('Failed to load conversations');
       }
-    };
+    },
 
-    loadConversations();
-  }, [currentUser, activeConversation]);
-
-  // Create a new conversation if needed
-  const startNewConversation = useCallback(async (userId: number) => {
-    if (!userId) return;
-
-    setLoading(true);
-    try {
-      const response = await chatService.createRoom(userId);
-      if (response && response.room_name) {
-        // Format the new conversation
-        // const newConversation: Conversation = {
-        //   id: userId,
-        //   name: response.name || 'New Conversation',
-        //   avatar: response.profilepic || undefined,
-        //   roomName: response.room_name,
-        //   userType: response.type || 'User',
-        //   email: response.email || '',
-        // };
-
-        // setConversations((prev) => {
-        //   if (!prev.some((conv) => conv.id === userId)) {
-        //     return [...prev, newConversation];
-        //   }
-        //   return prev;
-        // });
-
-        // Set as active conversation
-        // setActiveConversation(newConversation);
+    enabled: !!currentUser, // Only run if currentUser exists
+    onSuccess: (data) => {
+      if (data && data.length > 0 && !activeConversation) {
+        setActiveConversation(data[0]);
       }
-    } catch (err) {
-      setError('Failed to create conversation');
-      console.error(err);
-    } finally {
-      setLoading(false);
+    },
+  });
+
+  // Set error state if there's an error with conversations
+  useEffect(() => {
+    if (conversationsError && conversationsErrorData) {
+      setError(
+        conversationsErrorData.message || 'Failed to load conversations'
+      );
     }
-  }, []);
+  }, [conversationsError, conversationsErrorData]);
 
+  // Create a new conversation mutation
+  const createConversationMutation = useMutation({
+    mutationFn: (userId) => chatService.createRoom(userId),
+    onSuccess: (response) => {
+      // Invalidate and refetch conversations
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+
+      // Would set the active conversation here based on the response
+      // if the response structure provided enough information
+    },
+    onError: (error) => {
+      console.error('Failed to create conversation:', error);
+      setError('Failed to create conversation');
+    },
+  });
+
+  // WebSocket connection & message handling
   useEffect(() => {
     if (!activeConversation?.roomName) return;
 
@@ -109,6 +93,7 @@ export const useChat = () => {
       .split(';')
       .find((cookie) => cookie.trim().startsWith('accessToken='))
       ?.split('=')[1];
+
     if (!token) {
       setError('Authentication token not found');
       return;
@@ -123,30 +108,27 @@ export const useChat = () => {
       console.error(err);
     });
 
-    const cleanup = wsService.onMessage((message: Message) => {
-      const isCurrentUserMessage = currentUser
-        ? message.sender === currentUser.id
-        : false;
-
-      const newMessage: Omit<Message, 'id'> = {
+    const cleanup = wsService.onMessage((message) => {
+      const newMessage = {
         message: message.message,
         sender: message.sender,
         receiver: activeConversation.id,
         sentTime: new Date(message.sentTime || Date.now()),
       };
 
+      // Update conversation in cache to show latest message
       if (message.message) {
-        // setConversations((prev) =>
-        //   prev.map((conv) =>
-        //     conv.id === activeConversation.id
-        //       ? {
-        //           ...conv,
-        //           lastMessage: message.message,
-        //           lastMessageTime: new Date(),
-        //         }
-        //       : conv
-        //   )
-        // );
+        queryClient.setQueryData(['conversations'], (oldData) =>
+          oldData?.map((conv) =>
+            conv.id === activeConversation.id
+              ? {
+                  ...conv,
+                  lastMessage: message.message,
+                  lastMessageTime: new Date(),
+                }
+              : conv
+          )
+        );
       }
     });
 
@@ -154,55 +136,69 @@ export const useChat = () => {
       cleanup();
       wsService.disconnect();
     };
-  }, [activeConversation?.roomName, wsService, currentUser]);
+  }, [activeConversation?.roomName, wsService, queryClient]);
 
-  const selectConversation = useCallback((conversation: Conversation) => {
+  // Reset messages when conversation changes
+  useEffect(() => {
+    if (activeConversation) {
+      setMessages([]);
+    }
+  }, [activeConversation]);
+
+  const selectConversation = useCallback((conversation) => {
     setActiveConversation(conversation);
-    setMessages([]);
   }, []);
 
   const sendMessage = useCallback(
-    async (content: string) => {
+    async (content) => {
       if (!activeConversation || !wsService.isConnected() || !currentUser)
         return;
 
       try {
         wsService.sendMessage(content);
 
-        const messageId = Date.now().toString();
-        const newMessage: Omit<Message, 'id'> = {
+        const newMessage = {
           message: content,
           sender: currentUser.id,
           receiver: activeConversation.id,
           sentTime: new Date(),
         };
 
+        setMessages((prev) => [...prev, newMessage]);
 
-        // Update last message in conversation list
-        // setConversations((prev) =>
-        //   prev.map((conv) =>
-        //     conv.id === activeConversation.id
-        //       ? {
-        //           ...conv,
-        //           lastMessage: content,
-        //           lastMessageTime: new Date(),
-        //         }
-        //       : conv
-        //   )
-        // );
+        // Update conversation in cache to show latest message
+        queryClient.setQueryData(['conversations'], (oldData) =>
+          oldData?.map((conv) =>
+            conv.id === activeConversation.id
+              ? {
+                  ...conv,
+                  lastMessage: content,
+                  lastMessageTime: new Date(),
+                }
+              : conv
+          )
+        );
       } catch (err) {
         setError('Failed to send message');
         console.error(err);
       }
     },
-    [activeConversation, wsService, currentUser]
+    [activeConversation, wsService, currentUser, queryClient]
+  );
+
+  const startNewConversation = useCallback(
+    (userId) => {
+      if (!userId) return;
+      createConversationMutation.mutate(userId);
+    },
+    [createConversationMutation]
   );
 
   return {
     messages,
     conversations,
     activeConversation,
-    loading,
+    loading: conversationsLoading || createConversationMutation.isPending,
     error,
     currentUser,
     selectConversation,
