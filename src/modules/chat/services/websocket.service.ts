@@ -6,16 +6,18 @@ interface WebSocketMessage {
   message: string;
 }
 
-// Incoming message format
-interface ChatMessage {
+// Incoming message format from the server
+interface ServerMessage {
+  id: number;
   message: string;
-  timestamp: string;
   sender: number;
+  receiver: number;
+  sent_time: string;
 }
 
 export class WebSocketService {
   private ws: WebSocket | null = null;
-  private messageHandlers: ((message: ChatMessage) => void)[] = [];
+  private messageHandlers: ((message: ServerMessage) => void)[] = [];
   private broadcastChannel: BroadcastChannel | null = null;
   private currentRoom: string | null = null;
 
@@ -34,7 +36,7 @@ export class WebSocketService {
         
         // Listen for messages from other tabs
         this.broadcastChannel.onmessage = (event) => {
-          const data = event.data as ChatMessage;
+          const data = event.data as ServerMessage;
           this.messageHandlers.forEach((handler) => handler(data));
         };
 
@@ -44,7 +46,7 @@ export class WebSocketService {
         );
 
         this.ws.onopen = () => {
-          console.log('WebSocket Connected to room:', roomName);
+          console.log('WebSocket Connected');
           resolve();
         };
 
@@ -55,12 +57,7 @@ export class WebSocketService {
 
         this.ws.onmessage = (event: MessageEvent) => {
           try {
-            const data = JSON.parse(event.data) as ChatMessage;
-            // Broadcast the message to other tabs
-            if (this.broadcastChannel) {
-              this.broadcastChannel.postMessage(data);
-            }
-            // Handle the message in current tab
+            const data = JSON.parse(event.data);
             this.messageHandlers.forEach((handler) => handler(data));
           } catch (error) {
             console.error('Error parsing WebSocket message:', error);
@@ -119,7 +116,7 @@ export class WebSocketService {
    * @param handler - Function to call when a message is received
    * @returns Function to unregister the handler
    */
-  onMessage = (handler: (message: ChatMessage) => void): (() => void) => {
+  onMessage = (handler: (message: ServerMessage) => void): (() => void) => {
     this.messageHandlers.push(handler);
     return () => {
       this.messageHandlers = this.messageHandlers.filter((h) => h !== handler);

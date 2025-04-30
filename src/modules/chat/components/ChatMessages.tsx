@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Message, Conversation } from '../types';
 
 interface ChatMessagesProps {
@@ -11,17 +11,58 @@ interface ChatMessagesProps {
     type: string;
     profilepic: string | null;
   } | null;
+  hasMoreMessages?: boolean;
+  loadingMore?: boolean;
+  onLoadMore?: () => void;
 }
 
 const ChatMessages = ({
   messages,
   activeConversation,
   currentUser,
+  hasMoreMessages,
+  loadingMore,
+  onLoadMore,
 }: ChatMessagesProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const prevScrollHeightRef = useRef<number>(0);
 
+  // Scroll to bottom on new messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 0) {
+      const container = containerRef.current;
+      if (container) {
+        // Only auto-scroll if we're already near the bottom
+        const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+        if (isNearBottom) {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  }, [messages]);
+
+  // Handle infinite scroll
+  const handleScroll = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || !hasMoreMessages || loadingMore) return;
+
+    // If we're near the top (100px threshold), load more messages
+    if (container.scrollTop < 100) {
+      prevScrollHeightRef.current = container.scrollHeight;
+      onLoadMore?.();
+    }
+  }, [hasMoreMessages, loadingMore, onLoadMore]);
+
+  // Maintain scroll position when loading more messages
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container && prevScrollHeightRef.current) {
+      const newScrollHeight = container.scrollHeight;
+      const scrollDiff = newScrollHeight - prevScrollHeightRef.current;
+      container.scrollTop = scrollDiff;
+      prevScrollHeightRef.current = 0;
+    }
   }, [messages]);
 
   if (!activeConversation) {
@@ -46,7 +87,17 @@ const ChatMessages = ({
   );
 
   return (
-    <div className="h-full overflow-y-auto p-4">
+    <div 
+      ref={containerRef}
+      className="h-full overflow-y-auto p-4"
+      onScroll={handleScroll}
+    >
+      {loadingMore && (
+        <div className="flex justify-center py-2">
+          <div className="loader">Loading...</div>
+        </div>
+      )}
+
       <div className="mb-6 flex items-center justify-center">
         <div className="text-center">
           <div className="relative mx-auto mb-2 h-16 w-16">
@@ -115,7 +166,7 @@ const ChatMessages = ({
                 {isSentByCurrentUser && (
                   <div className="ml-2 flex-shrink-0">
                     <img
-                      src={currentUser.profilepic}
+                      src={currentUser.profilepic || '/default-avatar.png'}
                       alt={currentUser?.name || 'Me'}
                       className="h-8 w-8 rounded-full"
                     />
