@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { Message, Conversation } from '../types';
 import { chatService } from '../services/chat.service';
 import { WebSocketService } from '../services/websocket.service';
@@ -11,10 +11,10 @@ export const useChat = () => {
   // Local state for WebSocket and active conversation
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [wsService] = useState(() => new WebSocketService());
-  const [messages, setMessages] = useState<Message[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get current user from local storage
+  // Get current user
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => {
@@ -30,7 +30,7 @@ export const useChat = () => {
         throw new Error('Failed to load user data');
       }
     },
-    staleTime: Infinity, // User info won't change during the session
+    staleTime: Infinity,
   });
 
   // Fetch conversations
@@ -51,13 +51,48 @@ export const useChat = () => {
         throw new Error('Failed to load conversations');
       }
     },
-    enabled: !!currentUser, // Only run if currentUser exists
+    enabled: !!currentUser,
     onSuccess: (data) => {
       if (data && data.length > 0 && !activeConversation) {
         setActiveConversation(data[0]);
       }
     },
   });
+
+  // Fetch messages with infinite scrolling
+  const {
+    data: messagesData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch: refetchMessages,
+  } = useInfiniteQuery({
+    queryKey: ['messages', activeConversation?.roomName],
+    queryFn: async ({ pageParam = 1 }) => {
+      if (!activeConversation?.roomName) {
+        throw new Error('No active conversation');
+      }
+      return chatService.getMessages(activeConversation.roomName, pageParam);
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    enabled: !!activeConversation?.roomName,
+    refetchOnWindowFocus: false,
+  });
+
+  // Combine all messages from different pages and sort them by sentTime
+  const messages = messagesData?.pages
+    .flatMap((page) => page.messages)
+    .sort((a, b) => new Date(a.sentTime).getTime() - new Date(b.sentTime).getTime()) ?? [];
+
+  // Function to scroll to bottom
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   // Set error state if there's an error with conversations
   useEffect(() => {
@@ -71,8 +106,7 @@ export const useChat = () => {
   // Create a new conversation mutation
   const createConversationMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
-    onSuccess: (response) => {
-      // Invalidate and refetch conversations
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     },
     onError: (error) => {
@@ -87,7 +121,7 @@ export const useChat = () => {
       (msg) =>
         msg.message === newMessage.message &&
         msg.sender === newMessage.sender &&
-        Math.abs(new Date(msg.sentTime).getTime() - new Date(newMessage.sentTime).getTime()) < 1000 // Within 1 second
+        Math.abs(new Date(msg.sentTime).getTime() - new Date(newMessage.sentTime).getTime()) < 1000
     );
   };
 
@@ -105,9 +139,6 @@ export const useChat = () => {
       return;
     }
 
-    // Clear messages when switching conversations
-    setMessages([]);
-
     wsService.connect(activeConversation.roomName, token).catch((err) => {
       if (err.message?.includes('invalid token')) {
         setError('Session expired. Please log in again.');
@@ -117,43 +148,62 @@ export const useChat = () => {
       console.error(err);
     });
 
-    const cleanup = wsService.onMessage((message: any) => {
+    const cleanup = wsService.onMessage((serverMessage) => {
       const newMessage: Message = {
-        id: Date.now(), // Generate a temporary ID for new messages
-        message: message.message,
-        sender: message.sender,
-        receiver: activeConversation.id,
-        sentTime: new Date(message.sentTime || Date.now()),
+        id: serverMessage.id,
+        message: serverMessage.message,
+        sender: serverMessage.sender,
+        receiver: serverMessage.receiver,
+        sentTime: new Date(serverMessage.sent_time),
       };
 
-      // Update messages state with deduplication
-      setMessages((prevMessages) => {
-        if (isDuplicateMessage(newMessage, prevMessages)) {
-          return prevMessages;
+      queryClient.setQueryData(['messages', activeConversation.roomName], (oldData: any) => {
+        if (!oldData?.pages?.[0]) {
+          return {
+            pages: [{
+              messages: [newMessage],
+              hasMore: false,
+              totalCount: 1,
+              nextPage: null
+            }]
+          };
         }
-        return [...prevMessages, newMessage];
+
+        const lastPage = oldData.pages[oldData.pages.length - 1];
+        if (isDuplicateMessage(newMessage, lastPage.messages)) {
+          return oldData;
+        }
+
+        return {
+          ...oldData,
+          pages: [
+            ...oldData.pages.slice(0, -1),
+            {
+              ...lastPage,
+              messages: [...lastPage.messages, newMessage],
+            },
+          ],
+        };
       });
 
       // Update conversation in cache to show latest message
-      if (message.message) {
-        queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
-          oldData?.map((conv) =>
-            conv.id === activeConversation.id
-              ? {
-                  ...conv,
-                  lastMessage: newMessage,
-                }
-              : conv
-          )
-        );
-      }
+      queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
+        oldData?.map((conv) =>
+          conv.id === activeConversation.id
+            ? {
+                ...conv,
+                lastMessage: newMessage,
+              }
+            : conv
+        )
+      );
     });
 
     return () => {
       cleanup();
       wsService.disconnect();
     };
-  }, [activeConversation?.roomName, wsService, queryClient]);
+  }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient]);
 
   const selectConversation = useCallback((conversation: Conversation) => {
     setActiveConversation(conversation);
@@ -165,8 +215,9 @@ export const useChat = () => {
         return;
 
       try {
-        const newMessage: Message = {
-          id: Date.now(), // Generate a temporary ID for new messages
+        // Create a temporary message object
+        const tempMessage: Message = {
+          id: Date.now(),
           message: content,
           sender: currentUser.id,
           receiver: activeConversation.id,
@@ -176,12 +227,34 @@ export const useChat = () => {
         // Send the message first
         wsService.sendMessage(content);
 
-        // Update messages state with deduplication
-        setMessages((prevMessages) => {
-          if (isDuplicateMessage(newMessage, prevMessages)) {
-            return prevMessages;
+        // Update messages in the query cache
+        queryClient.setQueryData(['messages', activeConversation.roomName], (oldData: any) => {
+          if (!oldData?.pages?.[0]) {
+            return {
+              pages: [{
+                messages: [tempMessage],
+                hasMore: false,
+                totalCount: 1,
+                nextPage: null
+              }]
+            };
           }
-          return [...prevMessages, newMessage];
+
+          const lastPage = oldData.pages[oldData.pages.length - 1];
+          if (isDuplicateMessage(tempMessage, lastPage.messages)) {
+            return oldData;
+          }
+
+          return {
+            ...oldData,
+            pages: [
+              ...oldData.pages.slice(0, -1),
+              {
+                ...lastPage,
+                messages: [...lastPage.messages, tempMessage],
+              },
+            ],
+          };
         });
 
         // Update conversation in cache to show latest message
@@ -190,14 +263,14 @@ export const useChat = () => {
             conv.id === activeConversation.id
               ? {
                   ...conv,
-                  lastMessage: newMessage,
+                  lastMessage: tempMessage,
                 }
               : conv
           )
         );
       } catch (err) {
         setError('Failed to send message');
-        console.error(err);
+        console.error('Error sending message:', err);
       }
     },
     [activeConversation, wsService, currentUser, queryClient]
@@ -215,11 +288,16 @@ export const useChat = () => {
     messages,
     conversations,
     activeConversation,
-    loading: conversationsLoading || createConversationMutation.isLoading,
+    loading: conversationsLoading,
+    loadingMore: isFetchingNextPage,
     error,
     currentUser,
+    hasMoreMessages: hasNextPage,
+    loadMoreMessages: fetchNextPage,
     selectConversation,
     sendMessage,
     startNewConversation,
+    messagesEndRef,
+    scrollToBottom,
   };
 };
