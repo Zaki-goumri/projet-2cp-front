@@ -1,4 +1,4 @@
-import { Message } from "../types";
+import { Message } from '../types';
 
 // WebSocket message format as specified in the API docs
 interface WebSocketMessage {
@@ -27,8 +27,10 @@ export class WebSocketService {
     return new Promise((resolve, reject) => {
       try {
         // Connect URL: ws://localhost:8001/ws/chat/<room_name>/?token=<your_jwt_token>
-        this.ws = new WebSocket(`ws://localhost:8001/ws/chat/${roomName}/?token=${token}`);
-        
+        this.ws = new WebSocket(
+          `ws://localhost:8001/ws/chat/${roomName}/?token=${token}`
+        );
+
         this.ws.onopen = () => {
           console.log('WebSocket Connected to room:', roomName);
           resolve();
@@ -42,7 +44,7 @@ export class WebSocketService {
         this.ws.onmessage = (event: MessageEvent) => {
           try {
             const data = JSON.parse(event.data);
-            this.messageHandlers.forEach(handler => handler(data));
+            this.messageHandlers.forEach((handler) => handler(data));
           } catch (error) {
             console.error('Error parsing WebSocket message:', error);
           }
@@ -75,10 +77,9 @@ export class WebSocketService {
    */
   sendMessage = (message: string): void => {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      // Format according to API: { "type": "chat_message", "message": "Hello" }
       const messageData: WebSocketMessage = {
         type: 'chat_message',
-        message
+        message,
       };
       this.ws.send(JSON.stringify(messageData));
     } else {
@@ -94,7 +95,7 @@ export class WebSocketService {
   onMessage = (handler: (message: Message) => void): (() => void) => {
     this.messageHandlers.push(handler);
     return () => {
-      this.messageHandlers = this.messageHandlers.filter(h => h !== handler);
+      this.messageHandlers = this.messageHandlers.filter((h) => h !== handler);
     };
   };
 
