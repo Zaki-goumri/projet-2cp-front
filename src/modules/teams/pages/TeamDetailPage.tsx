@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { useTeam } from '../hooks/useTeam';
-import { UsersRound, BarChart2, Calendar, ExternalLink, AlertTriangle, Wifi, User } from 'lucide-react';
+import { UsersRound, BarChart2, Calendar, ExternalLink, AlertTriangle, Wifi, User, Shield, UserX } from 'lucide-react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { 
@@ -14,13 +14,23 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Student } from '../types/teams.types';
+import { useUserStore } from '@/modules/shared/store/userStore';
+import { useTeamManagement } from '@/modules/team/hooks/useTeamManagement';
 
 const TeamDetailPage: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const navigate = useNavigate();
+  const { user } = useUserStore();
   const { team, isLoading, error, networkError, leaveTeam, retryFetch } = useTeam(teamId || '');
+  const { kickMember, deleteTeam } = useTeamManagement();
+  
   const [confirmLeaveDialogOpen, setConfirmLeaveDialogOpen] = useState<boolean>(false);
+  const [confirmKickDialogOpen, setConfirmKickDialogOpen] = useState<boolean>(false);
+  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState<boolean>(false);
+  const [selectedMember, setSelectedMember] = useState<Student | null>(null);
   const [isLeaving, setIsLeaving] = useState<boolean>(false);
+  const [isKicking, setIsKicking] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const handleLeaveTeam = async () => {
     try {
@@ -36,6 +46,38 @@ const TeamDetailPage: React.FC = () => {
       toast.error('Failed to leave team. Please try again.');
     } finally {
       setIsLeaving(false);
+    }
+  };
+
+  const handleKickMember = async () => {
+    if (!selectedMember || !teamId) return;
+    try {
+      setIsKicking(true);
+      await kickMember(parseInt(teamId), selectedMember.id);
+      toast.success(`Successfully kicked ${selectedMember.name} from the team`);
+      setConfirmKickDialogOpen(false);
+      retryFetch();
+    } catch (err) {
+      console.error('Error kicking member:', err);
+      toast.error('Failed to kick member. Please try again.');
+    } finally {
+      setIsKicking(false);
+      setSelectedMember(null);
+    }
+  };
+
+  const handleDeleteTeam = async () => {
+    if (!teamId) return;
+    try {
+      setIsDeleting(true);
+      await deleteTeam(parseInt(teamId));
+      toast.success('Successfully deleted the team');
+      navigate('/teams');
+    } catch (err) {
+      console.error('Error deleting team:', err);
+      toast.error('Failed to delete team. Please try again.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -94,6 +136,7 @@ const TeamDetailPage: React.FC = () => {
   }
 
   const teamData = team.data;
+  const isLeader = user?.id === teamData.leader?.id;
   console.log(teamData);
 
   return (
@@ -107,12 +150,23 @@ const TeamDetailPage: React.FC = () => {
               <span className="ml-2 rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-700">{teamData.category}</span>
             </h1>
           </div>
-          <button
-            onClick={() => setConfirmLeaveDialogOpen(true)}
-            className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          >
-            Leave Team
-          </button>
+          <div className="flex gap-2">
+            {isLeader ? (
+              <button
+                onClick={() => setConfirmDeleteDialogOpen(true)}
+                className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                Delete Team
+              </button>
+            ) : (
+              <button
+                onClick={() => setConfirmLeaveDialogOpen(true)}
+                className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                Leave Team
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Team Description */}
@@ -126,7 +180,7 @@ const TeamDetailPage: React.FC = () => {
           </p>
         </div>
 
-        {/* NEW: Team Members Section */}
+        {/* Team Members Section with Management */}
         <div className="mb-10 rounded-lg bg-white p-6 shadow-sm">
           <h2 className="mb-6 flex items-center text-xl font-semibold">
             <UsersRound className="mr-2 h-5 w-5 text-[#92E3A9]" /> Team Members ({teamData.students?.length ?? 0})
@@ -136,25 +190,39 @@ const TeamDetailPage: React.FC = () => {
               {teamData.students.map((student: Student) => (
                 <div 
                   key={student.id} 
-                  className="flex items-center space-x-3 rounded-md border border-gray-200 p-3 transition-colors hover:bg-gray-50"
+                  className="flex items-center justify-between rounded-md border border-gray-200 p-3 transition-colors hover:bg-gray-50"
                 >
-                  <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-gray-200">
-                    <img
-                      src={student.profilepic || '/avatar.jpg'} // Use student profile pic or default
-                      alt={student.name}
-                      className="h-full w-full object-cover"
-                      loading='lazy'
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces";
+                  <div className="flex items-center space-x-3">
+                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-gray-200">
+                      <img
+                        src={student.profilepic || '/avatar.jpg'}
+                        alt={student.name}
+                        className="h-full w-full object-cover"
+                        loading='lazy'
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">{student.name}</p>
+                      <p className="text-xs text-gray-500">{student.email}</p>
+                      <Link to={`/profile/${student.name}`} className="text-xs text-blue-500 hover:underline">View Profile</Link>
+                    </div>
+                  </div>
+                  {isLeader && student.id !== user?.id && (
+                    <button
+                      onClick={() => {
+                        setSelectedMember(student);
+                        setConfirmKickDialogOpen(true);
                       }}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{student.name}</p>
-                    <p className="text-xs text-gray-500">{student.email}</p>
-                    <Link to={`/profile/${student.name}`} className="text-xs text-blue-500 hover:underline">View Profile</Link>
-                  </div>
+                      className="ml-2 rounded-md bg-red-100 p-2 text-red-600 hover:bg-red-200"
+                      title="Kick member"
+                    >
+                      <UserX size={16} />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -193,6 +261,7 @@ const TeamDetailPage: React.FC = () => {
           )}
         </div>
 
+        {/* Leave Team Dialog */}
         <Dialog open={confirmLeaveDialogOpen} onOpenChange={setConfirmLeaveDialogOpen}>
           <DialogContent className="sm:max-w-[425px] !bg-white">
             <DialogHeader>
@@ -205,7 +274,7 @@ const TeamDetailPage: React.FC = () => {
               <Button 
                 variant="outline" 
                 onClick={() => setConfirmLeaveDialogOpen(false)}
-        className="rounded-md border !border-gray-300 !bg-white px-4 py-2 text-sm font-medium !text-gray-700 hover:!bg-gray-50"
+                className="rounded-md border !border-gray-300 !bg-white px-4 py-2 text-sm font-medium !text-gray-700 hover:!bg-gray-50"
               >
                 Cancel
               </Button>
@@ -213,9 +282,70 @@ const TeamDetailPage: React.FC = () => {
                 type="submit" 
                 onClick={handleLeaveTeam}
                 disabled={isLeaving}
-                className="rounded-md !bg-red-500 px-4 py-2 text-sm font-medium !text-white hover:!bg-red-600 focus:!outline-none focus:!ring-2 focus:!ring-red-500 focus:r!ing-offset-2"
+                className="rounded-md !bg-red-500 px-4 py-2 text-sm font-medium !text-white hover:!bg-red-600 focus:!outline-none focus:!ring-2 focus:!ring-red-500 focus:!ring-offset-2"
               >
                 {isLeaving ? 'Leaving...' : 'Leave Team'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Kick Member Dialog */}
+        <Dialog open={confirmKickDialogOpen} onOpenChange={setConfirmKickDialogOpen}>
+          <DialogContent className="sm:max-w-[425px] !bg-white">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-gray-900">Kick Member</DialogTitle>
+              <DialogDescription className="mt-2 text-sm text-gray-600">
+                Are you sure you want to kick {selectedMember?.name} from the team? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="mt-6 flex space-x-2 justify-end">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setConfirmKickDialogOpen(false);
+                  setSelectedMember(null);
+                }}
+                className="rounded-md border !border-gray-300 !bg-white px-4 py-2 text-sm font-medium !text-gray-700 hover:!bg-gray-50"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                onClick={handleKickMember}
+                disabled={isKicking}
+                className="rounded-md !bg-red-500 px-4 py-2 text-sm font-medium !text-white hover:!bg-red-600 focus:!outline-none focus:!ring-2 focus:!ring-red-500 focus:!ring-offset-2"
+              >
+                {isKicking ? 'Kicking...' : 'Kick Member'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Team Dialog */}
+        <Dialog open={confirmDeleteDialogOpen} onOpenChange={setConfirmDeleteDialogOpen}>
+          <DialogContent className="sm:max-w-[425px] !bg-white">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-gray-900">Delete Team</DialogTitle>
+              <DialogDescription className="mt-2 text-sm text-gray-600">
+                Are you sure you want to delete this team? This action cannot be undone and will remove all team data.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="mt-6 flex space-x-2 justify-end">
+              <Button 
+                variant="outline" 
+                onClick={() => setConfirmDeleteDialogOpen(false)}
+                className="rounded-md border !border-gray-300 !bg-white px-4 py-2 text-sm font-medium !text-gray-700 hover:!bg-gray-50"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                onClick={handleDeleteTeam}
+                disabled={isDeleting}
+                className="rounded-md !bg-red-500 px-4 py-2 text-sm font-medium !text-white hover:!bg-red-600 focus:!outline-none focus:!ring-2 focus:!ring-red-500 focus:!ring-offset-2"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Team'}
               </Button>
             </DialogFooter>
           </DialogContent>
