@@ -3,6 +3,8 @@ import { toast } from 'react-toastify';
 import { useNavigate } from "react-router";
 import instance from '@/api/axios.config';
 import { createInternshipService } from '../services/oppportunites.service';
+import { useQuery } from '@tanstack/react-query';
+import { opportunityService } from '../services/opportunity.service';
 
 export type OpportunityData = {
   title: string;
@@ -15,24 +17,10 @@ export type OpportunityData = {
 };
 
 
-export const useOpportunity = () => {
-  const navigate = useNavigate();
-  const succesUrl="/"
-  const { data, isLoading, error, mutate } = useMutation({
-    mutationFn: createInternshipService,
-    onSuccess: () => {
-      toast.success('Opportunity created successfully!');
-      navigate(succesUrl);
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to create opportunity');
-    },
+export const useOpportunity = (id: string) => {
+  return useQuery({
+    queryKey: ['opportunity', id],
+    queryFn: () => opportunityService.getOpportunity(id),
+    enabled: !!id,
   });
-
-  return {
-    data,
-    isLoading,
-    error,
-    mutate,
-  };
 };
