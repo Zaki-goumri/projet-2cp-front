@@ -6,9 +6,10 @@ const ChatSidebar = lazy(() => import('./components/ChatSidebar'));
 const ChatMessages = lazy(() => import('./components/ChatMessages'));
 const ChatInput = lazy(() => import('./components/ChatInput'));
 const ChatDetails = lazy(() => import('./components/ChatDetails'));
+import Loading from '../../loading';
+import {  TriangleAlert } from 'lucide-react';
 
 const ChatPage = () => {
-  // Hooks must be called unconditionally in the same order
   const { id } = useParams();
   const {
     messages,
@@ -35,17 +36,23 @@ const ChatPage = () => {
   }, [id, conversations, selectConversation, startNewConversation]);
 
   if (loading) {
-    return (
-      <div className="bg-primary/30 flex h-[calc(100vh-100px)] w-full items-center justify-center">
-        <div className="text-lg">Loading conversations...</div>
-      </div>
-    );
+    return (<Loading/> );
   }
 
   if (error) {
     return (
-      <div className="bg-primary/30 flex h-[calc(100vh-100px)] w-full items-center justify-center">
-        <div className="text-lg text-red-500">{error}</div>
+      <div className="bg-white flex h-[calc(100vh-100px)] w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4 p-6 bg-primary/10 rounded-lg border border-primary/20 max-w-md">
+          <TriangleAlert className="h-12 w-12 text-primary" />
+          <h3 className="text-xl font-semibold text-gray-800">Something went wrong</h3>
+          <div className="text-base text-primary text-center">{error}</div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
@@ -62,7 +69,7 @@ const ChatPage = () => {
             fallback={<div className="p-4">Loading conversations...</div>}
           >
             <ChatSidebar
-              conversations={conversations}
+              conversations={conversations || []}
               activeConversation={activeConversation}
               onSelectConversation={selectConversation}
             />

@@ -1,12 +1,11 @@
-import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import NavBar from '../../modules/shared/components/navBar';
-import { lazy } from 'react';
+import { lazy,ReactNode } from 'react';
 
 const Footer = lazy(() => import('../../modules/shared/components/footer'));
 
 type MainLayoutProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export const MainLayout = ({ children }: MainLayoutProps) => (
