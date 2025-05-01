@@ -193,9 +193,9 @@ if (root) {
                   index
                   element={
                     <ProtectedRoute>
-                    <LayoutWithoutFooter>
-                      <Teams />
-                    </LayoutWithoutFooter>
+                      <LayoutWithoutFooter>
+                        <Teams />
+                      </LayoutWithoutFooter>
                     </ProtectedRoute>
                   }
                 />
@@ -203,9 +203,9 @@ if (root) {
                   path="create"
                   element={
                     <ProtectedRoute>
-                    <MainLayout>
-                      <CreateTeamCard />
-                    </MainLayout>
+                      <MainLayout>
+                        <CreateTeamCard />
+                      </MainLayout>
                     </ProtectedRoute>
                   }
                 />
@@ -213,9 +213,9 @@ if (root) {
                   path=":teamId"
                   element={
                     <ProtectedRoute>
-                    <LayoutWithoutFooter>
-                      <TeamDetail />
-                    </LayoutWithoutFooter>
+                      <LayoutWithoutFooter>
+                        <TeamDetail />
+                      </LayoutWithoutFooter>
                     </ProtectedRoute>
                   }
                 />
