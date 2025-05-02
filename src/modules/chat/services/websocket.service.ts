@@ -18,7 +18,10 @@ interface ServerMessage {
 export class WebSocketService {
   private ws: WebSocket | null = null;
   private messageHandlers: ((message: ServerMessage) => void)[] = [];
-  private broadcastChannel: BroadcastChannel | null = null;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 3;
+  private reconnectTimeout: NodeJS.Timeout | null = null;
+  private isConnecting = false;
   private currentRoom: string | null = null;
 
   /**
@@ -27,107 +30,143 @@ export class WebSocketService {
    * @param token - JWT token for authentication
    * @returns Promise that resolves when connection is established
    */
-  connect = (roomName: string, token: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      try {
-        // Set up broadcast channel for cross-tab communication
-        this.currentRoom = roomName;
-        this.broadcastChannel = new BroadcastChannel(`chat-${roomName}`);
-        
-        // Listen for messages from other tabs
-        this.broadcastChannel.onmessage = (event) => {
-          const data = event.data as ServerMessage;
-          this.messageHandlers.forEach((handler) => handler(data));
-        };
+  async connect(roomName: string, token: string): Promise<void> {
+    if (this.isConnecting) return;
+    this.isConnecting = true;
 
-        // Connect URL: ws://localhost:8001/ws/chat/<room_name>/?token=<your_jwt_token>
-        this.ws = new WebSocket(
-          `ws://localhost:8001/ws/chat/${roomName}/?token=${token}`
-        );
+    try {
+      // Disconnect existing connection if any
+      this.disconnect();
+
+      // Create new WebSocket connection
+      const wsUrl = `ws://localhost:8001/ws/chat/${roomName}/?token=${encodeURIComponent(token)}`;
+      this.ws = new WebSocket(wsUrl);
+      this.currentRoom = roomName;
+
+      return new Promise((resolve, reject) => {
+        if (!this.ws) {
+          reject(new Error('Failed to create WebSocket connection'));
+          return;
+        }
 
         this.ws.onopen = () => {
-          console.log('WebSocket Connected');
+          console.log('WebSocket Connected to room:', roomName);
+          this.isConnecting = false;
+          this.reconnectAttempts = 0;
           resolve();
         };
 
-        this.ws.onerror = (error: Event) => {
+        this.ws.onerror = (error) => {
           console.error('WebSocket Error:', error);
+          this.isConnecting = false;
           reject(error);
         };
 
-        this.ws.onmessage = (event: MessageEvent) => {
+        this.ws.onclose = (event) => {
+          console.log('WebSocket Disconnected:', event.code, event.reason);
+          this.isConnecting = false;
+          
+          // Only attempt reconnect if this is still the current room
+          if (this.currentRoom === roomName) {
+            this.handleDisconnect(roomName, token);
+          }
+        };
+
+        this.ws.onmessage = (event) => {
           try {
-            const data = JSON.parse(event.data);
-            this.messageHandlers.forEach((handler) => handler(data));
+            const data = JSON.parse(event.data) as ServerMessage;
+            this.messageHandlers.forEach(handler => handler(data));
           } catch (error) {
             console.error('Error parsing WebSocket message:', error);
           }
         };
+      });
+    } catch (error) {
+      this.isConnecting = false;
+      throw error;
+    }
+  }
 
-        this.ws.onclose = () => {
-          console.log('WebSocket Disconnected');
-          this.cleanup();
-        };
-      } catch (error) {
-        console.error('WebSocket Connection Error:', error);
-        reject(error);
+  private handleDisconnect(roomName: string, token: string) {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000);
+      
+      if (this.reconnectTimeout) {
+        clearTimeout(this.reconnectTimeout);
       }
-    });
-  };
+
+      this.reconnectTimeout = setTimeout(async () => {
+        console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+        try {
+          await this.connect(roomName, token);
+        } catch (error) {
+          console.error('Reconnection failed:', error);
+        }
+      }, delay);
+    }
+  }
 
   /**
    * Disconnects from WebSocket server and cleans up resources
    */
-  disconnect = (): void => {
-    this.cleanup();
-  };
+  disconnect(): void {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
 
-  private cleanup = (): void => {
     if (this.ws) {
-      this.ws.close();
+      // Only close if the connection is still open
+      if (this.ws.readyState === WebSocket.OPEN) {
+        this.ws.close(1000, 'Normal closure');
+      }
       this.ws = null;
     }
-    if (this.broadcastChannel) {
-      this.broadcastChannel.close();
-      this.broadcastChannel = null;
-    }
+
+    this.reconnectAttempts = 0;
+    this.isConnecting = false;
     this.currentRoom = null;
-    this.messageHandlers = [];
-  };
+  }
 
   /**
    * Sends a message to the WebSocket server
    * @param message - The message content to send
    */
-  sendMessage = (message: string): void => {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+  sendMessage(message: string) {
+    if (!this.isConnected()) {
+      throw new Error('WebSocket is not connected');
+    }
+
+    try {
       const messageData: WebSocketMessage = {
         type: 'chat_message',
-        message,
+        message
       };
-      this.ws.send(JSON.stringify(messageData));
-    } else {
-      console.error('WebSocket is not connected');
+      this.ws?.send(JSON.stringify(messageData));
+    } catch (error) {
+      console.error('Error sending message:', error);
+      throw error;
     }
-  };
+  }
 
   /**
    * Registers a handler for incoming messages
    * @param handler - Function to call when a message is received
    * @returns Function to unregister the handler
    */
-  onMessage = (handler: (message: ServerMessage) => void): (() => void) => {
+  onMessage(handler: (message: ServerMessage) => void): () => void {
     this.messageHandlers.push(handler);
     return () => {
-      this.messageHandlers = this.messageHandlers.filter((h) => h !== handler);
+      this.messageHandlers = this.messageHandlers.filter(h => h !== handler);
     };
-  };
+  }
 
   /**
    * Checks if the WebSocket connection is open
    * @returns True if the connection is open, false otherwise
    */
-  isConnected = (): boolean => {
-    return this.ws !== null && this.ws.readyState === WebSocket.OPEN;
-  };
+  isConnected(): boolean {
+    return this.ws?.readyState === WebSocket.OPEN;
+  }
 }

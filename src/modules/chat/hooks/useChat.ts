@@ -25,7 +25,6 @@ export const useChat = () => {
     onError: setError
   });
 
-  // Get current user
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => {
@@ -44,7 +43,6 @@ export const useChat = () => {
     staleTime: Infinity,
   });
 
-  // Fetch conversations
   const {
     data: conversations,
     isLoading: conversationsLoading,
@@ -65,12 +63,10 @@ export const useChat = () => {
     enabled: !!currentUser,
   });
 
-  // Function to scroll to bottom
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Create a new conversation mutation
   const createConversationMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
     onSuccess: (data) => {
@@ -83,12 +79,12 @@ export const useChat = () => {
     },
   });
 
-  // WebSocket connection & message handling
   useEffect(() => {
     let isSubscribed = true;
+    let reconnectTimeout: NodeJS.Timeout;
 
     const connectWebSocket = async () => {
-      if (!activeConversation?.roomName) return;
+      if (!activeConversation?.roomName || !currentUser) return;
 
       const token = document.cookie
         .split(';')
@@ -101,7 +97,10 @@ export const useChat = () => {
       }
 
       try {
+        // Disconnect from previous connection if any
         wsService.disconnect();
+        
+        // Connect to new room
         await wsService.connect(activeConversation.roomName, token);
         
         if (!isSubscribed) return;
@@ -138,17 +137,29 @@ export const useChat = () => {
         } else {
           setError('Failed to connect to chat');
           console.error('WebSocket connection error:', err);
+          
+          // Attempt to reconnect after a delay
+          reconnectTimeout = setTimeout(() => {
+            if (isSubscribed) {
+              connectWebSocket();
+            }
+          }, 5000);
         }
       }
     };
 
+    // Initial connection
     connectWebSocket();
 
+    // Cleanup function
     return () => {
       isSubscribed = false;
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
       wsService.disconnect();
     };
-  }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient, addNewMessage]);
+  }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient, addNewMessage, currentUser]);
 
   const selectConversation = useCallback(async (conversation: Conversation) => {
     try {
