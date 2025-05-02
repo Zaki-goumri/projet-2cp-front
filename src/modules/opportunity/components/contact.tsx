@@ -47,11 +47,11 @@ const Contact = ({ opportunity }: ContactProps) => {
         console.log('Fetched teams:', teams); // Debug log
         setAllTeams(teams);
         setFilteredTeams(teams);
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching teams:', error);
-      } finally {
-        setIsLoading(false);
-      }
+    } finally {
+      setIsLoading(false);
+    }
     };
 
     if (isTeamApplication) {
@@ -282,26 +282,26 @@ const Contact = ({ opportunity }: ContactProps) => {
           </div>
 
           {/* Submit Button */}
-          <Button
+            <Button
             onClick={handleSubmit}
             disabled={isSubmitting || (isTeamApplication && !selectedTeam)}
             className="w-full bg-[#65C97A] hover:bg-[#52B86A] text-white flex items-center gap-2 justify-center"
           >
             {isSubmitting ? (
-              <>
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
                 Submitting...
-              </>
-            ) : (
-              <>
+                </>
+              ) : (
+                <>
                 <Send className="h-4 w-4" />
                 Apply {isTeamApplication ? 'as Team' : 'Now'}
-              </>
-            )}
-          </Button>
-        </div>
+                </>
+              )}
+            </Button>
+          </div>
       </Card>
-    </div>
+      </div>
   );
 };
 

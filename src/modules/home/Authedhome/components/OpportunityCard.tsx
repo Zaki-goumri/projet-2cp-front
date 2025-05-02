@@ -24,8 +24,9 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity })
     <div className="px-2 h-full pt-10"> {/* Added padding for spacing and logo */}
       <Link 
         to={`/opportunities/${opportunity.Type.toLowerCase()}/${opportunity.id}`} 
-        className="group block h-full w-full cursor-pointer overflow-hidden rounded-3xl border-transparent shadow-lg duration-300 ease-in-out hover:scale-105 bg-white" // Removed margins, added bg-white here
+        className="group relative block h-full w-full cursor-pointer overflow-hidden rounded-3xl border-transparent shadow-lg duration-300 ease-in-out hover:scale-105 bg-white" // Removed margins, added bg-white here
       >
+       
         <aside className="relative -mt-6 flex h-full flex-1 flex-col rounded-3xl px-5 pt-8 pb-6"> {/* Kept internal structure */}
           <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl bg-white p-2.5 shadow-sm sm:h-20 sm:w-20">
             <img
