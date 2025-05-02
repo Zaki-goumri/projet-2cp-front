@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tansta
 import { Message, Conversation } from '../types';
 import { chatService } from '../services/chat.service';
 import { WebSocketService } from '../services/websocket.service';
+import { useNavigate } from 'react-router';
 
 export const useChat = () => {
   // Initialize query client
@@ -13,6 +14,8 @@ export const useChat = () => {
   const [wsService] = useState(() => new WebSocketService());
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   // Get current user
   const { data: currentUser } = useQuery({
@@ -101,12 +104,9 @@ export const useChat = () => {
   // Create a new conversation mutation
   const createConversationMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
-    onSuccess: (newConversation) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
-      // Select the newly created conversation
-      if (newConversation) {
-        selectConversation(newConversation);
-      }
+      navigate(`/chat/${data.id}`);
     },
     onError: (error) => {
       console.error('Failed to create conversation:', error);
@@ -356,6 +356,7 @@ export const useChat = () => {
     selectConversation,
     sendMessage,
     startNewConversation,
+    isCreatingChat: createConversationMutation.isLoading,
     messagesEndRef,
     scrollToBottom,
   };
