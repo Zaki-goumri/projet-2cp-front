@@ -10,13 +10,14 @@ interface ChatSidebarProps {
   activeConversation: Conversation | null;
   onSelectConversation: (conversation: Conversation) => void;
   onStartNewChat?: (user: User) => void;
+  isCreatingChat?: boolean;
 }
 
 const ChatSidebar = ({
   conversations,
   activeConversation,
-  onSelectConversation,
   onStartNewChat,
+  isCreatingChat = false,
 }: ChatSidebarProps) => {
   const [showSearch, setShowSearch] = useState(false);
   const {
@@ -67,16 +68,17 @@ const ChatSidebar = ({
       <div className="flex-1 overflow-y-auto">
         {showSearch ? (
           <div className="divide-y divide-gray-100">
-            {isLoading ? (
+            {isLoading || isCreatingChat ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-primary" />
               </div>
             ) : users.length > 0 ? (
-              users.map((user) => (
+              users.map((user:User) => (
                 <button
                   key={user.id}
                   onClick={() => onStartNewChat?.(user)}
                   className="w-full px-4 py-3 hover:bg-gray-50 flex items-center gap-3"
+                  disabled={isCreatingChat}
                 >
                   <img
                     src={user.profilepic || '/default-avatar.png'}

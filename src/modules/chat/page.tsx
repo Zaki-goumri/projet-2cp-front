@@ -21,6 +21,7 @@ const ChatPage = () => {
     currentUser,
     loading,
     error,
+    isCreatingChat,
   } = useChat();
   useEffect(() => {
     if (id && conversations) {
@@ -61,9 +62,6 @@ const ChatPage = () => {
     <div className="bg-primary/30 flex h-[calc(100vh-100px)] w-full text-gray-900">
       {/* Sidebar */}
       <aside className="m-2 hidden w-full max-w-xs flex-col overflow-hidden rounded-2xl rounded-l-2xl bg-white/80 shadow-lg md:flex">
-        <div className="sticky top-0 z-10 border-b border-gray-100 bg-white/80 p-4">
-          <h2 className="text-lg font-semibold">Messages</h2>
-        </div>
         <div className="scrollbar-thin scrollbar-thumb-gray-200 flex-1 overflow-y-auto">
           <Suspense
             fallback={<div className="p-4">Loading conversations...</div>}
@@ -72,6 +70,8 @@ const ChatPage = () => {
               conversations={conversations || []}
               activeConversation={activeConversation}
               onSelectConversation={selectConversation}
+              onStartNewChat={(user) => startNewConversation(user.id)}
+              isCreatingChat={isCreatingChat}
             />
           </Suspense>
         </div>
