@@ -18,6 +18,28 @@ interface MessageResponse {
   };
 }
 
+interface CreateChatResponse {
+  id: number;
+  room_name: string;
+  student: {
+    id: number;
+    name: string;
+    profilepic: string | null;
+  };
+  company: {
+    id: number;
+    name: string;
+    profilepic: string | null;
+  };
+}
+
+class ChatError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ChatError';
+  }
+}
+
 const CHAT_ENDPOINT = {
   CONVERSATION: '/chat/',
   CREATE_ROOM: '/chat/',
@@ -99,5 +121,50 @@ export const chatService = {
           user.id === chat.student.id ? chat.company.type : chat.student.type,
       };
     });
+  },
+
+  createChat: async (userId: number): Promise<Conversation> => {
+    try {
+      const response = await axios.post<CreateChatResponse>('/chat/', {params:{
+        user_id: userId,
+      }});
+
+      // Transform the response to match our Conversation type
+      const chat = response.data;
+      return {
+        id: chat.id,
+        name: chat.company.name, // We'll show the company name for students
+        avatar: chat.company.profilepic,
+        email: null,
+        roomName: chat.room_name,
+        userType: 'company',
+        lastMessage: {
+          id: 0,
+          message: '',
+          sender: 0,
+          receiver: 0,
+          sentTime: new Date(),
+        },
+      };
+    } catch (error: any) {
+      console.error('Error creating chat:', error);
+      
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            throw new ChatError('Invalid request. Please try again.');
+          case 401:
+            throw new ChatError('Please log in to start a chat.');
+          case 403:
+            throw new ChatError('You are not allowed to start this chat.');
+          case 404:
+            throw new ChatError('User not found.');
+          default:
+            throw new ChatError('Failed to create chat. Please try again.');
+        }
+      }
+      
+      throw new ChatError('Network error. Please check your connection.');
+    }
   },
 };

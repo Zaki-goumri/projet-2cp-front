@@ -60,7 +60,6 @@ instance.interceptors.response.use(
         if (!refreshToken) {
           clearAuthTokens();
           useUserStore.getState().logout();
-          window.location.href = '/auth/signin';
           return Promise.reject(error);
         }
 

@@ -5,54 +5,62 @@ import {
   Calendar,
   Clock,
   Gift,
+  GraduationCap,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Opportunity } from '../services/opportunity.service';
 
-const infoItems = [
-  {
-    icon: MapPin,
-    title: 'Internship Location(s)',
-    description: 'Algeria',
-  },
-  {
-    icon: Briefcase,
-    title: 'Internship Type',
-    description: 'Remote',
-  },
-  {
-    icon: Calendar,
-    title: 'Work Level',
-    description: 'Starting Soon (1 Day)',
-  },
-  {
-    icon: Clock,
-    title: 'Internship Duration',
-    description: '1 Month',
-  },
-];
+interface AdditionalInformationProps {
+  opportunity: Opportunity;
+}
 
-const AdditionalInformation = () => {
+export default function AdditionalInformation({ opportunity }: AdditionalInformationProps) {
   return (
-    <div className="mb-10 space-y-4 rounded-lg bg-white p-6 shadow">
-      <h3 className="text-xl font-semibold border-b pb-3">Additional Information</h3>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
-        {infoItems.map((item, index) => (
-          <Card
-            key={index}
-            className="flex items-center gap-3 !border-none !bg-white p-4 shadow-sm hover:shadow transition-shadow duration-200"
-          >
-            <div className="bg-primary/10 rounded-full p-2.5">
-              <item.icon className="text-primary h-5 w-5" />
-            </div>
-            <div className="text-gray-700">
-              <div className="font-medium">{item.title}</div>
-              <div className="text-sm text-gray-500">{item.description}</div>
-            </div>
-          </Card>
-        ))}
+    <Card className="rounded-lg !bg-white p-6 shadow-sm !border-none">
+      <div className="border-l-4 border-primary pl-3 mb-6">
+        <h2 className="text-xl font-semibold text-black">Additional Information</h2>
       </div>
-    </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <MapPin className="h-5 w-5 text-red-500" />
+            <h3 className="font-medium text-gray-700">Internship Location(s)</h3>
+          </div>
+          <p className="text-gray-600 ml-7">
+            {opportunity.company.location || 'Not specified'}
+          </p>
+        </div>
+        
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <GraduationCap className="h-5 w-5 text-red-500" />
+            <h3 className="font-medium text-gray-700">Educations</h3>
+          </div>
+          <p className="text-gray-600 ml-7">
+            {opportunity.education || 'No prior education required'}
+          </p>
+        </div>
+        
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <Briefcase className="h-5 w-5 text-gray-500" />
+            <h3 className="font-medium text-gray-700">Internship Type</h3>
+          </div>
+          <p className="text-gray-600 ml-7">{opportunity.worktype || 'Not specified'}</p>
+        </div>
+        
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="h-5 w-5 text-gray-500" />
+            <h3 className="font-medium text-gray-700">Internship Detail</h3>
+          </div>
+          <p className="text-gray-600 ml-7">
+            Internship Duration: {  (opportunity.startdate && opportunity.enddate ? 
+              `${Math.ceil((new Date(opportunity.enddate).getTime() - new Date(opportunity.startdate).getTime()) / (1000 * 60 * 60 * 24))} Days` : 
+              'Not specified')}
+          </p>
+        </div>
+      </div>
+    </Card>
   );
-};
-
-export default AdditionalInformation;
+}

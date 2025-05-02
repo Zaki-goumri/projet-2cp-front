@@ -1,60 +1,101 @@
 import { useState } from 'react';
-import { Conversation } from '../types';
-import { Search } from 'lucide-react';
+import { Conversation, User } from '../types';
+import { UserSearchInput } from './UserSearchInput';
+import { useUserSearch } from '../hooks/useUserSearch';
+import { Loader2 } from 'lucide-react';
 
 interface ChatSidebarProps {
   conversations: Conversation[] | null;
   activeConversation: Conversation | null;
   onSelectConversation: (conversation: Conversation) => void;
+  onStartNewChat?: (user: User) => void;
 }
 
 const ChatSidebar = ({
   conversations,
   activeConversation,
   onSelectConversation,
+  onStartNewChat,
 }: ChatSidebarProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredConversations = conversations?.filter((conversation) =>
-    conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [showSearch, setShowSearch] = useState(false);
+  const {
+    users,
+    isLoading,
+    searchTerm,
+    handleSearch,
+  } = useUserSearch();
 
   const getMessageText = (lastMessage: string | { message: string }) => {
     if (!lastMessage) return 'No messages yet';
-
     if (typeof lastMessage === 'string') {
       return lastMessage.length > 30
         ? `${lastMessage.substring(0, 25)}...`
         : lastMessage;
     }
-
     if (typeof lastMessage === 'object' && lastMessage.message) {
       return lastMessage.message.length > 30
         ? `${lastMessage.message.substring(0, 25)}...`
         : lastMessage.message;
     }
-
     return 'No messages yet';
   };
+
   return (
     <div className="flex h-full flex-col rounded-2xl bg-white shadow-lg">
       <div className="border-b border-gray-200 bg-white p-4">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search messages"
-            className="w-full rounded-md bg-gray-100 px-3 py-2 pl-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Search className="absolute top-1/2 left-2 -translate-y-1/2 transform text-gray-500" />
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold">
+            {showSearch ? 'Search Companies' : 'Messages'}
+          </h2>
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className="text-sm text-primary hover:text-primary/80"
+          >
+            {showSearch ? 'Back to Messages' : 'New Chat'}
+          </button>
         </div>
+        {showSearch && (
+          <UserSearchInput
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {filteredConversations && filteredConversations?.length > 0 ? (
+        {showSearch ? (
+          <div className="divide-y divide-gray-100">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            ) : users.length > 0 ? (
+              users.map((user) => (
+                <button
+                  key={user.id}
+                  onClick={() => onStartNewChat?.(user)}
+                  className="w-full px-4 py-3 hover:bg-gray-50 flex items-center gap-3"
+                >
+                  <img
+                    src={user.profilepic || '/default-avatar.png'}
+                    alt={user.username}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                  <div className="text-left">
+                    <p className="font-medium">{user.username}</p>
+                    <p className="text-sm text-gray-500">{user.email}</p>
+                  </div>
+                </button>
+              ))
+            ) : searchTerm ? (
+              <div className="py-8 text-center text-gray-500">
+                No companies found
+              </div>
+            ) : null}
+          </div>
+        ) : conversations && conversations.length > 0 ? (
           <ul>
-            {filteredConversations?.map((conversation) => (
+            {conversations.map((conversation) => (
               <li
                 key={conversation.id}
                 className={`cursor-pointer border-b border-gray-100 px-4 py-3 ${

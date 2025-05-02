@@ -100,123 +100,123 @@ if (root) {
               <Route
                 path="/chat"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <Chat />
                   </LayoutWithoutFooter>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
 
               <Route
                 path="/opportunity/create"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <CreateOpportunityPage />
                   </LayoutWithoutFooter>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/chat/:id"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <Chat />
                   </LayoutWithoutFooter>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/notifications"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <NotificationsPage />
                   </LayoutWithoutFooter>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/opportunities"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <OpportunitiesPage />
                   </LayoutWithoutFooter>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
-              />
+              />  
               <Route
                 path="/opportunities/:id"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <OpportunityDetaitls />
                   </LayoutWithoutFooter>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/profile/:userName"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <ProfilePage />
                   </LayoutWithoutFooter>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/dashboard"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <MainLayout>
                     <Dashboard />
                   </MainLayout>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/search"
                 element={
-                  //<ProtectedRoute>
+                  <ProtectedRoute>
                   <LayoutWithoutFooter>
                     <InternshipsAndProblemsPage />
                   </LayoutWithoutFooter>
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route path="teams">
                 <Route
                   index
                   element={
-                    // <ProtectedRoute>
-                    <LayoutWithoutFooter>
-                      <Teams />
-                    </LayoutWithoutFooter>
-                    //</ProtectedRoute>
+                    <ProtectedRoute>
+                      <LayoutWithoutFooter>
+                        <Teams />
+                      </LayoutWithoutFooter>
+                    </ProtectedRoute>
                   }
                 />
                 <Route
                   path="create"
                   element={
-                    //  <ProtectedRoute>
-                    <MainLayout>
-                      <CreateTeamCard />
-                    </MainLayout>
-                    //</ProtectedRoute>
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <CreateTeamCard />
+                      </MainLayout>
+                    </ProtectedRoute>
                   }
                 />
                 <Route
                   path=":teamId"
                   element={
-                    //  <ProtectedRoute>
-                    <LayoutWithoutFooter>
-                      <TeamDetail />
-                    </LayoutWithoutFooter>
-                    // </ProtectedRoute>
+                    <ProtectedRoute>
+                      <LayoutWithoutFooter>
+                        <TeamDetail />
+                      </LayoutWithoutFooter>
+                    </ProtectedRoute>
                   }
                 />
               </Route>
