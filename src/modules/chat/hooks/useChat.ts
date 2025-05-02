@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tansta
 import { Message, Conversation } from '../types';
 import { chatService } from '../services/chat.service';
 import { WebSocketService } from '../services/websocket.service';
+import { useNavigate } from 'react-router';
 
 export const useChat = () => {
   // Initialize query client
@@ -13,6 +14,8 @@ export const useChat = () => {
   const [wsService] = useState(() => new WebSocketService());
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   // Get current user
   const { data: currentUser } = useQuery({
@@ -52,11 +55,6 @@ export const useChat = () => {
       }
     },
     enabled: !!currentUser,
-    onSuccess: (data) => {
-      if (data && data.length > 0 && !activeConversation) {
-        setActiveConversation(data[0]);
-      }
-    },
   });
 
   // Fetch messages with infinite scrolling
@@ -106,8 +104,9 @@ export const useChat = () => {
   // Create a new conversation mutation
   const createConversationMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      navigate(`/chat/${data.id}`);
     },
     onError: (error) => {
       console.error('Failed to create conversation:', error);
@@ -127,92 +126,152 @@ export const useChat = () => {
 
   // WebSocket connection & message handling
   useEffect(() => {
-    if (!activeConversation?.roomName) return;
+    let isSubscribed = true;
 
-    const token = document.cookie
-      .split(';')
-      .find((cookie) => cookie.trim().startsWith('accessToken='))
-      ?.split('=')[1];
+    const connectWebSocket = async () => {
+      if (!activeConversation?.roomName) return;
 
-    if (!token) {
-      setError('Authentication token not found');
-      return;
-    }
+      const token = document.cookie
+        .split(';')
+        .find((cookie) => cookie.trim().startsWith('accessToken='))
+        ?.split('=')[1];
 
-    wsService.connect(activeConversation.roomName, token).catch((err) => {
-      if (err.message?.includes('invalid token')) {
-        setError('Session expired. Please log in again.');
-      } else {
-        setError('Failed to connect to chat');
+      if (!token) {
+        setError('Authentication token not found');
+        return;
       }
-      console.error(err);
-    });
 
-    const cleanup = wsService.onMessage((serverMessage) => {
-      const newMessage: Message = {
-        id: serverMessage.id,
-        message: serverMessage.message,
-        sender: serverMessage.sender,
-        receiver: serverMessage.receiver,
-        sentTime: new Date(serverMessage.sent_time),
-      };
+      try {
+        // Disconnect from previous connection if any
+        wsService.disconnect();
+        
+        // Connect to new room
+        await wsService.connect(activeConversation.roomName, token);
+        
+        if (!isSubscribed) return;
 
-      queryClient.setQueryData(['messages', activeConversation.roomName], (oldData: any) => {
-        if (!oldData?.pages?.[0]) {
-          return {
-            pages: [{
-              messages: [newMessage],
-              hasMore: false,
-              totalCount: 1,
-              nextPage: null
-            }]
+        const cleanup = wsService.onMessage((serverMessage) => {
+          if (!isSubscribed) return;
+
+          const newMessage: Message = {
+            id: serverMessage.id,
+            message: serverMessage.message,
+            sender: serverMessage.sender,
+            receiver: serverMessage.receiver,
+            sentTime: new Date(serverMessage.sent_time),
           };
+
+          queryClient.setQueryData(['messages', activeConversation.roomName], (oldData: any) => {
+            if (!oldData?.pages?.[0]) {
+              return {
+                pages: [{
+                  messages: [newMessage],
+                  hasMore: false,
+                  totalCount: 1,
+                  nextPage: null
+                }]
+              };
+            }
+
+            const lastPage = oldData.pages[oldData.pages.length - 1];
+            if (isDuplicateMessage(newMessage, lastPage.messages)) {
+              return oldData;
+            }
+
+            return {
+              ...oldData,
+              pages: [
+                ...oldData.pages.slice(0, -1),
+                {
+                  ...lastPage,
+                  messages: [...lastPage.messages, newMessage],
+                },
+              ],
+            };
+          });
+
+          // Update conversation in cache to show latest message
+          queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
+            oldData?.map((conv) =>
+              conv.id === activeConversation.id
+                ? {
+                    ...conv,
+                    lastMessage: newMessage,
+                  }
+                : conv
+            )
+          );
+        });
+
+        return cleanup;
+      } catch (err: any) {
+        if (!isSubscribed) return;
+        
+        if (err.message?.includes('invalid token')) {
+          setError('Session expired. Please log in again.');
+        } else {
+          setError('Failed to connect to chat');
+          console.error('WebSocket connection error:', err);
         }
+      }
+    };
 
-        const lastPage = oldData.pages[oldData.pages.length - 1];
-        if (isDuplicateMessage(newMessage, lastPage.messages)) {
-          return oldData;
-        }
-
-        return {
-          ...oldData,
-          pages: [
-            ...oldData.pages.slice(0, -1),
-            {
-              ...lastPage,
-              messages: [...lastPage.messages, newMessage],
-            },
-          ],
-        };
-      });
-
-      // Update conversation in cache to show latest message
-      queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
-        oldData?.map((conv) =>
-          conv.id === activeConversation.id
-            ? {
-                ...conv,
-                lastMessage: newMessage,
-              }
-            : conv
-        )
-      );
-    });
+    connectWebSocket();
 
     return () => {
-      cleanup();
+      isSubscribed = false;
       wsService.disconnect();
     };
   }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient]);
 
-  const selectConversation = useCallback((conversation: Conversation) => {
-    setActiveConversation(conversation);
-  }, []);
+  const selectConversation = useCallback(async (conversation: Conversation) => {
+    try {
+      // Disconnect from current WebSocket connection
+      wsService.disconnect();
+      
+      // Clear any previous errors
+      setError(null);
+      
+      // Set the new active conversation
+      setActiveConversation(conversation);
+      
+      // Prefetch messages for the new conversation
+      await queryClient.prefetchInfiniteQuery({
+        queryKey: ['messages', conversation.roomName],
+        queryFn: ({ pageParam = 1 }) => chatService.getMessages(conversation.roomName, pageParam),
+      });
+    } catch (err) {
+      console.error('Error switching conversation:', err);
+      setError('Failed to switch conversation');
+    }
+  }, [wsService, queryClient]);
 
   const sendMessage = useCallback(
     async (content: string) => {
-      if (!activeConversation || !wsService.isConnected() || !currentUser)
+      if (!activeConversation || !currentUser) {
+        setError('No active conversation or user not logged in');
         return;
+      }
+
+      if (!wsService.isConnected()) {
+        try {
+          const token = document.cookie
+            .split(';')
+            .find((cookie) => cookie.trim().startsWith('accessToken='))
+            ?.split('=')[1];
+
+          if (!token) {
+            setError('Authentication token not found');
+            return;
+          }
+
+          await wsService.connect(activeConversation.roomName, token);
+        } catch (err) {
+          setError('Failed to reconnect to chat');
+          console.error('Error reconnecting:', err);
+          return;
+        }
+      }
 
       try {
         // Create a temporary message object
@@ -224,7 +283,7 @@ export const useChat = () => {
           sentTime: new Date(),
         };
 
-        // Send the message first
+        // Send the message
         wsService.sendMessage(content);
 
         // Update messages in the query cache
@@ -297,6 +356,7 @@ export const useChat = () => {
     selectConversation,
     sendMessage,
     startNewConversation,
+    isCreatingChat: createConversationMutation.isLoading,
     messagesEndRef,
     scrollToBottom,
   };

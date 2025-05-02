@@ -1,10 +1,10 @@
 import axios from '@/api/axios.config';
-import { SearchUser, SearchUserResponse } from '../types';
 
 interface SearchUsersParams {
   username: string;
   type?: string;
 }
+
 
 export const userService = {
   /**
@@ -12,7 +12,7 @@ export const userService = {
    * @param params - Search parameters including username and optional type
    * @returns Promise with array of matching users
    */
-  searchUsers: async ({ username, type }: SearchUsersParams): Promise<SearchUser[]> => {
+  searchUsers: async ({ username, type }: SearchUsersParams) => {
     try {
       if (!username.trim()) {
         return [];
@@ -24,8 +24,7 @@ export const userService = {
     //     params.append('type', type);
     //   }
 
-      const response = await axios.get<SearchUserResponse>(`/post/user/search?${params.toString()}`);
-      console.log(response)
+      const response = await axios.get(`/post/user/search?${params.toString()}`);
       return response.data.results;
     } catch (error) {
       console.error('Error searching users:', error);
