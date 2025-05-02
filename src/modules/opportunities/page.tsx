@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Search,
@@ -8,12 +8,12 @@ import {
   Eye,
   Timer,
   ArrowRight,
+  Bookmark
 } from 'lucide-react';
 import { useOpportunitySearch } from './hooks/useOpportunitySearch';
 import { useOpportunities } from './hooks/useOpportunities';
 import {
   Opportunity,
-  OpportunityFilterType,
   OpportunityCardProps,
   EmptyStateProps,
   ErrorStateProps,
@@ -21,13 +21,17 @@ import {
 } from './types/opportunity.types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { opportunityService } from "./services/opportunity.service";
+import { toast } from 'react-toastify';
+import { useDebounce } from '@/hooks/useDebounce';
 
+// UI Components
 const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
-    const typeText = {
-      internships: 'internships',
-      problems: 'problems',
-      both: 'opportunities',
-    };
+  const typeText = {
+    internships: 'internships',
+    problems: 'problems',
+    both: 'opportunities',
+  };
   const message = searchQuery
     ? `No ${typeText[filterType]} match your search.`
     : `No ${typeText[filterType]} available at the moment.`;
@@ -64,7 +68,7 @@ const ErrorState = ({ error }: ErrorStateProps) => (
     </p>
     <Button
       variant="outline"
-      className="mt-4 border-none text-red-700 hover:bg-red-100 !bg-red-500 !text-white"
+      className="mt-4 !bg-red-500 !text-white hover:bg-red-600"
       onClick={() => window.location.reload()}
     >
       Refresh Page
@@ -72,6 +76,7 @@ const ErrorState = ({ error }: ErrorStateProps) => (
   </div>
 );
 
+// Utility functions
 const calculateDaysLeft = (endDate?: string | null): number | null => {
   if (!endDate) return null;
   const end = new Date(endDate);
@@ -85,43 +90,55 @@ const calculateDaysLeft = (endDate?: string | null): number | null => {
 };
 
 const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
-  
   const navigate = useNavigate();
 
   const handleCardClick = () => {
     navigate(`/opportunities/${opportunity.id}`);
   };
 
+  const handleSaveClick = async (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    try {
+      await opportunityService.savePost(id);
+      toast.success("Opportunity saved successfully");
+    } catch (error) {
+      console.error("Error saving opportunity:", error);
+      toast.error("Failed to save opportunity");
+    }
+  };
+
   const daysLeft = calculateDaysLeft(opportunity.endday);
-
-  const descriptionSnippet = opportunity.description.substring(0, 70); 
+  const descriptionSnippet = opportunity.description.substring(0, 70);
   const showLearnMore = opportunity.description.length > 70;
-
-  const logoUrl =
-    opportunity.company?.profilepic ||
-    `j`;
 
   return (
     <li
-      className="group mx-auto my-2 flex h-full w-full max-w-md cursor-pointer flex-col overflow-hidden rounded-3xl border-transparent bg-white shadow-lg duration-300 ease-in-out hover:scale-105 sm:mx-0" 
+      className="group mx-auto my-2 flex h-full w-full max-w-md cursor-pointer flex-col overflow-hidden rounded-3xl border-transparent bg-white shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 sm:mx-0"
       onClick={handleCardClick}
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && handleCardClick()}
     >
-      <div className="relative h-28 flex-shrink-0 bg-green-200 p-5 pb-12"/>
+      <div className="relative h-28 flex-shrink-0 bg-green-200 p-5 pb-12">
+        <button
+          className="absolute top-2 right-2 rounded-full bg-white p-1.5 shadow-md hover:bg-gray-100"
+          onClick={(e) => handleSaveClick(e, Number(opportunity.id))}
+          aria-label="Save opportunity"
+        >
+          <Bookmark className="h-4 w-4 text-gray-600" />
+        </button>
+      </div>
 
       <div className="relative -mt-10 flex flex-1 flex-col rounded-t-3xl bg-white px-5 pt-12 pb-6">
         <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl border-4 border-white bg-white p-2 shadow-md sm:h-20 sm:w-20">
           <img
-            src={opportunity.company.profilepic || logoUrl}
+            src={opportunity.company.profilepic || ''}
             alt={`${opportunity.company.name} Logo`}
-            className="h-full w-full object-contain p-1" 
+            className="h-full w-full object-contain p-1"
           />
         </div>
         <div className="mt-2 flex flex-1 flex-col justify-between space-y-4">
           <div className="space-y-2 pr-4">
             <h3 className="text-lg font-semibold text-gray-900">
-             
               {opportunity.title}
             </h3>
             <p className="text-sm leading-relaxed text-gray-600">
@@ -139,44 +156,41 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
         </div>
 
         <div className="flex items-center justify-between gap-4 pt-2 text-sm text-gray-500">
-          {' '}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            {' '}
-            {opportunity.views !== undefined && ( 
+            {opportunity.views !== undefined && (
               <div className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
                 <span>{opportunity.views ?? 0} views</span>
               </div>
             )}
-            {daysLeft !== null && ( 
+            {daysLeft !== null && (
               <div className="flex items-center gap-1.5">
-                <Timer className="h-4 w-4" /> 
+                <Timer className="h-4 w-4" />
                 <span>{daysLeft} Days left</span>
               </div>
             )}
           </div>
-          <ArrowRight className="h-5 w-5 flex-shrink-0 text-gray-600" />{' '}
+          <ArrowRight className="h-5 w-5 flex-shrink-0 text-gray-600" />
         </div>
       </div>
     </li>
   );
 };
 
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
+// Companies list component
+const CompanyList = ({ companies }: { companies: Company[] }) => (
+  <div className="mt-8 border-t pt-6">
+    <h2 className="mb-4 text-xl font-semibold text-gray-800">Companies Found</h2>
+    <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {companies.map((company) => (
+        <li key={`search-comp-${company.id}`} className="rounded-lg border bg-gray-50 p-4 transition-colors hover:bg-gray-100">
+          <p className="font-medium">{company.name}</p>
+          <p className="text-sm text-gray-600">{company.location || 'Location N/A'}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 const OpportunitiesPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -197,18 +211,10 @@ const OpportunitiesPage = () => {
     searchError,
   } = useOpportunitySearch(debouncedSearchQuery);
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  }, []);
-
-  const handleFilterChange = (value: OpportunityFilterType) => {
-    setFilterType(value);
-  };
-
   const isSearching = debouncedSearchQuery.trim().length > 0;
   const isLoading = isSearching ? isSearchLoading : isDefaultLoading;
   const error = isSearching ? searchError : defaultError;
-  
+
   const renderContent = () => {
     if (isLoading) return <LoadingState />;
     if (error) return <ErrorState error={error} />;
@@ -225,26 +231,14 @@ const OpportunitiesPage = () => {
       return (
         <div className="space-y-6">
           {opportunities.length > 0 && (
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-4 3xl:grid-cols-5">
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
               {opportunities.map((opportunity: Opportunity) => (
                 <OpportunityCard key={`search-opp-${opportunity.id}`} opportunity={opportunity} />
               ))}
             </ul>
           )}
           
-          {companies.length > 0 && (
-             <div className="mt-8 pt-6 border-t">
-               <h2 className="mb-4 text-xl font-semibold text-gray-800">Companies Found</h2>
-               <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                 {companies.map((company: Company) => (
-                    <li key={`search-comp-${company.id}`} className="p-4 border rounded-lg bg-gray-50">
-                        <p className="font-medium">{company.name}</p>
-                        <p className="text-sm text-gray-600">{company.location || 'Location N/A'}</p>
-                    </li>
-                 ))}
-               </ul>
-            </div>
-          )}
+          {companies.length > 0 && <CompanyList companies={companies} />}
         </div>
       );
     } else {
@@ -252,9 +246,9 @@ const OpportunitiesPage = () => {
         return <EmptyState filterType={filterType} searchQuery={searchQuery} />;
       
       return (
-        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-4 3xl:grid-cols-5">
+        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
           {defaultOpportunities.map((opportunity: Opportunity) => (
-              <OpportunityCard key={`default-opp-${opportunity.id}`} opportunity={opportunity} />
+            <OpportunityCard key={`default-opp-${opportunity.id}`} opportunity={opportunity} />
           ))}
         </ul>
       );
@@ -273,10 +267,10 @@ const OpportunitiesPage = () => {
             type="text"
             placeholder="Search by title, company, skill..."
             value={searchQuery}
-            onChange={handleSearch}
-            className="w-full rounded-lg border-none py-2 pr-4 pl-10 focus:border-blue-500 focus:outline-none "
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-lg border-gray-300 py-2 pl-10 pr-4 focus:border-blue-500 focus:ring-blue-500"
           />
-          <Search className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
         </div>
       </div>
 
@@ -286,4 +280,3 @@ const OpportunitiesPage = () => {
 };
 
 export default OpportunitiesPage;
-
