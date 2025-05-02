@@ -3,6 +3,7 @@ import { Conversation, User } from '../types';
 import { UserSearchInput } from './UserSearchInput';
 import { useUserSearch } from '../hooks/useUserSearch';
 import { Loader2 } from 'lucide-react';
+import { Link } from 'react-router';
 
 interface ChatSidebarProps {
   conversations: Conversation[] | null;
@@ -57,8 +58,9 @@ const ChatSidebar = ({
         {showSearch && (
           <UserSearchInput
             value={searchTerm}
-            onChange={handleSearch}
-          />
+            onChange={handleSearch} onTypeChange={function (type: string): void {
+              throw new Error('Function not implemented.');
+            } } selectedType={''}          />
         )}
       </div>
 
@@ -103,8 +105,9 @@ const ChatSidebar = ({
                     ? 'bg-gray-100'
                     : 'hover:bg-gray-50'
                 }`}
-                onClick={() => onSelectConversation(conversation)}
               >
+              <Link to={`/chat/${conversation.id}`}>
+
                 <div className="flex items-center">
                   <div className="relative">
                     <img
@@ -134,6 +137,7 @@ const ChatSidebar = ({
                     </p>
                   </div>
                 </div>
+                </Link>
               </li>
             ))}
           </ul>

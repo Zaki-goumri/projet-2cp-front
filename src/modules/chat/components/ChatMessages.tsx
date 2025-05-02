@@ -27,29 +27,29 @@ const ChatMessages = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef<number>(0);
-  const bottom =
-    useRef <
-    useEffect(() => {
-      if (messages.length > 0) {
-        const container = containerRef.current;
-        if (container) {
-          // Only auto-scroll if we're already near the bottom
-          const isNearBottom =
-            container.scrollHeight -
-              container.scrollTop -
-              container.clientHeight <
-            100;
-          if (isNearBottom) {
-            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-          }
+  const bottomRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (messages.length > 0) {
+      const container = containerRef.current;
+      if (container) {
+        const isNearBottom =
+          container.scrollHeight -
+            container.scrollTop -
+            container.clientHeight <
+          100;
+        if (isNearBottom) {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
       }
-    }, [messages]);
+    }
+  }, [messages]);
 
-  const bottomOnLoad = useRef(null);
+  const bottomOnLoad = useRef<HTMLDivElement>(null);
 
+  // Scroll to bottom immediately when component mounts
   useEffect(() => {
-    bottomOnLoad.current?.scrollIntoView({ behavior: 'auto' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
   }, []);
 
   // Handle infinite scroll
