@@ -1,23 +1,30 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Message, Conversation } from '../types';
 import { chatService } from '../services/chat.service';
 import { WebSocketService } from '../services/websocket.service';
 import { useNavigate } from 'react-router';
+import { useMessages } from './useMessages';
 
 export const useChat = () => {
-  // Initialize query client
   const queryClient = useQueryClient();
-
-  // Local state for WebSocket and active conversation
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const navigate = useNavigate();
   const [wsService] = useState(() => new WebSocketService());
   const [error, setError] = useState<string | null>(null);
+  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const navigate = useNavigate();
+  const {
+    messages,
+    hasMore,
+    isLoadingMore,
+    loadMoreMessages,
+    addNewMessage,
+  } = useMessages({
+    roomName: activeConversation?.roomName || null,
+    onError: setError
+  });
 
-  // Get current user
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => {
@@ -36,7 +43,6 @@ export const useChat = () => {
     staleTime: Infinity,
   });
 
-  // Fetch conversations
   const {
     data: conversations,
     isLoading: conversationsLoading,
@@ -57,51 +63,10 @@ export const useChat = () => {
     enabled: !!currentUser,
   });
 
-  // Fetch messages with infinite scrolling
-  const {
-    data: messagesData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    refetch: refetchMessages,
-  } = useInfiniteQuery({
-    queryKey: ['messages', activeConversation?.roomName],
-    queryFn: async ({ pageParam = 1 }) => {
-      if (!activeConversation?.roomName) {
-        throw new Error('No active conversation');
-      }
-      return chatService.getMessages(activeConversation.roomName, pageParam);
-    },
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-    enabled: !!activeConversation?.roomName,
-    refetchOnWindowFocus: false,
-  });
-
-  // Combine all messages from different pages and sort them by sentTime
-  const messages = messagesData?.pages
-    .flatMap((page) => page.messages)
-    .sort((a, b) => new Date(a.sentTime).getTime() - new Date(b.sentTime).getTime()) ?? [];
-
-  // Function to scroll to bottom
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
-
-  // Set error state if there's an error with conversations
-  useEffect(() => {
-    if (conversationsError && conversationsErrorData) {
-      setError(
-        (conversationsErrorData as Error)?.message || 'Failed to load conversations'
-      );
-    }
-  }, [conversationsError, conversationsErrorData]);
-
-  // Create a new conversation mutation
   const createConversationMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
     onSuccess: (data) => {
@@ -114,22 +79,12 @@ export const useChat = () => {
     },
   });
 
-  // Helper function to check if a message is duplicate
-  const isDuplicateMessage = (newMessage: Message, existingMessages: Message[]) => {
-    return existingMessages.some(
-      (msg) =>
-        msg.message === newMessage.message &&
-        msg.sender === newMessage.sender &&
-        Math.abs(new Date(msg.sentTime).getTime() - new Date(newMessage.sentTime).getTime()) < 1000
-    );
-  };
-
-  // WebSocket connection & message handling
   useEffect(() => {
     let isSubscribed = true;
+    let reconnectTimeout: NodeJS.Timeout;
 
     const connectWebSocket = async () => {
-      if (!activeConversation?.roomName) return;
+      if (!activeConversation?.roomName || !currentUser) return;
 
       const token = document.cookie
         .split(';')
@@ -161,43 +116,13 @@ export const useChat = () => {
             sentTime: new Date(serverMessage.sent_time),
           };
 
-          queryClient.setQueryData(['messages', activeConversation.roomName], (oldData: any) => {
-            if (!oldData?.pages?.[0]) {
-              return {
-                pages: [{
-                  messages: [newMessage],
-                  hasMore: false,
-                  totalCount: 1,
-                  nextPage: null
-                }]
-              };
-            }
+          addNewMessage(newMessage);
 
-            const lastPage = oldData.pages[oldData.pages.length - 1];
-            if (isDuplicateMessage(newMessage, lastPage.messages)) {
-              return oldData;
-            }
-
-            return {
-              ...oldData,
-              pages: [
-                ...oldData.pages.slice(0, -1),
-                {
-                  ...lastPage,
-                  messages: [...lastPage.messages, newMessage],
-                },
-              ],
-            };
-          });
-
-          // Update conversation in cache to show latest message
+          // Update conversation in cache
           queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
             oldData?.map((conv) =>
               conv.id === activeConversation.id
-                ? {
-                    ...conv,
-                    lastMessage: newMessage,
-                  }
+                ? { ...conv, lastMessage: newMessage }
                 : conv
             )
           );
@@ -212,39 +137,40 @@ export const useChat = () => {
         } else {
           setError('Failed to connect to chat');
           console.error('WebSocket connection error:', err);
+          
+          // Attempt to reconnect after a delay
+          reconnectTimeout = setTimeout(() => {
+            if (isSubscribed) {
+              connectWebSocket();
+            }
+          }, 5000);
         }
       }
     };
 
+    // Initial connection
     connectWebSocket();
 
+    // Cleanup function
     return () => {
       isSubscribed = false;
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
       wsService.disconnect();
     };
-  }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient]);
+  }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient, addNewMessage, currentUser]);
 
   const selectConversation = useCallback(async (conversation: Conversation) => {
     try {
-      // Disconnect from current WebSocket connection
       wsService.disconnect();
-      
-      // Clear any previous errors
       setError(null);
-      
-      // Set the new active conversation
       setActiveConversation(conversation);
-      
-      // Prefetch messages for the new conversation
-      await queryClient.prefetchInfiniteQuery({
-        queryKey: ['messages', conversation.roomName],
-        queryFn: ({ pageParam = 1 }) => chatService.getMessages(conversation.roomName, pageParam),
-      });
     } catch (err) {
       console.error('Error switching conversation:', err);
       setError('Failed to switch conversation');
     }
-  }, [wsService, queryClient]);
+  }, [wsService]);
 
   const sendMessage = useCallback(
     async (content: string) => {
@@ -274,7 +200,6 @@ export const useChat = () => {
       }
 
       try {
-        // Create a temporary message object
         const tempMessage: Message = {
           id: Date.now(),
           message: content,
@@ -283,47 +208,13 @@ export const useChat = () => {
           sentTime: new Date(),
         };
 
-        // Send the message
         wsService.sendMessage(content);
+        addNewMessage(tempMessage);
 
-        // Update messages in the query cache
-        queryClient.setQueryData(['messages', activeConversation.roomName], (oldData: any) => {
-          if (!oldData?.pages?.[0]) {
-            return {
-              pages: [{
-                messages: [tempMessage],
-                hasMore: false,
-                totalCount: 1,
-                nextPage: null
-              }]
-            };
-          }
-
-          const lastPage = oldData.pages[oldData.pages.length - 1];
-          if (isDuplicateMessage(tempMessage, lastPage.messages)) {
-            return oldData;
-          }
-
-          return {
-            ...oldData,
-            pages: [
-              ...oldData.pages.slice(0, -1),
-              {
-                ...lastPage,
-                messages: [...lastPage.messages, tempMessage],
-              },
-            ],
-          };
-        });
-
-        // Update conversation in cache to show latest message
         queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
           oldData?.map((conv) =>
             conv.id === activeConversation.id
-              ? {
-                  ...conv,
-                  lastMessage: tempMessage,
-                }
+              ? { ...conv, lastMessage: tempMessage }
               : conv
           )
         );
@@ -332,7 +223,7 @@ export const useChat = () => {
         console.error('Error sending message:', err);
       }
     },
-    [activeConversation, wsService, currentUser, queryClient]
+    [activeConversation, wsService, currentUser, queryClient, addNewMessage]
   );
 
   const startNewConversation = useCallback(
@@ -348,11 +239,11 @@ export const useChat = () => {
     conversations,
     activeConversation,
     loading: conversationsLoading,
-    loadingMore: isFetchingNextPage,
+    loadingMore: isLoadingMore,
     error,
     currentUser,
-    hasMoreMessages: hasNextPage,
-    loadMoreMessages: fetchNextPage,
+    hasMoreMessages: hasMore,
+    loadMoreMessages,
     selectConversation,
     sendMessage,
     startNewConversation,
