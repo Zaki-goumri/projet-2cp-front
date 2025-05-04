@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Message, Conversation } from '../types';
 
 interface ChatMessagesProps {
@@ -16,6 +16,59 @@ interface ChatMessagesProps {
   onLoadMore?: () => void;
 }
 
+interface IntersectionOptions {
+  rootMargin?: string;
+  threshold?: number | number[];
+  root?: Element | null;
+}
+
+const useIntersectionObserver = (options: IntersectionOptions = {}) => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const targetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsIntersecting(entry.isIntersecting);
+    }, {
+      rootMargin: '100px 0px',
+      threshold: 0.1,
+      ...options
+    });
+
+    const currentTarget = targetRef.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [options]);
+
+  return [targetRef, isIntersecting] as const;
+};
+
+const useInfiniteScroll = (
+  onLoadMore: () => void,
+  hasMore: boolean,
+  isLoading: boolean
+) => {
+  const [loadMoreRef, isIntersecting] = useIntersectionObserver({
+    rootMargin: '200px 0px',
+    threshold: 0.1
+  });
+
+  useEffect(() => {
+    if (isIntersecting && hasMore && !isLoading) {
+      onLoadMore();
+    }
+  }, [isIntersecting, hasMore, isLoading, onLoadMore]);
+
+  return loadMoreRef;
+};
+
 const ChatMessages = ({
   messages,
   activeConversation,
@@ -27,53 +80,41 @@ const ChatMessages = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef<number>(0);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    if (messages.length > 0) {
-      const container = containerRef.current;
-      if (container) {
-        const isNearBottom =
-          container.scrollHeight -
-            container.scrollTop -
-            container.clientHeight <
-          100;
-        if (isNearBottom) {
-          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const prevScrollTopRef = useRef<number>(0);
+
+  const loadMoreRef = useInfiniteScroll(
+    () => {
+      if (onLoadMore) {
+        // Store current scroll position before loading more messages
+        const container = containerRef.current;
+        if (container) {
+          prevScrollHeightRef.current = container.scrollHeight;
+          prevScrollTopRef.current = container.scrollTop;
         }
+        onLoadMore();
       }
-    }
-  }, [messages]);
+    },
+    hasMoreMessages || false,
+    loadingMore || false
+  );
 
-  const bottomOnLoad = useRef<HTMLDivElement>(null);
-
-  // Scroll to bottom immediately when component mounts
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
-  }, []);
-
-  // Handle infinite scroll
-  const handleScroll = useCallback(() => {
-    const container = containerRef.current;
-    if (!container || !hasMoreMessages || loadingMore) return;
-
-    // If we're near the top (100px threshold), load more messages
-    if (container.scrollTop < 100) {
-      prevScrollHeightRef.current = container.scrollHeight;
-      onLoadMore?.();
-    }
-  }, [hasMoreMessages, loadingMore, onLoadMore]);
-
-  // Maintain scroll position when loading more messages
   useEffect(() => {
     const container = containerRef.current;
     if (container && prevScrollHeightRef.current) {
       const newScrollHeight = container.scrollHeight;
       const scrollDiff = newScrollHeight - prevScrollHeightRef.current;
-      container.scrollTop = scrollDiff;
+      container.scrollTop = prevScrollTopRef.current + scrollDiff;
       prevScrollHeightRef.current = 0;
+      prevScrollTopRef.current = 0;
     }
   }, [messages]);
+
+  // Scroll to bottom on initial load
+  useEffect(() => {
+    if (messages.length > 0 && !loadingMore) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages.length, loadingMore]);
 
   if (!activeConversation) {
     return (
@@ -83,7 +124,6 @@ const ChatMessages = ({
     );
   }
 
-  // Group messages by date
   const groupedMessages = messages.reduce<Record<string, Message[]>>(
     (groups, message) => {
       const date = new Date(message.sentTime).toLocaleDateString();
@@ -100,7 +140,6 @@ const ChatMessages = ({
     <div
       ref={containerRef}
       className="h-full overflow-y-auto p-4"
-      onScroll={handleScroll}
     >
       {loadingMore && (
         <div className="flex justify-center py-2">
@@ -108,11 +147,16 @@ const ChatMessages = ({
         </div>
       )}
 
+      {/* Load more trigger element */}
+      {hasMoreMessages && (
+        <div ref={loadMoreRef} className="h-4" />
+      )}
+
       <div className="mb-6 flex items-center justify-center">
         <div className="text-center">
           <div className="relative mx-auto mb-2 h-16 w-16">
             <img
-              src={activeConversation.avatar || '/default-avatar.png'}
+              src={activeConversation.avatar || ''}
               alt={activeConversation.name}
               className="h-full w-full rounded-full"
             />
@@ -176,7 +220,7 @@ const ChatMessages = ({
                 {isSentByCurrentUser && (
                   <div className="ml-2 flex-shrink-0">
                     <img
-                      src={currentUser.profilepic || '/default-avatar.png'}
+                      src={currentUser?.profilepic || ''}
                       alt={currentUser?.name || 'Me'}
                       className="h-8 w-8 rounded-full"
                     />
@@ -189,7 +233,6 @@ const ChatMessages = ({
       ))}
 
       <div ref={messagesEndRef} />
-      <div ref={bottomOnLoad} />
     </div>
   );
 };

@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Student } from '../types/teams.types';
 import { useUserStore } from '@/modules/shared/store/userStore';
-import { useTeamManagement } from '@/modules/team/hooks/useTeamManagement';
+import { useTeamManagement } from '../hooks/useTeamManagement';
 
 const TeamDetailPage: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -53,7 +53,7 @@ const TeamDetailPage: React.FC = () => {
     if (!selectedMember || !teamId) return;
     try {
       setIsKicking(true);
-      await kickMember(parseInt(teamId), selectedMember.id);
+      await kickMember({ teamId: parseInt(teamId), memberId: selectedMember.id });
       toast.success(`Successfully kicked ${selectedMember.name} from the team`);
       setConfirmKickDialogOpen(false);
       retryFetch();
