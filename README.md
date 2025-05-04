@@ -61,7 +61,7 @@ Then open http://localhost in your browser.
 
 You can view the live deployed version here:
 
-👉 [https://projet-2cp-front.vercel.app](https://projet-2cp-front.vercel.app) <!-- Replace with your actual URL if different -->
+👉 [https://project-2cp-front.onrender.com/](https://project-2cp-front.onrender.com/)
 
 
 ## 📌 Notes
