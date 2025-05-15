@@ -1,5 +1,6 @@
+import React from 'react';
 import { useState } from 'react';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { MailIcon, MapPinIcon, PhoneIcon } from '@/modules/shared/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -159,15 +160,15 @@ const companyAddress="Algeria, Sidi bel abbes"
               </h2>
               <div className="mt-6 space-y-4">
                 <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-[#92E3A9]" />
+                  <MailIcon className="h-5 w-5 text-[#92E3A9]" />
                   <span className="text-gray-600">contact@internflow.com</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-[#92E3A9]" />
+                  <PhoneIcon className="h-5 w-5 text-[#92E3A9]" />
                   <span className="text-gray-600">+213 123 456 789</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <MapPin className="h-5 w-5 text-[#92E3A9]" />
+                  <MapPinIcon className="h-5 w-5 text-[#92E3A9]" />
                   <span className="text-gray-600">
                     Algiers, Algeria
                   </span>

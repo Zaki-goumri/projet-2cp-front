@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FaLinkedin } from 'react-icons/fa';
+import { LinkedinIcon } from '@/modules/shared/icons';
 import { useNavigate } from 'react-router';
 
 const linkedinClientId = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
@@ -49,7 +49,7 @@ const LinkedInAuthButton = () => {
       onClick={handleLogin}
       className="flex h-11 w-full items-center justify-center gap-2 rounded-md border border-gray-200 transition-colors hover:bg-gray-50"
     >
-      <FaLinkedin className="mr-2 text-xl text-blue-600" />
+      <LinkedinIcon className="mr-2 h-5 w-5 text-blue-600" />
       <span className="font-medium text-gray-700">Sign in with LinkedIn</span>
     </button>
   );

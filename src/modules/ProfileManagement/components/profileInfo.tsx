@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit2, Save, Camera, X } from 'lucide-react';
-import { User } from '@/modules/shared/types/shared.types';
+import { EditIcon, SaveIcon, CameraIcon, X } from '@/modules/shared/icons';
+import { User } from '@/modules/shared/types';
 import Spinner from '@/modules/shared/components/Spinner';
 
 interface ProfileInfoProps {
@@ -83,7 +83,7 @@ function ProfileInfo({
             />
             {isEditing && (
               <div className="bg-opacity-40 absolute inset-0 flex items-center justify-center bg-black opacity-0 transition-opacity duration-200 hover:opacity-100">
-                <Camera className="h-8 w-8 text-white" />
+                <CameraIcon className="h-8 w-8 text-white" />
               </div>
             )}
           </div>
@@ -114,7 +114,7 @@ function ProfileInfo({
                         <Spinner size="sm" />
                       ) : (
                         <>
-                          <Save className="h-5 w-5" />
+                          <SaveIcon className="h-5 w-5" />
                           <span className="text-sm font-semibold">Save</span>
                         </>
                       )}
@@ -132,7 +132,7 @@ function ProfileInfo({
                     onClick={onEditToggle}
                     className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
                   >
-                    <Edit2 className="h-5 w-5" />
+                    <EditIcon className="h-5 w-5" />
                     <span className="text-sm font-semibold">Edit Profile</span>
                   </Button>
                 )}

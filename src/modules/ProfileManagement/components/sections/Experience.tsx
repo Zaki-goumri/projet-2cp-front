@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit2, Trash2 } from 'lucide-react';
+import { EditIcon, TrashIcon } from '@/modules/shared/icons';
 import InfoCard from '../InfoCard';
 import AddItemModal from '../modals/AddItemModal';
 
@@ -68,14 +68,14 @@ const Experience = ({ isEditing, experiences, onExperiencesChange }: ExperienceP
                     {isEditing && (
                       <div className="flex space-x-2">
                         <Button variant="ghost" size="sm">
-                          <Edit2 className="h-4 w-4" />
+                          <EditIcon className="h-4 w-4" />
                         </Button>
                         <Button 
                           variant="ghost" 
                           size="sm" 
                           onClick={() => handleDelete(exp.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <TrashIcon className="h-4 w-4" />
                         </Button>
                       </div>
                     )}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDownIcon } from '@/modules/shared/icons';
 
 const statuses = [
   { id: 'open', label: 'Open' },
@@ -28,7 +28,7 @@ const StatusSelect = () => {
           />
           {selectedStatus.label}
         </span>
-        <ChevronDown
+        <ChevronDownIcon
           className={`h-4 w-4 transition-transform ${
             isOpen ? 'rotate-180' : ''
           }`}

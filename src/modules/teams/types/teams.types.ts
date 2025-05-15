@@ -1,4 +1,4 @@
-import { User, Attachment } from '@/modules/shared/types/shared.types';
+import { User, Attachment } from '@/modules/shared/types';
 
 export interface Student extends User {
   number: string | null;
@@ -10,8 +10,8 @@ export interface Student extends User {
   cv: Attachment | undefined | null;
   experience: any[];
   savedposts?: number[];
-  links?: any;
-  location?: any;
+  links: any;
+  location: any;
 }
 
 export interface TeamResponse {

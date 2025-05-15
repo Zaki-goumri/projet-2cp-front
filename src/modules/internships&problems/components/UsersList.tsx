@@ -5,7 +5,7 @@ import { Users, GraduationCap, Briefcase, UserPlus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInternshipsAndProblems } from '../hooks/useInternshipsAndProblems';
-import { User } from '@/modules/shared/types/shared.types';
+import { Student, User } from '@/modules/shared/types';
 
 interface UsersListProps {
   searchQuery: string;
@@ -16,7 +16,7 @@ const UsersList: React.FC<UsersListProps> = ({ searchQuery }) => {
 
   const filteredUsers = searchQuery
     ? users.filter(
-        (user: User) =>
+        (user: Student) =>
           user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.skills.some((skill) =>
@@ -65,7 +65,7 @@ const UsersList: React.FC<UsersListProps> = ({ searchQuery }) => {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {filteredUsers.map((user: User) => (
+      {filteredUsers.map((user: Student) => (
         <UserCard key={user.id} user={user} />
       ))}
     </div>
@@ -73,7 +73,7 @@ const UsersList: React.FC<UsersListProps> = ({ searchQuery }) => {
 };
 
 interface UserCardProps {
-  user: User;
+  user: Student;
 }
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {

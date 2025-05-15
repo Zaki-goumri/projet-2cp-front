@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import {
   X,
-  Bell,
   LayoutDashboard,
   User,
   Users,
@@ -15,9 +14,10 @@ import {
   Menu,
   MessageCircle,
   Search,
-  Save,
+  Bookmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Bell } from '@/modules/shared/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -45,7 +45,7 @@ export default function NavBar() {
   const logout = useUserStore((state) => state.logout);
   const { data: notificationsData, markAllAsRead } = useNotifications();
   const notifications = notificationsData?.notifications || [];
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   useEffect(() => {
     const handleResize = () => {
@@ -64,15 +64,21 @@ export default function NavBar() {
     { to: '/contact', label: 'Contact us' },
   ];
 
-  const privateNavItems: NavItem[] = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/opportunities', label: 'opportunities', icon: Briefcase },
-    { to: '/teams', label: 'Teams', icon: Users },
-    { to: '/chat', label: 'Chat', icon: MessageCircle },
-  ];
+  const privateNavItems: NavItem[] =
+    user?.type.toLowerCase() === 'student'
+      ? [
+          { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+          { to: '/opportunities', label: 'opportunities', icon: Briefcase },
+          { to: '/teams', label: 'Teams', icon: Users },
+          { to: '/chat', label: 'Chat', icon: MessageCircle },
+        ]
+      : [
+          { to: '/company/test', label: 'Dashboard', icon: LayoutDashboard },
+          { to: '/chat', label: 'Chat', icon: MessageCircle },
+        ];
 
   const handleSignOut = () => {
-    clearAuthTokens()
+    clearAuthTokens();
     logout();
     window.location.href = '/auth/signin';
   };
@@ -82,7 +88,10 @@ export default function NavBar() {
       <div className="mx-auto max-w-7xl">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center text-xl font-bold">
+            <Link
+              to={user ? '/home' : '/'}
+              className="flex items-center text-xl font-bold"
+            >
               <img
                 src="/assets/logo.svg"
                 alt="logo"
@@ -149,31 +158,33 @@ export default function NavBar() {
                         <DropdownMenuSeparator className="!bg-gray-200" />
                         <div className="!max-h-[300px] !overflow-auto">
                           {notifications.length > 0 ? (
-                            notifications.slice(0, 5).map((notification: Notification) => (
-                              <DropdownMenuItem
-                                key={notification.id}
-                                className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100"
-                              >
-                                <div className="!flex !w-full !items-start !justify-between">
-                                  <span className="!flex !items-center !gap-2 !font-medium !text-black">
-                                    {!notification.read && (
-                                      <span className="!h-2 !w-2 !rounded-full !bg-blue-500" />
-                                    )}
-                                    {notification.title}
-                                  </span>
-                                  <span className="!flex !items-center !gap-1 !text-xs !text-gray-500">
-                                    <Clock className="!h-3 !w-3" />
-                                    {formatDistanceToNow(
-                                      new Date(notification.created_at),
-                                      { addSuffix: true }
-                                    )}
-                                  </span>
-                                </div>
-                                <p className="!text-sm !text-black">
-                                  {notification.message}
-                                </p>
-                              </DropdownMenuItem>
-                            ))
+                            notifications
+                              .slice(0, 5)
+                              .map((notification: Notification) => (
+                                <DropdownMenuItem
+                                  key={notification.id}
+                                  className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100"
+                                >
+                                  <div className="!flex !w-full !items-start !justify-between">
+                                    <span className="!flex !items-center !gap-2 !font-medium !text-black">
+                                      {!notification.read && (
+                                        <span className="!h-2 !w-2 !rounded-full !bg-blue-500" />
+                                      )}
+                                      {notification.title}
+                                    </span>
+                                    <span className="!flex !items-center !gap-1 !text-xs !text-gray-500">
+                                      <Clock className="!h-3 !w-3" />
+                                      {formatDistanceToNow(
+                                        new Date(notification.created_at),
+                                        { addSuffix: true }
+                                      )}
+                                    </span>
+                                  </div>
+                                  <p className="!text-sm !text-black">
+                                    {notification.message}
+                                  </p>
+                                </DropdownMenuItem>
+                              ))
                           ) : (
                             <div className="p-4 text-center text-gray-500">
                               No notifications at this time
@@ -225,38 +236,43 @@ export default function NavBar() {
                       {
                         to: `/profile/${user.name}`,
                         icon: <User className="h-4 w-4" />,
-                        label: "Profile",
-                        isExternal: false
+                        label: 'Profile',
+                        isExternal: false,
+                        type: ['student', 'company'],
                       },
                       {
-                        to: "#",
-                        icon: <Users className="h-4 w-4" />,
-                        label: "Team Settings",
-                        isExternal: false
+                        to: '/search',
+                        icon: <Bookmark className="h-4 w-4" />,
+                        label: 'Applied & saved ',
+                        isExternal: false,
+                        type: ['student'],
                       },
-                      {
-                        to: "/search",
-                        icon: <Save className="h-4 w-4" />,
-                        label: "Applied & saved ",
-                        isExternal: false
-                      }
-                    ].map((item, index) => (
-                      item.isExternal ? (
-                        <a href={item.to} key={index} target="_blank" rel="noopener noreferrer">
-                          <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
-                            {item.icon}
-                            {item.label}
-                          </DropdownMenuItem>
-                        </a>
-                      ) : (
-                        <Link to={item.to} key={index}>
-                          <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
-                            {item.icon}
-                            {item.label}
-                          </DropdownMenuItem>
-                        </Link>
+                    ]
+                      .filter((element) =>
+                        element.type.includes(user?.type.toLowerCase())
                       )
-                    ))}
+                      .map((item, index) =>
+                        item.isExternal ? (
+                          <a
+                            href={item.to}
+                            key={index}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                              {item.icon}
+                              {item.label}
+                            </DropdownMenuItem>
+                          </a>
+                        ) : (
+                          <Link to={item.to} key={index}>
+                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                              {item.icon}
+                              {item.label}
+                            </DropdownMenuItem>
+                          </Link>
+                        )
+                      )}
                     <DropdownMenuSeparator className="!bg-gray-200" />
                     <DropdownMenuItem
                       onClick={handleSignOut}

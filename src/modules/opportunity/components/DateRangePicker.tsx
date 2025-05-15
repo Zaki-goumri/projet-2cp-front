@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@/modules/shared/icons';
 
 interface DatePickerProps {
   value: Date | null;
@@ -117,7 +117,7 @@ const DatePicker = ({ value, onChange, placeholder = "Select date" }: DatePicker
               onClick={handlePrevMonth}
               className="p-1 text-gray-400 hover:text-[#92E3A9]"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeftIcon className="h-5 w-5" />
             </button>
             <span className="text-sm font-medium">
               {currentMonth.toLocaleDateString('default', {
@@ -129,7 +129,7 @@ const DatePicker = ({ value, onChange, placeholder = "Select date" }: DatePicker
               onClick={handleNextMonth}
               className="p-1 text-gray-400 hover:text-[#92E3A9]"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRightIcon className="h-5 w-5" />
             </button>
           </div>
           <div className="mb-2 grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-400">
