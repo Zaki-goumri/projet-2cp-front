@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { SearchIcon } from '@/modules/shared/icons';
 import { ChangeEvent } from 'react';
 
 interface UserSearchInputProps {
@@ -40,7 +40,7 @@ export const UserSearchInput = ({
           value={value}
           onChange={handleInputChange}
         />
-        <Search className="absolute top-1/2 left-2 -translate-y-1/2 transform text-gray-500" />
+        <SearchIcon className="absolute top-1/2 left-2 -translate-y-1/2 transform text-gray-500" />
       </div>
       <select
         value={selectedType}

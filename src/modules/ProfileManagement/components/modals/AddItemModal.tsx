@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Camera } from 'lucide-react';
+import { CameraIcon } from '@/modules/shared/icons';
 import {
   Form,
   FormControl,
@@ -88,7 +88,7 @@ export default function AddItemModal({ isOpen, onClose, onSubmit, type }: AddIte
                 onClick={handleImageClick}
                 className="absolute -bottom-1 -right-1 p-1 bg-[#92E3A9] rounded-full hover:bg-[#7ED196] transition-colors"
               >
-                <Camera className="w-3 h-3 text-white" />
+                <CameraIcon className="w-3 h-3 text-white" />
               </button>
             </div>
             Add {type === 'experience' ? 'Experience' : 'Education'}

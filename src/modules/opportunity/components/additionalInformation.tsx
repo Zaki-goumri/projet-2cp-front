@@ -1,12 +1,9 @@
 import {
-  MapPin,
-  Building2,
-  Briefcase,
-  Calendar,
-  Clock,
-  Gift,
-  GraduationCap,
-} from 'lucide-react';
+  MapPinIcon,
+  BriefcaseIcon,
+  ClockIcon,
+  GraduationCapIcon,
+} from '@/modules/shared/icons';
 import { Card } from '@/components/ui/card';
 import { Opportunity } from '../services/opportunity.service';
 
@@ -23,7 +20,7 @@ export default function AdditionalInformation({ opportunity }: AdditionalInforma
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-gray-50 p-4 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <MapPin className="h-5 w-5 text-red-500" />
+            <MapPinIcon className="h-5 w-5 text-red-500" />
             <h3 className="font-medium text-gray-700">Internship Location(s)</h3>
           </div>
           <p className="text-gray-600 ml-7">
@@ -33,7 +30,7 @@ export default function AdditionalInformation({ opportunity }: AdditionalInforma
         
         <div className="bg-gray-50 p-4 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <GraduationCap className="h-5 w-5 text-red-500" />
+            <GraduationCapIcon className="h-5 w-5 text-red-500" />
             <h3 className="font-medium text-gray-700">Educations</h3>
           </div>
           <p className="text-gray-600 ml-7">
@@ -43,7 +40,7 @@ export default function AdditionalInformation({ opportunity }: AdditionalInforma
         
         <div className="bg-gray-50 p-4 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <Briefcase className="h-5 w-5 text-gray-500" />
+            <BriefcaseIcon className="h-5 w-5 text-gray-500" />
             <h3 className="font-medium text-gray-700">Internship Type</h3>
           </div>
           <p className="text-gray-600 ml-7">{opportunity.worktype || 'Not specified'}</p>
@@ -51,7 +48,7 @@ export default function AdditionalInformation({ opportunity }: AdditionalInforma
         
         <div className="bg-gray-50 p-4 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <Clock className="h-5 w-5 text-gray-500" />
+            <ClockIcon className="h-5 w-5 text-gray-500" />
             <h3 className="font-medium text-gray-700">Internship Detail</h3>
           </div>
           <p className="text-gray-600 ml-7">

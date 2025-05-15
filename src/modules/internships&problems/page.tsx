@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Search,
-  AlertTriangle,
-  BookmarkCheck,
-  ClipboardCheck,
-  Loader2,
-  Calendar,
-  Clock,
-  Building,
-  MapPin,
-  SearchX,
-  SlidersHorizontal,
-  BookmarkX,
-} from 'lucide-react';
+  SearchIcon,
+  AlertTriangleIcon,
+  BookmarkCheckIcon,
+  ClipboardCheckIcon,
+  LoaderIcon,
+  CalendarIcon,
+  ClockIcon,
+  BuildingIcon,
+  MapPinIcon,
+  SearchXIcon,
+  SlidersHorizontalIcon,
+  BookmarkXIcon,
+} from '@/modules/shared/icons';
 import { useInternshipsAndProblems } from './hooks/useInternshipsAndProblems';
 import { Opportunity } from './types/opportunity.types';
 import { Application } from './types/application.types';
@@ -41,7 +41,6 @@ type OpportunityCardProps = {
   onUnsave?: (id: number) => Promise<void>;
 };
 
-// Empty state component for better reusability
 const EmptyState = ({ type, searchQuery }: EmptyStateProps) => {
   const messages = {
     saved: {
@@ -57,7 +56,7 @@ const EmptyState = ({ type, searchQuery }: EmptyStateProps) => {
   return (
     <div className="flex flex-col items-center justify-center px-4 py-16">
       <div className="mb-6 rounded-full bg-gray-50 p-4">
-        <SearchX className="h-12 w-12 text-gray-400" />
+        <SearchXIcon className="h-12 w-12 text-gray-400" />
       </div>
       <h3 className="mb-2 text-xl font-semibold text-gray-900">
         {searchQuery
@@ -78,7 +77,7 @@ const EmptyState = ({ type, searchQuery }: EmptyStateProps) => {
 // Loading state component
 const LoadingState = () => (
   <div className="flex items-center justify-center py-16">
-    <Loader2 className="text-primary h-8 w-8 animate-spin" />
+    <LoaderIcon className="text-primary h-8 w-8 animate-spin" />
     <span className="ml-3 text-gray-600">Loading...</span>
   </div>
 );
@@ -87,7 +86,7 @@ const LoadingState = () => (
 const ErrorState = () => (
   <div className="flex flex-col items-center justify-center px-4 py-16">
     <div className="mb-6 rounded-full bg-red-50 p-4">
-      <AlertTriangle className="h-12 w-12 text-red-400" />
+      <AlertTriangleIcon className="h-12 w-12 text-red-400" />
     </div>
     <h3 className="mb-2 text-xl font-semibold text-gray-900">Something went wrong</h3>
     <p className="max-w-sm text-center text-sm text-gray-500">
@@ -126,7 +125,7 @@ const Stats = ({ savedCount, appliedCount }: StatsProps) => (
           <p className="mt-2 text-3xl font-semibold text-blue-900">{savedCount}</p>
         </div>
         <div className="rounded-full bg-blue-100 p-3">
-          <BookmarkCheck className="h-6 w-6 text-blue-600" />
+          <BookmarkCheckIcon className="h-6 w-6 text-blue-600" />
         </div>
       </div>
     </div>
@@ -137,7 +136,7 @@ const Stats = ({ savedCount, appliedCount }: StatsProps) => (
           <p className="mt-2 text-3xl font-semibold text-purple-900">{appliedCount}</p>
         </div>
         <div className="rounded-full bg-purple-100 p-3">
-          <ClipboardCheck className="h-6 w-6 text-purple-600" />
+          <ClipboardCheckIcon className="h-6 w-6 text-purple-600" />
         </div>
       </div>
     </div>
@@ -169,11 +168,11 @@ const OpportunityCard = ({ opportunity, type, onUnsave }: OpportunityCardProps) 
         </h3>
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
           <span className="flex items-center">
-            <Building className="mr-1.5 h-4 w-4" />
+            <BuildingIcon className="mr-1.5 h-4 w-4" />
             {opportunity.company.name}
           </span>
           <span className="flex items-center">
-            <MapPin className="mr-1.5 h-4 w-4" />
+            <MapPinIcon className="mr-1.5 h-4 w-4" />
             {opportunity.worktype}
           </span>
         </div>
@@ -186,14 +185,14 @@ const OpportunityCard = ({ opportunity, type, onUnsave }: OpportunityCardProps) 
       <div className="space-y-3">
         {opportunity.duration && (
           <div className="flex items-center text-sm text-gray-600">
-            <Clock className="mr-2 h-4 w-4 text-gray-400" />
+            <ClockIcon className="mr-2 h-4 w-4 text-gray-400" />
             {opportunity.duration}
           </div>
         )}
         {opportunity.endday && (
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center text-gray-600">
-              <Calendar className="mr-2 h-4 w-4 text-gray-400" />
+              <CalendarIcon className="mr-2 h-4 w-4 text-gray-400" />
               {new Date(opportunity.endday).toLocaleDateString()}
             </div>
             {daysUntilDeadline !== null && daysUntilDeadline > 0 && (
@@ -229,7 +228,7 @@ const OpportunityCard = ({ opportunity, type, onUnsave }: OpportunityCardProps) 
           onClick={handleUnsave}
           className="absolute right-4 top-4 text-red-500 hover:text-red-700"
         >
-          <BookmarkX className="h-4 w-4" />
+          <BookmarkXIcon className="h-4 w-4" />
         </button>
       )}
     </div>
@@ -272,7 +271,7 @@ const InternshipsAndProblemsPage = () => {
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <Search className="h-5 w-5 text-gray-400" />
+            <SearchIcon className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="text"
@@ -285,7 +284,7 @@ const InternshipsAndProblemsPage = () => {
         
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-5 w-5 text-gray-400" />
+            <SlidersHorizontalIcon className="h-5 w-5 text-gray-400" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -305,7 +304,7 @@ const InternshipsAndProblemsPage = () => {
             value="saved"
             className="inline-flex items-center space-x-2 rounded-md px-4 py-2"
           >
-            <BookmarkCheck className="h-5 w-5" />
+            <BookmarkCheckIcon className="h-5 w-5" />
             <span>Saved</span>
             <span className="ml-1.5 rounded-full bg-gray-200/30 text-gray-600/30 px-2 py-0.5 text-xs font-medium">
               {savedPosts.length}
@@ -315,7 +314,7 @@ const InternshipsAndProblemsPage = () => {
             value="applied"
             className="inline-flex items-center space-x-2 rounded-md px-4 py-2"
           >
-            <ClipboardCheck className="h-5 w-5" />
+            <ClipboardCheckIcon className="h-5 w-5" />
             <span>Applications</span>
             <span className="ml-1.5 rounded-full bg-gray-200/30 text-gray-600/30 px-2 py-0.5 text-xs font-medium">
               {appliedInternships.length}
