@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Invitation } from '../types/teams.types';
-import { Check, X } from 'lucide-react'; // Icons for buttons
+import { CheckIcon, X } from '@/modules/shared/icons'; // Icons for buttons
 
 interface InvitationCardProps {
   invitation: Invitation;
@@ -32,7 +32,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
           onClick={() => onAccept(invitation.id)}
           aria-label="Accept Invitation"
         >
-          <Check className="h-4 w-4" />
+          <CheckIcon className="h-4 w-4" />
         </Button>
         <Button
           variant="outline"

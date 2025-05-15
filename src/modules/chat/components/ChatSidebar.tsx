@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Conversation, User } from '../types';
 import { UserSearchInput } from './UserSearchInput';
 import { useUserSearch } from '../hooks/useUserSearch';
-import { Loader2 } from 'lucide-react';
+import { LoaderIcon } from '@/modules/shared/icons';
 import { Link } from 'react-router';
 
 interface ChatSidebarProps {
@@ -70,7 +70,7 @@ const ChatSidebar = ({
           <div className="divide-y divide-gray-100">
             {isLoading || isCreatingChat ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <LoaderIcon className="h-6 w-6 animate-spin text-primary" />
               </div>
             ) : users.length > 0 ? (
               users.map((user:User) => (
