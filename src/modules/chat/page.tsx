@@ -7,7 +7,7 @@ const ChatMessages = lazy(() => import('./components/ChatMessages'));
 const ChatInput = lazy(() => import('./components/ChatInput'));
 const ChatDetails = lazy(() => import('./components/ChatDetails'));
 import Loading from '../../loading';
-import {  TriangleAlert } from 'lucide-react';
+import { AlertTriangleIcon } from '@/modules/shared/icons';
 
 const ChatPage = () => {
   const { id } = useParams();
@@ -44,7 +44,7 @@ const ChatPage = () => {
     return (
       <div className="bg-white flex h-[calc(100vh-100px)] w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4 p-6 bg-primary/10 rounded-lg border border-primary/20 max-w-md">
-          <TriangleAlert className="h-12 w-12 text-primary" />
+          <AlertTriangleIcon className="h-12 w-12 text-primary" />
           <h3 className="text-xl font-semibold text-gray-800">Something went wrong</h3>
           <div className="text-base text-primary text-center">{error}</div>
           <button 

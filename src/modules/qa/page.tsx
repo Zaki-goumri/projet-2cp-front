@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDownIcon } from '@/modules/shared/icons';
 
-// FAQ data
 const faqs = [
   {
     question: 'What is InternFlow?',
@@ -72,7 +71,7 @@ const QAPage = () => {
                 <span className="text-left text-sm font-medium text-gray-900 sm:text-base">
                   {faq.question}
                 </span>
-                <ChevronDown
+                <ChevronDownIcon
                   className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
                     openIndex === index ? 'rotate-180 text-[#92E3A9]' : ''
                   }`}

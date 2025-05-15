@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDownIcon } from '@/modules/shared/icons';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface TypeSelectProps {
   value: string;
@@ -22,7 +29,7 @@ const TypeSelect = ({ value, onChange }: TypeSelectProps) => {
         className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50"
       >
         <span>{selectedType.label}</span>
-        <ChevronDown
+        <ChevronDownIcon
           className={`h-4 w-4 transition-transform ${
             isOpen ? 'rotate-180' : ''
           }`}

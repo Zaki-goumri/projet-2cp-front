@@ -1,7 +1,7 @@
 import React from 'react';
 import { Invitation } from '../types/teams.types'; 
 import { Button } from '@/components/ui/button';
-import { User, Users, Mail, X } from 'lucide-react'; 
+import { MailIcon, X } from '@/modules/shared/icons'; 
 import { useUserStore } from '@/modules/shared/store/userStore';
 
 interface SentInvitationCardProps {
@@ -24,7 +24,7 @@ export const SentInvitationCard: React.FC<SentInvitationCardProps> = ({
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
       <div className="flex items-center space-x-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-           <Mail size={20} />
+          <MailIcon width={20} height={20} />
         </div>
         <div>
           <p className="text-sm font-medium text-gray-800">
@@ -49,7 +49,7 @@ export const SentInvitationCard: React.FC<SentInvitationCardProps> = ({
                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-200 border-t-red-600"></div>
                ) : (
                  <>
-                   <X size={16} className="mr-1" />
+                   <X width={16} height={16} className="mr-1" />
                    Cancel
                  </>
                )}

@@ -1,5 +1,5 @@
 import { useState, FormEvent, KeyboardEvent, useRef, useEffect } from 'react';
-import { Send, Paperclip, Smile } from 'lucide-react';
+import { SendIcon, PaperclipIcon, SmileIcon } from '@/modules/shared/icons';
 
 interface ChatInputProps {
   onSendMessage: (content: string) => void;
@@ -102,7 +102,7 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
             className="text-gray-400 hover:text-gray-600"
             title="Attach a file"
           >
-            <Paperclip className="mb-1 h-5 w-5" />
+            <PaperclipIcon className="mb-1 h-5 w-5" />
           </button>
           <div className="relative">
             <button
@@ -112,7 +112,7 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
               title="Add emoji"
               onClick={() => setShowEmojis((v) => !v)}
             >
-              <Smile className="h-5 w-5" />
+              <SmileIcon className="h-5 w-5" />
             </button>
             {showEmojis && (
               <div
@@ -139,7 +139,7 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
         className="bg-primary mb-2 rounded-full p-3 text-white"
         disabled={!message.trim()}
       >
-        <Send className="h-5 w-5" />
+        <SendIcon className="h-5 w-5" />
       </button>
     </form>
   );

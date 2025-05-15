@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, MailIcon, LockIcon } from '@/modules/shared/icons';
 import { Link, useLocation } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -54,7 +54,6 @@ const SignForm = () => {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#98E9AB]/20 via-white to-[#98E9AB]/10 px-4">
       <div className="mx-auto w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl">
         <div className="p-8">
-          {/* Logo & Header */}
           <div className="mb-8 text-center">
             <div className="mb-6 flex justify-center">
               <img src="/assets/logo.svg" alt="Logo" className="h-10 w-auto" />
@@ -65,20 +64,17 @@ const SignForm = () => {
             </p>
           </div>
 
-          {/* Social Login Options */}
           <div className="mb-6 space-y-3">
             <Google />
             <Linkedin />
           </div>
 
-          {/* Divider */}
           <div className="relative my-6 flex items-center">
             <div className="flex-grow border-t border-gray-200"></div>
             <span className="mx-3 flex-shrink text-sm text-gray-500">or continue with email</span>
             <div className="flex-grow border-t border-gray-200"></div>
           </div>
 
-          {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
@@ -88,7 +84,7 @@ const SignForm = () => {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                        <MailIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                         <Input
                           placeholder="Email"
                           type="email"
@@ -109,7 +105,7 @@ const SignForm = () => {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                        <LockIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                         <Input
                           placeholder="Password"
                           type={showPassword ? "text" : "password"}
@@ -122,9 +118,9 @@ const SignForm = () => {
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                         >
                           {showPassword ? (
-                            <EyeOff className="h-5 w-5" />
+                            <EyeOffIcon className="h-5 w-5" />
                           ) : (
-                            <Eye className="h-5 w-5" />
+                            <EyeIcon className="h-5 w-5" />
                           )}
                         </button>
                       </div>

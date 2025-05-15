@@ -1,5 +1,5 @@
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
-import { FcGoogle } from 'react-icons/fc';
+import { GoogleIcon } from '@/modules/shared/icons';
 
 const googleOAuthId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
@@ -15,7 +15,7 @@ const GoogleSignInButton = () => {
       onClick={() => login()}
       className="flex h-11 w-full items-center justify-center gap-2 rounded-md border border-gray-200 transition-colors hover:bg-gray-50"
     >
-      <FcGoogle className="mr-2 text-xl" />
+      <GoogleIcon className="mr-2 h-5 w-5 text-gray-700" />
       <span className="font-medium text-gray-700">Sign in with Google</span>
     </button>
   );
