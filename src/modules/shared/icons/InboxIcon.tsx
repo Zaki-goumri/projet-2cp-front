@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 interface SvgProps extends React.SVGProps<SVGSVGElement> {
-  title?: string;
+  size?:number
 }
 
 export const InboxIcon: FC<SvgProps> = ({ ...props }) => (

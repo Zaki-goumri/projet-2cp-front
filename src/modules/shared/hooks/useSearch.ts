@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { searchApi } from '@/services/searchService';
+import { searchApi } from '@/modules/shared/services/searchService';
 import { useState, useEffect } from 'react';
 import { useDebounce } from './useDebounce';
-import { SearchResponse } from '@/types/search';
+import { SearchResponse } from '@/modules/shared/types/search.types';
 
 const fetchSearchResults = async (query: string): Promise<SearchResponse> => {
   if (!query) {

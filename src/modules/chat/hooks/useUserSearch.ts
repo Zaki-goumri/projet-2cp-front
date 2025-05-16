@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { userService } from '../services/user.service';
 import { User } from '../types';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@/modules/shared/hooks/useDebounce';
 
 export const useUserSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');

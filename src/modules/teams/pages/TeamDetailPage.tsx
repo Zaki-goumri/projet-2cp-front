@@ -3,13 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router';
 import { useTeam } from '../hooks/useTeam';
 import { 
   UsersRoundIcon, 
-  BarChart2Icon, 
-  CalendarIcon, 
-  ExternalLinkIcon, 
   AlertTriangleIcon, 
   WifiIcon, 
-  UserIcon, 
-  ShieldIcon, 
   UserXIcon 
 } from '@/modules/shared/icons';
 import { toast } from 'react-toastify';

@@ -10,7 +10,6 @@ const queryClient = new QueryClient();
 
 const ForgotPassword = () => {
   return (
-    <QueryClientProvider client={queryClient}>
       <main className="min-h-screen w-full">
         <ToastContainer />
         <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#98E9AB]/20 via-white to-[#98E9AB]/10 px-4 py-8">
@@ -55,7 +54,6 @@ const ForgotPassword = () => {
           </div>
         </div>
       </main>
-    </QueryClientProvider>
   );
 };
 

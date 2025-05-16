@@ -58,3 +58,4 @@ export { default as AlertCircleIcon } from './AlertCircleIcon';
 export { default as MessageCircleIcon } from './MessageCircleIcon';
 export { default as UserPlusIcon } from './UserPlusIcon';
 export { default as CheckCircleIcon } from './CheckCircleIcon';
+export { default as BookmarkIcon } from './BookmarkIcon';

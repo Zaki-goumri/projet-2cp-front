@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { EditIcon, SaveIcon, CameraIcon, X } from '@/modules/shared/icons';
 import { User } from '@/modules/shared/types';
-import Spinner from '@/modules/shared/components/Spinner';
+import { Spinner } from '@/modules/shared/components';
 
 interface ProfileInfoProps {
   isUserProfile: boolean;
