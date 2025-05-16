@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { homeService } from '../services/home.service';
+import homeService from '../services/home.service';
 import { OpportunitiesResponse } from '../types/opportunities.types';
 
 export const useOpportunities = (type: 'Internship' | 'Problem') => {
-  const [opportunities, setOpportunities] = useState<OpportunitiesResponse | null>(null);
+  const [opportunities, setOpportunities] =
+    useState<OpportunitiesResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -25,4 +26,5 @@ export const useOpportunities = (type: 'Internship' | 'Problem') => {
   }, [type]);
 
   return { opportunities, isLoading, error };
-}; 
+};
+

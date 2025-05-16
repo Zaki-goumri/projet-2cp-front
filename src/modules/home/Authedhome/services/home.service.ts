@@ -5,7 +5,7 @@ export class HomeService {
   private static instance: HomeService | null = null;
   private endpoints = {
     opportunities: '/post/opportunity/explorer',
-    userType: '/Auth/usertype'
+    userType: '/Auth/usertype',
   };
 
   private constructor() {}
@@ -17,8 +17,12 @@ export class HomeService {
     return HomeService.instance;
   }
 
-  public async fetchOpportunities(type: 'Internship' | 'Problem'): Promise<OpportunitiesResponse> {
-    const { data } = await axios.get<OpportunitiesResponse>(`${this.endpoints.opportunities}?type=${type}`);
+  public async fetchOpportunities(
+    type: 'Internship' | 'Problem'
+  ): Promise<OpportunitiesResponse> {
+    const { data } = await axios.get<OpportunitiesResponse>(
+      `${this.endpoints.opportunities}?type=${type}`
+    );
     return data;
   }
 
@@ -37,4 +41,6 @@ export class HomeService {
   }
 }
 
-export const homeService = HomeService.getInstance(); 
+const homeService = HomeService.getInstance();
+export default homeService;
+

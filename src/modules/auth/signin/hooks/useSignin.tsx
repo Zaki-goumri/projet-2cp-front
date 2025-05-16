@@ -1,18 +1,19 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { loginUser } from '../services/singin.services';
+import { signinService } from '../services/signin.service';
 import { LoginRequest } from '../types/signin.types';
 import { useUserStore } from '@/modules/shared/store/userStore';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { Student, Company } from '@/modules/shared/types/shared.types';
+
 const useSignin = (redirectPath?: string) => {
   const setUser = useUserStore((state) => state.login);
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (values: LoginRequest) => loginUser(values),
-      onSuccess: (data: Student | Company) => {
+    mutationFn: (values: LoginRequest) => signinService.login(values),
+    onSuccess: (data: Student | Company) => {
       setUser(data);
       navigate(redirectPath || '/home');
     },

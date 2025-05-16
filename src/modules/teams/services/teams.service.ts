@@ -1,4 +1,4 @@
-import axios from '@/api/axios.config';
+  import axios from '@/api/axios.config';
 import { TeamResponse, Team, InvitationResponse } from '../types/teams.types';
 import { toast } from 'react-toastify';
 export const teamsService = {
