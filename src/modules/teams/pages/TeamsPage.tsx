@@ -6,7 +6,15 @@ import { ErrorBoundary } from '@/modules/shared/components/error-boundary';
 import { useInvitations } from '../hooks/useInvitations';
 import { InvitationCard } from '../components/InvitationCard';
 import { Invitation } from '../types/teams.types';
-import { Inbox, Plus, AlertCircle, UsersRound, ChevronLeft, ChevronRight, Send } from 'lucide-react';
+import { 
+  InboxIcon, 
+  PlusIcon, 
+  AlertCircleIcon, 
+  UsersRoundIcon, 
+  ChevronLeftIcon, 
+  ChevronRightIcon, 
+  SendIcon 
+} from '@/modules/shared/icons';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { useSentInvitations } from '../hooks/useSentInvitations';
@@ -41,7 +49,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         disabled={!hasPrevious}
         className="flex items-center gap-1 disabled:opacity-50"
       >
-        <ChevronLeft size={16} />
+        <ChevronLeftIcon width={16} height={16} />
         Previous
       </Button>
       <span className="text-sm text-gray-600">
@@ -55,7 +63,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         className="flex items-center gap-1 disabled:opacity-50"
       >
         Next
-        <ChevronRight size={16} />
+        <ChevronRightIcon width={16} height={16} />
       </Button>
     </div>
   );
@@ -140,7 +148,7 @@ const TeamsPage: React.FC = () => {
             to="/teams/create"
             className="flex items-center gap-2 rounded-lg bg-[#92E3A9] px-4 py-2 text-white transition-colors hover:bg-[#7dca8f]"
           >
-            <Plus size={20} />
+            <PlusIcon size={20} />
             Create Team
           </Link>
         </div>
@@ -165,7 +173,7 @@ const TeamsPage: React.FC = () => {
                 }
                 icon={
                   <span className="text-lg font-medium text-[#92E3A9]">
-                    <UsersRound size={20} />
+                    <UsersRoundIcon size={20} />
                   </span>
                 }
                 memberCount={team.students.length}
@@ -189,11 +197,11 @@ const TeamsPage: React.FC = () => {
 
         <div className="mt-12">
           <h2 className="mb-6 text-lg font-medium text-gray-700 flex items-center gap-2">
-            <Inbox size={20} /> Team Invitations Received
+            <InboxIcon size={20} /> Team Invitations Received
           </h2>
           {errorInvitations && (
             <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-              <AlertCircle className="h-8 w-8 text-red-500" />
+              <AlertCircleIcon className="h-8 w-8 text-red-500" />
               <p className="font-medium text-red-700">
                 Could not load received invitations.
               </p>
@@ -204,7 +212,7 @@ const TeamsPage: React.FC = () => {
             invitations.length === 0 &&
             !isLoadingInvitations && (
               <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-10 text-center">
-                <Inbox className="mx-auto h-12 w-12 text-gray-400" />
+                <InboxIcon className="mx-auto h-12 w-12 text-gray-400" />
                 <p className="mt-4 text-lg font-medium text-gray-600">
                   No Pending Invitations
                 </p>
@@ -239,11 +247,11 @@ const TeamsPage: React.FC = () => {
 
         <div className="mt-12">
           <h2 className="mb-6 text-lg font-medium text-gray-700 flex items-center gap-2">
-            <Send size={20} /> Sent Invitations
+            <SendIcon size={20} /> Sent Invitations
           </h2>
           {errorSentInvitations && (
             <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-              <AlertCircle className="h-8 w-8 text-red-500" />
+              <AlertCircleIcon className="h-8 w-8 text-red-500" />
               <p className="font-medium text-red-700">
                 Could not load sent invitations.
               </p>
@@ -254,7 +262,7 @@ const TeamsPage: React.FC = () => {
             sentInvitations.length === 0 &&
             !isLoadingSentInvitations && (
               <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-10 text-center">
-                <Send className="mx-auto h-12 w-12 text-gray-400" />
+                <SendIcon className="mx-auto h-12 w-12 text-gray-400" />
                 <p className="mt-4 text-lg font-medium text-gray-600">
                   No Sent Invitations
                 </p>

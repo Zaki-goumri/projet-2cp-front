@@ -4,7 +4,7 @@ interface SvgProps extends React.SVGProps<SVGSVGElement> {
   title?: string;
 }
 
-export const BookmarkCheckIcon: FC<SvgProps> = ({ ...props }) => (
+export const GraduationCapIcon: FC<SvgProps> = ({ ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -17,9 +17,9 @@ export const BookmarkCheckIcon: FC<SvgProps> = ({ ...props }) => (
     strokeLinejoin="round"
     {...props}
   >
-    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-    <polyline points="9 11 12 14 15 11" />
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+    <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
   </svg>
 );
 
-export default BookmarkCheckIcon; 
+export default GraduationCapIcon; 

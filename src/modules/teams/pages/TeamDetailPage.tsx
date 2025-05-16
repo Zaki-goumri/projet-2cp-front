@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { useTeam } from '../hooks/useTeam';
-import { UsersRound, BarChart2, Calendar, ExternalLink, AlertTriangle, Wifi, User, Shield, UserX } from 'lucide-react';
+import { 
+  UsersRoundIcon, 
+  BarChart2Icon, 
+  CalendarIcon, 
+  ExternalLinkIcon, 
+  AlertTriangleIcon, 
+  WifiIcon, 
+  UserIcon, 
+  ShieldIcon, 
+  UserXIcon 
+} from '@/modules/shared/icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { 
@@ -85,7 +95,7 @@ const TeamDetailPage: React.FC = () => {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white">
         <div className="rounded-full bg-red-100 p-4 mb-4">
-          <Wifi className="h-10 w-10 text-red-500" />
+          <WifiIcon className="h-10 w-10 text-red-500" />
         </div>
         <h1 className="text-2xl font-bold text-red-500 mb-2">Error</h1>
         <p className="text-gray-600 mb-6">Network Error</p>
@@ -117,7 +127,7 @@ const TeamDetailPage: React.FC = () => {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
         <div className="rounded-full bg-yellow-100 p-4 mb-4">
-          <AlertTriangle className="h-10 w-10 text-yellow-500" />
+          <AlertTriangleIcon className="h-10 w-10 text-yellow-500" />
         </div>
         <h2 className="text-2xl font-bold mb-2">{title}</h2>
         <p className="text-gray-600 mb-6 text-center px-4">{message}</p>
@@ -183,7 +193,7 @@ const TeamDetailPage: React.FC = () => {
         {/* Team Members Section with Management */}
         <div className="mb-10 rounded-lg bg-white p-6 shadow-sm">
           <h2 className="mb-6 flex items-center text-xl font-semibold">
-            <UsersRound className="mr-2 h-5 w-5 text-[#92E3A9]" /> Team Members ({teamData.students?.length ?? 0})
+            <UsersRoundIcon className="mr-2 h-5 w-5 text-[#92E3A9]" /> Team Members ({teamData.students?.length ?? 0})
           </h2>
           {teamData.students && teamData.students.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -220,7 +230,7 @@ const TeamDetailPage: React.FC = () => {
                       className="ml-2 rounded-md bg-red-100 p-2 text-red-600 hover:bg-red-200"
                       title="Kick member"
                     >
-                      <UserX size={16} />
+                      <UserXIcon width={16} height={16} />
                     </button>
                   )}
                 </div>
