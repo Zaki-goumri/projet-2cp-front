@@ -10,7 +10,7 @@ import { useDashboardData } from '../hooks/useDashboardData';
 import { ChartData } from '../types/dashboard.types'; // Import ChartData type
 
 export const Dashboard: React.FC = () => {
-  const { dashboardData, isLoading, error } = useDashboardData();
+  const { data: dashboardData, isLoading, error } = useDashboardData();
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
