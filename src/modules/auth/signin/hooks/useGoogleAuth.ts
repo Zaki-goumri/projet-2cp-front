@@ -4,13 +4,11 @@ import axios from 'axios';
 import { serialize } from 'cookie';
 import { baseUrl } from '@/api/axios.config';
 
-// Define Google token response type
 interface GoogleTokenResponse {
   id_token: string;
   expires_in: number;
 }
 
-// Define the debug info type
 interface DebugInfo {
   code?: string;
   tokenExchanged?: boolean;
@@ -54,7 +52,6 @@ export const useGoogleAuth = (): GoogleAuthResult => {
           throw new Error('Authorization code not found');
         }
         
-        // Exchange code for ID token
         console.log('Google code received, simulating exchange for ID token');
         const tokenResponse = await exchangeCodeForToken(code);
         

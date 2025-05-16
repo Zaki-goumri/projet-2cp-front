@@ -30,32 +30,37 @@ type SubmissionData = Omit<FormValues, 'startdate' | 'enddate'> & {
 };
 
 // Define the validation schema
-const createInternshipSchema = z.object({
-  title: z.string()
-    .min(3, 'Post name must be at least 3 characters')
-    .max(100, 'Post name must not exceed 100 characters'),
-  startdate: z.date({
-    required_error: 'Start date is required',
-  }),
-  enddate: z.date({
-    required_error: 'End date is required',
-  }),
-  Type: z.string({
-    required_error: 'Please select an internship type',
-  }),
-  workType: z.string({
-    required_error: 'Please select a work type',
-  }),
-  skills: z.array(z.string())
-    .min(1, 'At least one skill is required')
-    .max(10, 'Maximum 10 skills allowed'),
-  description: z.string()
-    .min(50, 'Description must be at least 50 characters')
-    .max(5000, 'Description must not exceed 5000 characters'),
-}).refine((data) => data.enddate > data.startdate, {
-  message: "End date must be after start date",
-  path: ["enddate"], // path of error
-});
+const createInternshipSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, 'Post name must be at least 3 characters')
+      .max(100, 'Post name must not exceed 100 characters'),
+    startdate: z.date({
+      required_error: 'Start date is required',
+    }),
+    enddate: z.date({
+      required_error: 'End date is required',
+    }),
+    Type: z.string({
+      required_error: 'Please select an internship type',
+    }),
+    workType: z.string({
+      required_error: 'Please select a work type',
+    }),
+    skills: z
+      .array(z.string())
+      .min(1, 'At least one skill is required')
+      .max(10, 'Maximum 10 skills allowed'),
+    description: z
+      .string()
+      .min(50, 'Description must be at least 50 characters')
+      .max(5000, 'Description must not exceed 5000 characters'),
+  })
+  .refine((data) => data.enddate > data.startdate, {
+    message: 'End date must be after start date',
+    path: ['enddate'], // path of error
+  });
 
 export type CreateInternshipForm = z.infer<typeof createInternshipSchema>;
 
@@ -104,7 +109,10 @@ const CreateOpportunityPage = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="overflow-hidden rounded-xl bg-white shadow-sm">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="overflow-hidden rounded-xl bg-white shadow-sm"
+        >
           <div className="border-b border-gray-100 bg-white px-6 py-4">
             <h2 className="font-medium text-gray-800">Internship Details</h2>
           </div>
@@ -118,10 +126,12 @@ const CreateOpportunityPage = () => {
                 {...register('title')}
                 type="text"
                 placeholder="Enter the internship post name"
-                className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors placeholder:text-gray-400 focus:border-[#92E3A9] focus:outline-none focus:ring-1 focus:ring-[#92E3A9]"
+                className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors placeholder:text-gray-400 focus:border-[#92E3A9] focus:ring-1 focus:ring-[#92E3A9] focus:outline-none"
               />
               {errors.title && (
-                <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
@@ -143,7 +153,9 @@ const CreateOpportunityPage = () => {
                   )}
                 />
                 {errors.startdate && (
-                  <p className="mt-1 text-sm text-red-500">{errors.startdate.message}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.startdate.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -162,7 +174,9 @@ const CreateOpportunityPage = () => {
                   )}
                 />
                 {errors.enddate && (
-                  <p className="mt-1 text-sm text-red-500">{errors.enddate.message}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.enddate.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -177,14 +191,13 @@ const CreateOpportunityPage = () => {
                   name="Type"
                   control={control}
                   render={({ field }) => (
-                    <TypeSelect
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                    <TypeSelect value={field.value} onChange={field.onChange} />
                   )}
                 />
                 {errors.Type && (
-                  <p className="mt-1 text-sm text-red-500">{errors.Type.message}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.Type.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -202,7 +215,9 @@ const CreateOpportunityPage = () => {
                   )}
                 />
                 {errors.workType && (
-                  <p className="mt-1 text-sm text-red-500">{errors.workType.message}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.workType.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -223,7 +238,9 @@ const CreateOpportunityPage = () => {
                 )}
               />
               {errors.skills && (
-                <p className="mt-1 text-sm text-red-500">{errors.skills.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.skills.message}
+                </p>
               )}
             </div>
 
@@ -243,7 +260,9 @@ const CreateOpportunityPage = () => {
                 )}
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.description.message}
+                </p>
               )}
             </div>
           </div>
@@ -254,7 +273,7 @@ const CreateOpportunityPage = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="rounded-lg bg-[#92E3A9]! px-8 py-2.5 text-sm font-medium text-white! cursor-pointer! transition-colors hover:bg-[#7ED196] focus:outline-none focus:ring-2 focus:ring-[#92E3A9] focus:ring-offset-2"
+                className="cursor-pointer! rounded-lg bg-[#92E3A9]! px-8 py-2.5 text-sm font-medium text-white! transition-colors hover:bg-[#7ED196] focus:ring-2 focus:ring-[#92E3A9] focus:ring-offset-2 focus:outline-none"
               >
                 {isLoading ? 'Creating...' : 'Create Post'}
               </Button>
@@ -267,3 +286,4 @@ const CreateOpportunityPage = () => {
 };
 
 export default CreateOpportunityPage;
+

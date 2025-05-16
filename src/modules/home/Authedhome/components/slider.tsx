@@ -5,7 +5,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { MoveRight, MoveLeft, AlertTriangle } from 'lucide-react';
 import { useOpportunities } from '../hooks/useOpportunities';
 import { OpportunityCard } from './OpportunityCard';
-import { Opportunity } from '../types/opportunities.types';
+import { OpportunitiesResponse, Opportunity } from '../types/opportunities.types';
 
 
 const SliderOfOpp = () => {
@@ -116,7 +116,7 @@ const SliderOfOpp = () => {
             <span className="text-primary">Internships</span> for you
           </h2>
         </div>
-        {renderSliderContent(internships, isLoadingInternships, errorInternships)}
+        {renderSliderContent(internships?.results || [], isLoadingInternships, errorInternships)}
       </section>
       <hr className="mx-auto my-8 w-2/3 opacity-20" />
       <section className="mx-3 sm:mx-6 md:mx-8 lg:mx-16">
@@ -127,7 +127,7 @@ const SliderOfOpp = () => {
             <span className="text-black">to solve</span>
           </h2>
         </div>
-        {renderSliderContent(problems, isLoadingProblems, errorProblems)}
+        {renderSliderContent(problems?.results || [], isLoadingProblems, errorProblems)}
       </section>
       <div className="mb-16"></div>
     </main>
