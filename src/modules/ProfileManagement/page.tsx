@@ -8,7 +8,7 @@ import { useUserStore } from '../shared/store/userStore';
 import { useParams } from 'react-router';
 import { useUserInfo, useProfileUpdate } from './hooks/useUserService';
 import ErrorBoundary from './components/ErrorBoundary';
-import Spinner from '../shared/components/Spinner';
+import { Spinner } from '@/modules/shared/components';
 import UserNotFound from './components/UserNotFound';
 import { EducationData, ExperienceData } from '../shared/types/shared.types';
 type ParamsType = { userName: string };

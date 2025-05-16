@@ -2,24 +2,24 @@ import React from 'react';
 import { useNotifications } from '@/modules/notifications/hooks/useNotifications';
 import { format, isToday, isYesterday } from 'date-fns';
 import {
-  Clock,
-  Mail,
-  CheckCircle,
-  Users,
-  Loader2,
-  AlertCircle,
-} from 'lucide-react';
+  ClockIcon,
+  MailIcon,
+  CheckCircleIcon,
+  UsersIcon,
+  LoaderIcon,
+  AlertCircleIcon,
+} from '@/modules/shared/icons';
 import { Notification } from '@/modules/notifications/types/notification';
 
 const notificationTypeIcons: Record<string, React.ComponentType<any>> = {
-  message: Mail,
-  application: CheckCircle,
-  team: Users,
-  info: Mail,
-  success: CheckCircle,
-  warning: Clock,
-  error: Clock,
-  default: Mail,
+  message: MailIcon,
+  application: CheckCircleIcon,
+  team: UsersIcon,
+  info: MailIcon,
+  success: CheckCircleIcon,
+  warning: ClockIcon,
+  error: ClockIcon,
+  default: MailIcon,
 };
 
 interface GroupedNotifications {
@@ -70,7 +70,7 @@ const NotificationsPage = () => {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        <LoaderIcon className="text-primary h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -78,7 +78,7 @@ const NotificationsPage = () => {
   if (error) {
     return (
       <div className="container mx-auto max-w-3xl p-4 text-center text-red-600">
-        <AlertCircle className="mx-auto mb-2 h-8 w-8" />
+        <AlertCircleIcon className="mx-auto mb-2 h-8 w-8" />
         <p>Error loading notifications: {error.message}</p>
         <p>Please try refreshing the page.</p>
       </div>
@@ -93,7 +93,7 @@ const NotificationsPage = () => {
 
       {notifications.length === 0 ? (
         <div className="rounded-lg border bg-gray-50 p-10 text-center">
-          <Mail className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+          <MailIcon className="mx-auto mb-4 h-12 w-12 text-gray-400" />
           <p className="text-gray-500">You don't have any notifications yet.</p>
         </div>
       ) : (

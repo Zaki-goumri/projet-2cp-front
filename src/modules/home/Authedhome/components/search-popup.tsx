@@ -2,8 +2,8 @@ import React from 'react';
 import { X, Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useHistory } from 'react-router-dom';
-import { useSearch } from '@/hooks/useSearch';
-import { OpportunityResultItem, CompanyResultItem } from '@/types/search';
+import { useSearch } from '@/modules/shared/hooks/useSearch';
+import { OpportunityResultItem, CompanyResultItem } from '@/modules/shared/types/search.types';
 import { Link } from 'react-router';
 
 interface SearchPopupProps {

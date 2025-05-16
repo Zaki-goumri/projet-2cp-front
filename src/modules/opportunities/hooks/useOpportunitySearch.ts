@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import opportunityService from '../services/opportunities.service';
+import { opportunitiesService } from '../services/opportunities.service';
 import { SearchResults } from '../types/opportunity.types';
 
 
@@ -12,7 +12,7 @@ export const useOpportunitySearch = (query: string) => {
     refetch: refetchSearch
   } = useQuery<SearchResults, Error>({ 
     queryKey: ['opportunitySearch', query],
-    queryFn: () => opportunityService.searchOpportunitiesAndCompanies(query),
+    queryFn: () => opportunitiesService.searchOpportunitiesAndCompanies(query),
     enabled: !!query && query.trim().length > 0,
     staleTime: 5 * 60 * 1000, 
     cacheTime: 10 * 60 * 1000, 

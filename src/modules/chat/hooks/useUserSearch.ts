@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { userService } from '../services/user.service';
-import { User } from '../types';
-import { useDebounce } from '@/hooks/useDebounce';
+import { chatService } from '../services/chat.service';
+import { User } from '../types/chat.types';
+import { useDebounce } from '@/modules/shared/hooks/useDebounce';
 
 export const useUserSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,12 +15,12 @@ export const useUserSearch = () => {
   } = useQuery({
     queryKey: ['userSearch', debouncedSearch],
     queryFn: () =>
-      userService.searchUsers({
+      chatService.searchUsers({
         username: debouncedSearch,
         type: 'company', 
       }),
     enabled: debouncedSearch.length > 0,
-    staleTime: 1000 * 60, // 1 minute
+    staleTime: 1000 * 60, 
   });
 
   const handleSearch = useCallback((value: string) => {

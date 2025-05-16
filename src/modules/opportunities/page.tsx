@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
-  Search,
-  AlertTriangle,
-  SearchX,
-  Loader2,
-  Eye,
-  Timer,
-  ArrowRight,
-  Bookmark
-} from 'lucide-react';
+  SearchIcon,
+  AlertTriangleIcon,
+  SearchXIcon,
+  LoaderIcon,
+  EyeIcon,
+  ClockIcon,
+  ArrowRightIcon,
+  BookmarkIcon
+} from '@/modules/shared/icons';
 import { useOpportunitySearch } from './hooks/useOpportunitySearch';
 import { useOpportunities } from './hooks/useOpportunities';
 import {
@@ -21,9 +21,9 @@ import {
 } from './types/opportunity.types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { opportunityService } from "./services/opportunity.service";
+import { opportunitiesService } from "./services/opportunities.service";
 import { toast } from 'react-toastify';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@/modules/shared/hooks/useDebounce';
 
 // UI Components
 const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
@@ -38,7 +38,7 @@ const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
 
   return (
     <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-gray-50 p-12 text-center">
-      <SearchX className="mb-4 h-12 w-12 text-gray-400" />
+      <SearchXIcon className="mb-4 h-12 w-12 text-gray-400" />
       <h3 className="mb-2 text-lg font-semibold text-gray-700">{message}</h3>
       <p className="max-w-sm text-sm text-gray-500">
         {searchQuery
@@ -51,7 +51,7 @@ const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
 
 const LoadingState = () => (
   <div className="flex h-64 items-center justify-center rounded-lg">
-    <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+    <LoaderIcon className="h-8 w-8 animate-spin text-blue-600" />
     <span className="ml-3 text-lg font-medium text-gray-600">Loading...</span>
   </div>
 );
@@ -59,7 +59,7 @@ const LoadingState = () => (
 const ErrorState = ({ error }: ErrorStateProps) => (
   <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-red-300 bg-red-50 p-12 text-center text-red-700">
     <div className="mb-4 rounded-full bg-red-100 p-3">
-      <AlertTriangle className="h-8 w-8" />
+      <AlertTriangleIcon className="h-8 w-8" />
     </div>
     <h3 className="mb-2 text-lg font-semibold">Oops! Something went wrong</h3>
     <p className="max-w-sm text-sm">
@@ -99,7 +99,7 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
   const handleSaveClick = async (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     try {
-      await opportunityService.savePost(id);
+      await opportunitiesService.savePost(id);
       toast.success("Opportunity saved successfully");
     } catch (error) {
       console.error("Error saving opportunity:", error);
@@ -124,7 +124,7 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
           onClick={(e) => handleSaveClick(e, Number(opportunity.id))}
           aria-label="Save opportunity"
         >
-          <Bookmark className="h-4 w-4 text-gray-600" />
+          <BookmarkIcon className="h-4 w-4 text-gray-600" />
         </button>
       </div>
 
@@ -159,18 +159,18 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {opportunity.views !== undefined && (
               <div className="flex items-center gap-1.5">
-                <Eye className="h-4 w-4" />
+                <EyeIcon className="h-4 w-4" />
                 <span>{opportunity.views ?? 0} views</span>
               </div>
             )}
             {daysLeft !== null && (
               <div className="flex items-center gap-1.5">
-                <Timer className="h-4 w-4" />
+                <ClockIcon className="h-4 w-4" />
                 <span>{daysLeft} Days left</span>
               </div>
             )}
           </div>
-          <ArrowRight className="h-5 w-5 flex-shrink-0 text-gray-600" />
+          <ArrowRightIcon className="h-5 w-5 flex-shrink-0 text-gray-600" />
         </div>
       </div>
     </li>
@@ -270,7 +270,7 @@ const OpportunitiesPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-lg border-gray-300 py-2 pl-10 pr-4 focus:border-blue-500 focus:ring-blue-500"
           />
-          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          <SearchIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
         </div>
       </div>
 

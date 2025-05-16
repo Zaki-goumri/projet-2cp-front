@@ -1,62 +1,15 @@
 import axios from '@/api/axios.config';
-import { Conversation, ConversationResponse, Message } from '../types';
 import { toast } from 'react-toastify';
+import {
+  Conversation,
+  ConversationResponse,
+  Message,
+  MessageResponse,
+  CreateRoomResponse,
+  SearchUsersParams,
+  MessagesResponse
+} from '../types/chat.types';
 import { Student, Company } from 'src/modules/shared/types/shared.types';
-import { promises } from 'dns';
-
-interface MessageResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: {
-    details: string;
-    messages: {
-      id: number;
-      sender: number;
-      receiver: number;
-      sent_time: string;
-      message: string;
-    }[];
-  };
-}
-
-interface CreateRoomResponse {
-  details?: string;
-  chat: {
-    id: number;
-    student: {
-      id: number;
-      name: string;
-      email: string;
-      type: string;
-      profilepic: string | null;
-      // ... other student fields
-    };
-    company: {
-      id: number;
-      name: string;
-      email: string;
-      type: string;
-      profilepic: string | null;
-      // ... other company fields
-    };
-    room_name: string;
-    last_message: {
-      id: number;
-      sender: number;
-      receiver: number;
-      sent_time: string;
-      message: string;
-    };
-  };
-}
-
-interface ChatService {
-  getConversations: () => Promise<ConversationResponse[]>;
-  getMessages: (roomName: string, page?: number) => Promise<any>;
-  createRoom: (userId: number) => Promise<{ id: number; roomName: string }>;
-  parseConversationList: (data: ConversationResponse[], currentUser: any) => Conversation[];
-}
 
 class ChatError extends Error {
   constructor(message: string) {
@@ -65,28 +18,33 @@ class ChatError extends Error {
   }
 }
 
-const CHAT_ENDPOINT = {
-  CONVERSATION: '/chat/',
-  CREATE_ROOM: '/chat/',
-  MESSAGES: '/chat/messages',
-} as const;
+export class ChatService {
+  private static instance: ChatService | null = null;
+  private endpoints = {
+    conversation: '/chat/',
+    messages: '/chat/messages',
+    userSearch: '/post/user/search'
+  };
 
-export const chatService: ChatService = {
-  async getConversations(): Promise<ConversationResponse[]> {
-    const response = await axios.get(CHAT_ENDPOINT.CONVERSATION);
+  private constructor() {}
+
+  public static getInstance(): ChatService {
+    if (!ChatService.instance) {
+      ChatService.instance = new ChatService();
+    }
+    return ChatService.instance;
+  }
+
+  public async getConversations(): Promise<ConversationResponse[]> {
+    const response = await axios.get(this.endpoints.conversation);
     return Array.isArray(response.data.results.chats)
       ? response.data.results.chats
       : [];
-  },
+  }
 
-  async getMessages(roomName: string, page: number = 1, limit: number = 20): Promise<{
-    messages: Message[];
-    hasMore: boolean;
-    totalCount: number;
-    nextPage: number | null;
-  }> {
+  public async getMessages(roomName: string, page: number = 1, limit: number = 20): Promise<MessagesResponse> {
     try {
-      const response = await axios.get<MessageResponse>(CHAT_ENDPOINT.MESSAGES, {
+      const response = await axios.get<MessageResponse>(this.endpoints.messages, {
         params: {
           room_name: roomName,
           page,
@@ -94,13 +52,7 @@ export const chatService: ChatService = {
         },
       });
 
-      const messages = response.data.results.messages.map((msg) => ({
-        id: msg.id,
-        message: msg.message,
-        sender: msg.sender,
-        receiver: msg.receiver,
-        sentTime: new Date(msg.sent_time),
-      }));
+      const messages = this.transformMessages(response.data.results.messages);
 
       return {
         messages,
@@ -110,11 +62,11 @@ export const chatService: ChatService = {
       };
     } catch (error) {
       console.error('Failed to fetch messages:', error);
-      throw new Error('Failed to fetch messages');
+      throw new ChatError('Failed to fetch messages');
     }
-  },
+  }
 
-  parseConversationList(
+  public parseConversationList(
     conversations: ConversationResponse[],
     currentUser: any
   ): Conversation[] {
@@ -122,28 +74,12 @@ export const chatService: ChatService = {
       toast.error('your session is expired');
       return [];
     }
-    return conversations.map((chat) => {
-      return {
-        id: chat.id,
-        name:
-          currentUser.id === chat.student.id ? chat.company.name : chat.student.name,
-        avatar:
-          currentUser.id === chat.student.id
-            ? chat.company.profilepic
-            : chat.student.profilepic,
-        lastMessage: chat.last_message,
-        email:
-          currentUser.id === chat.student.id ? chat.company.email : chat.student.email,
-        roomName: chat.room_name,
-        userType:
-          currentUser.id === chat.student.id ? chat.company.type : chat.student.type,
-      };
-    });
-  },
+    return conversations.map((chat) => this.transformConversation(chat, currentUser));
+  }
 
-  async createRoom(userId: number): Promise<{ id: number; roomName: string }> {
+  public async createRoom(userId: number): Promise<{ id: number; roomName: string }> {
     try {
-      const response = await axios.post<CreateRoomResponse>(`/chat/?user_id=${userId}`);
+      const response = await axios.post<CreateRoomResponse>(`${this.endpoints.conversation}?user_id=${userId}`);
       const { chat } = response.data;
       
       return {
@@ -152,7 +88,6 @@ export const chatService: ChatService = {
       };
     } catch (error: any) {
       if (error.response?.status === 400) {
-        // If chat already exists, the API still returns the chat data
         if (error.response.data?.chat) {
           const { chat } = error.response.data;
           return {
@@ -160,9 +95,54 @@ export const chatService: ChatService = {
             roomName: chat.room_name
           };
         }
-        throw new Error('Invalid request. Please try again.');
+        throw new ChatError('Invalid request. Please try again.');
       }
-      throw new Error('Failed to create chat room.');
+      throw new ChatError('Failed to create chat room.');
     }
-  },
-};
+  }
+
+  public async searchUsers({ username, type }: SearchUsersParams) {
+    try {
+      if (!username.trim()) {
+        return [];
+      }
+
+      const params = new URLSearchParams();
+      params.append('username', username);
+      if (type) {
+        params.append('type', type);
+      }
+
+      const response = await axios.get(`${this.endpoints.userSearch}?${params.toString()}`);
+      return response.data.results;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      throw new ChatError('Failed to search users');
+    }
+  }
+
+  private transformMessages(messages: MessageResponse['results']['messages']): Message[] {
+    return messages.map((msg) => ({
+      id: msg.id,
+      message: msg.message,
+      sender: msg.sender,
+      receiver: msg.receiver,
+      sentTime: new Date(msg.sent_time),
+    }));
+  }
+
+  private transformConversation(chat: ConversationResponse, currentUser: any): Conversation {
+    const isStudent = currentUser.id === chat.student.id;
+    return {
+      id: chat.id,
+      name: isStudent ? chat.company.name : chat.student.name,
+      avatar: isStudent ? chat.company.profilepic : chat.student.profilepic,
+      lastMessage: chat.last_message,
+      email: isStudent ? chat.company.email : chat.student.email,
+      roomName: chat.room_name,
+      userType: isStudent ? chat.company.type : chat.student.type,
+    };
+  }
+}
+
+export const chatService = ChatService.getInstance();

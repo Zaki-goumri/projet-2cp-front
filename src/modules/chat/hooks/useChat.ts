@@ -5,14 +5,16 @@ import { chatService } from '../services/chat.service';
 import { WebSocketService } from '../services/websocket.service';
 import { useNavigate } from 'react-router';
 import { useMessages } from './useMessages';
+import { toast } from 'react-toastify';
 
-export const useChat = () => {
+export const useChat = (currentUser: any) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [wsService] = useState(() => new WebSocketService());
   const [error, setError] = useState<string | null>(null);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
   const {
     messages,
@@ -25,59 +27,62 @@ export const useChat = () => {
     onError: setError
   });
 
-  const { data: currentUser } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => {
-      const userInfo = localStorage.getItem('user-storage');
-      if (!userInfo) return null;
-      try {
-        const parsedUserData = JSON.parse(userInfo);
-        const userData = parsedUserData.state.user;
-        if (userData && userData.id) return userData;
-        return null;
-      } catch (err) {
-        console.error('Error parsing user data:', err);
-        throw new Error('Failed to load user data');
-      }
-    },
-    staleTime: Infinity,
-  });
-
-  const {
-    data: conversations,
-    isLoading: conversationsLoading,
-    isError: conversationsError,
-    error: conversationsErrorData,
-  } = useQuery({
+  const { data: conversations, isLoading: isLoadingConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: async () => {
-      try {
-        const data = await chatService.getConversations();
-        const parsedUser = chatService.parseConversationList(data, currentUser);
-        return parsedUser;
-      } catch (err) {
-        console.error('Failed to load conversations:', err);
-        throw new Error('Failed to load conversations');
-      }
+      const response = await chatService.getConversations();
+      return chatService.parseConversationList(response, currentUser);
     },
-    enabled: !!currentUser,
+  });
+
+  const { data: messagesData, isLoading: isLoadingMessages } = useQuery({
+    queryKey: ['messages', selectedRoom],
+    queryFn: () => selectedRoom ? chatService.getMessages(selectedRoom) : null,
+    enabled: !!selectedRoom,
   });
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const createConversationMutation = useMutation({
+  const createRoomMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
-      navigate(`/chat/${data.id}`);
     },
     onError: (error) => {
-      console.error('Failed to create conversation:', error);
-      setError('Failed to create conversation');
+      toast.error('Failed to create chat room');
     },
   });
+
+  const searchUsersMutation = useMutation({
+    mutationFn: (params: { username: string; type?: string }) => 
+      chatService.searchUsers(params),
+  });
+
+  const handleRoomSelect = (roomName: string) => {
+    setSelectedRoom(roomName);
+  };
+
+  const handleCreateRoom = async (userId: number) => {
+    try {
+      const { roomName } = await createRoomMutation.mutateAsync(userId);
+      setSelectedRoom(roomName);
+      return roomName;
+    } catch (error) {
+      console.error('Error creating room:', error);
+      throw error;
+    }
+  };
+
+  const handleSearchUsers = async (username: string, type?: string) => {
+    try {
+      return await searchUsersMutation.mutateAsync({ username, type });
+    } catch (error) {
+      console.error('Error searching users:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     let isSubscribed = true;
@@ -229,16 +234,24 @@ export const useChat = () => {
   const startNewConversation = useCallback(
     (userId: number) => {
       if (!userId) return;
-      createConversationMutation.mutate(userId);
+      createRoomMutation.mutate(userId);
     },
-    [createConversationMutation]
+    [createRoomMutation]
   );
 
   return {
-    messages,
     conversations,
+    messages,
+    selectedRoom,
+    isLoadingConversations,
+    isLoadingMessages,
+    isCreatingRoom: createRoomMutation.isLoading,
+    isSearchingUsers: searchUsersMutation.isLoading,
+    handleRoomSelect,
+    handleCreateRoom,
+    handleSearchUsers,
     activeConversation,
-    loading: conversationsLoading,
+    loading: isLoadingConversations,
     loadingMore: isLoadingMore,
     error,
     currentUser,
@@ -247,7 +260,7 @@ export const useChat = () => {
     selectConversation,
     sendMessage,
     startNewConversation,
-    isCreatingChat: createConversationMutation.isLoading,
+    isCreatingChat: createRoomMutation.isLoading,
     messagesEndRef,
     scrollToBottom,
   };
