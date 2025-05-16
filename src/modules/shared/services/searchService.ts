@@ -1,5 +1,5 @@
 import axios from '@/api/axios.config';
-import { SearchResponse, OpportunityResultItem, CompanyResultItem } from '@/types/search'; // Import shared types
+import { SearchResponse, OpportunityResultItem, CompanyResultItem } from '@/modules/shared/types/search.types'; // Import shared types
 
 
 export const searchApi = async (query: string): Promise<SearchResponse> => {

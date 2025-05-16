@@ -1,6 +1,6 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
-import NavBar from '../../modules/shared/components/navBar';
+import { NavBar } from '@/modules/shared/components';
 
 type LayoutProps = {
   children: React.ReactNode;

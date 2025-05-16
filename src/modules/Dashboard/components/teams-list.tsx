@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { TeamData } from '../types/dashboard.types';
-import { AddIcon, MoreOptionsIcon } from '@/modules/shared/components/icons';
+import { AddIcon, MoreOptionsIcon } from '@/modules/shared/icons';
 
 interface TeamsListProps {
   teams: TeamData[];

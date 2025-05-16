@@ -2,10 +2,9 @@ import React, { FC } from 'react';
 
 interface SvgProps extends React.SVGProps<SVGSVGElement> {
   title?: string;
-  size?:number;
 }
 
-export const SendIcon: FC<SvgProps> = ({ ...props }) => (
+const BookmarkIcon: FC<SvgProps> = ({ title, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -18,9 +17,9 @@ export const SendIcon: FC<SvgProps> = ({ ...props }) => (
     strokeLinejoin="round"
     {...props}
   >
-    <line x1="22" y1="2" x2="11" y2="13" />
-    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    {title && <title>{title}</title>}
+    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
   </svg>
 );
 
-export default SendIcon; 
+export default BookmarkIcon; 

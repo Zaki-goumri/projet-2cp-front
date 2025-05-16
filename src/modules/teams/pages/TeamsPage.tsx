@@ -148,7 +148,7 @@ const TeamsPage: React.FC = () => {
             to="/teams/create"
             className="flex items-center gap-2 rounded-lg bg-[#92E3A9] px-4 py-2 text-white transition-colors hover:bg-[#7dca8f]"
           >
-            <PlusIcon size={20} />
+            <PlusIcon />
             Create Team
           </Link>
         </div>
@@ -173,7 +173,7 @@ const TeamsPage: React.FC = () => {
                 }
                 icon={
                   <span className="text-lg font-medium text-[#92E3A9]">
-                    <UsersRoundIcon size={20} />
+                    <UsersRoundIcon />
                   </span>
                 }
                 memberCount={team.students.length}
@@ -247,7 +247,7 @@ const TeamsPage: React.FC = () => {
 
         <div className="mt-12">
           <h2 className="mb-6 text-lg font-medium text-gray-700 flex items-center gap-2">
-            <SendIcon size={20} /> Sent Invitations
+            <SendIcon /> Sent Invitations
           </h2>
           {errorSentInvitations && (
             <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 p-6 text-center">

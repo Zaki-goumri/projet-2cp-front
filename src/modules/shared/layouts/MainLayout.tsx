@@ -1,8 +1,7 @@
 import { ToastContainer } from 'react-toastify';
-import NavBar from '../../modules/shared/components/navBar';
+import { NavBar, Footer } from '@/modules/shared/components';
 import { lazy,ReactNode } from 'react';
 
-const Footer = lazy(() => import('../../modules/shared/components/footer'));
 
 type MainLayoutProps = {
   children: ReactNode;
