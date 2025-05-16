@@ -1,12 +1,12 @@
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import {
-  CheckCircle,
+  CheckCircleIcon,
   Bell,
-  Clock,
-  MessageCircle,
-  UserPlus,
-} from 'lucide-react';
+  ClockIcon,
+  MessageCircleIcon,
+  UserPlusIcon,
+} from '@/modules/shared/icons';
 import { Notification } from '../types/notification';
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
@@ -39,9 +39,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const getTypeIcon = () => {
     switch (type) {
       case 'message':
-        return <MessageCircle className="h-4 w-4" />;
+        return <MessageCircleIcon className="h-4 w-4" />;
       case 'invitation':
-        return <UserPlus className="h-4 w-4" />;
+        return <UserPlusIcon className="h-4 w-4" />;
       case 'other':
         return <Bell className="h-4 w-4" />;
       default:
@@ -78,7 +78,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <div className="flex items-start justify-between">
           <h4 className="mb-1 text-sm font-semibold">{title}</h4>
           <div className="flex items-center text-xs text-gray-500">
-            <Clock className="mr-1 h-3 w-3" />
+            <ClockIcon className="mr-1 h-3 w-3" />
             <span>
               {formatDistanceToNow(new Date(created_at), { addSuffix: true })}
             </span>
@@ -108,7 +108,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
               onClick={onMarkAsRead}
               className="h-auto p-1 text-blue-600 hover:bg-blue-50 hover:text-blue-800"
             >
-              <CheckCircle className="h-4 w-4" />
+              <CheckCircleIcon className="h-4 w-4" />
               <span className="ml-1 text-xs">Mark as read</span>
             </Button>
           )}
