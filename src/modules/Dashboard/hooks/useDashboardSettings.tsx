@@ -1,4 +1,3 @@
-// src/modules/features/dashboards/hooks/useDashboardSettings.ts
 import { useState } from 'react';
 import { DashboardData } from '../types/dashboard.types';
 

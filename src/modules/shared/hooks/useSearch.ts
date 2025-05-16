@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { searchApi } from '@/modules/shared/services/searchService';
+import { searchService } from '@/modules/shared/services/searchService';
 import { useState, useEffect } from 'react';
 import { useDebounce } from './useDebounce';
 import { SearchResponse } from '@/modules/shared/types/search.types';
+
 
 const fetchSearchResults = async (query: string): Promise<SearchResponse> => {
   if (!query) {
     return { opportunity: [], company: [] };
   }
-  return searchApi(query);
+  return searchService.search(query);
 };
 
 export const useSearch = () => {
@@ -19,7 +20,7 @@ export const useSearch = () => {
     queryKey: ['searchResults', debouncedSearchTerm],
     queryFn: () => fetchSearchResults(debouncedSearchTerm),
     enabled: !!debouncedSearchTerm,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
   });
 
   const performSearch = (query: string) => {

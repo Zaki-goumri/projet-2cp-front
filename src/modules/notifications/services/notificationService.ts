@@ -1,57 +1,86 @@
 import { Notification } from '../types/notification';
-import api from '@/api/axios.config';
+import axios from '@/api/axios.config';
 import { NotificationsResponse } from '../types/notification';
 
-const NOTIFICATIONS_ENDPOINT = '/Auth/notfi';
-const SINGLE_NOTIFICATION_ENDPOINT = '/Auth/notif';
+export class NotificationService {
+  private static instance: NotificationService | null = null;
+  private endpoints = {
+    notifications: '/notifications/',
+    authNotifications: '/Auth/notfi',
+    singleNotification: '/Auth/notif'
+  };
 
-/**
- * Fetches all notifications for the authenticated user.
- */
-export const getNotifications = async (): Promise<NotificationsResponse> => {
-  try {
-    const response = await api.get<Notification[]>(NOTIFICATIONS_ENDPOINT);
-    return { notifications: response.data };
-  } catch (error) {
-    console.error('Error fetching notifications:', error);
-    throw error;
+  private constructor() {}
+
+  public static getInstance(): NotificationService {
+    if (!NotificationService.instance) {
+      NotificationService.instance = new NotificationService();
+    }
+    return NotificationService.instance;
   }
-};
 
-/**
- * Marks all notifications as read for the authenticated user.
- */
-export const markAllNotificationsAsRead = async (): Promise<void> => {
-  try {
-    await api.put(NOTIFICATIONS_ENDPOINT);
-  } catch (error) {
-    console.error('Error marking all notifications as read:', error);
-    throw error;
+  /**
+   * Fetches all notifications for the authenticated user.
+   */
+  public async getNotifications(): Promise<NotificationsResponse> {
+    try {
+      const response = await axios.get<Notification[]>(this.endpoints.authNotifications);
+      return { notifications: response.data };
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      throw error;
+    }
   }
-};
 
-/**
- * Deletes a specific notification by its ID.
- */
-export const deleteNotification = async (id: number): Promise<void> => {
-  try {
-    await api.delete(`${SINGLE_NOTIFICATION_ENDPOINT}/${id}/`);
-  } catch (error) {
-    console.error(`Error deleting notification with ID ${id}:`, error);
-    throw error;
+  /**
+   * Fetches notifications from the notifications endpoint.
+   */
+  public async getAllNotifications(): Promise<NotificationsResponse[]> {
+    try {
+      const response = await axios.get<NotificationsResponse[]>(this.endpoints.notifications);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching all notifications:', error);
+      throw error;
+    }
   }
-};
 
-export const notificationService = {
-  getNotifications: async (): Promise<NotificationsResponse[]> => {
-    const response = await api.get<NotificationsResponse[]>(
-      NOTIFICATIONS_ENDPOINT
-    );
-    return response.data;
-  },
+  /**
+   * Marks all notifications as read for the authenticated user.
+   */
+  public async markAllNotificationsAsRead(): Promise<void> {
+    try {
+      await axios.put(this.endpoints.authNotifications);
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+      throw error;
+    }
+  }
 
-  markAsRead: async (id: string): Promise<void> => {
-    const response = await api.post(`${NOTIFICATIONS_ENDPOINT}/${id}/read`);
-    return response.data;
-  },
-};
+  /**
+   * Marks a specific notification as read by its ID.
+   */
+  public async markAsRead(id: string): Promise<void> {
+    try {
+      const response = await axios.post(`${this.endpoints.notifications}${id}/read`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error marking notification with ID ${id} as read:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a specific notification by its ID.
+   */
+  public async deleteNotification(id: number): Promise<void> {
+    try {
+      await axios.delete(`${this.endpoints.singleNotification}/${id}/`);
+    } catch (error) {
+      console.error(`Error deleting notification with ID ${id}:`, error);
+      throw error;
+    }
+  }
+}
+
+export const notificationService = NotificationService.getInstance();

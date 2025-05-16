@@ -21,7 +21,7 @@ import {
 } from './types/opportunity.types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { opportunityService } from "./services/opportunity.service";
+import { opportunitiesService } from "./services/opportunities.service";
 import { toast } from 'react-toastify';
 import { useDebounce } from '@/modules/shared/hooks/useDebounce';
 
@@ -99,7 +99,7 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
   const handleSaveClick = async (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     try {
-      await opportunityService.savePost(id);
+      await opportunitiesService.savePost(id);
       toast.success("Opportunity saved successfully");
     } catch (error) {
       console.error("Error saving opportunity:", error);

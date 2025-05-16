@@ -1,20 +1,37 @@
 import axios from '@/api/axios.config';
-import { SearchResponse, OpportunityResultItem, CompanyResultItem } from '@/modules/shared/types/search.types'; // Import shared types
+import { SearchResponse } from '@/modules/shared/types/search.types'; 
 
+export class SearchService {
+  private static instance :SearchService | null = null;
+  private endpoints = {
+    search: '/app/search/'
+  };
 
-export const searchApi = async (query: string): Promise<SearchResponse> => {
-  try {
-    const response = await axios.get<SearchResponse>(`/app/search/?q=${encodeURIComponent(query)}`);
+  private constructor() {}
 
-    const data = response.data;
-
-    if (!data || typeof data !== 'object' || !Array.isArray(data.opportunity) || !Array.isArray(data.company)) {
-      console.error('Invalid API response structure:', data);
-      throw new Error('Invalid API response structure');
+  public static getInstance(): SearchService {
+    if (!SearchService.instance) {
+      SearchService.instance = new SearchService();
     }
-    return data;
-  } catch (error) {
-    console.error('Failed to fetch search results:', error);
-    throw error;
+    return SearchService.instance;
   }
-}; 
+
+  public async search(query: string): Promise<SearchResponse> {
+    try {
+      const response = await axios.get<SearchResponse>(`${this.endpoints.search}?q=${encodeURIComponent(query)}`);
+
+      const data = response.data;
+
+      if (!data || typeof data !== 'object' || !Array.isArray(data.opportunity) || !Array.isArray(data.company)) {
+        console.error('Invalid API response structure:', data);
+        throw new Error('Invalid API response structure');
+      }
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch search results:', error);
+      throw error;
+    }
+  }
+}
+
+export const searchService = SearchService.getInstance();

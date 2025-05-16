@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { opportunityService } from '../services/opportunity.service';
+import { opportunitiesService } from '../services/opportunities.service';
 import { toast } from 'react-toastify';
 
 export const useSavePost = () => {
@@ -8,7 +8,7 @@ export const useSavePost = () => {
   const queryClient = useQueryClient();
 
   const savePostMutation = useMutation({
-    mutationFn: (postId: number) => opportunityService.savePost(postId),
+    mutationFn: (postId: number) => opportunitiesService.savePost(postId),
     onSuccess: () => {
       toast.success('Post saved successfully');
       queryClient.invalidateQueries({ queryKey: ['opportunities'] });
