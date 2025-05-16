@@ -4,16 +4,16 @@ import { useOpportunity } from './hooks/useOpportunity';
 import Loading from '@/loading';
 
 const OverView = React.lazy(
-  () => import('@/modules/opportunity/components/overview')
+  () => import('@/modules/post/components/overview')
 );
 const AdditionalInformation = React.lazy(
-  () => import('@/modules/opportunity/components/additionalInformation')
+  () => import('@/modules/post/components/additionalInformation')
 );
 const Contact = React.lazy(
-  () => import('@/modules/opportunity/components/contact')
+  () => import('@/modules/post/components/contact')
 );
 const InternshipDetails = React.lazy(
-  () => import('@/modules/opportunity/components/internshipDetails')
+  () => import('@/modules/post/components/internshipDetails')
 );
 
 export default function InternshipListing() {

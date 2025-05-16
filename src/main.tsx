@@ -14,7 +14,7 @@ const Dashboard = lazy(() => import('./modules/Dashboard/page'));
 const App = lazy(() => import('./App'));
 const Signin = lazy(() => import('./modules/auth/signin/page'));
 const Home = lazy(() => import('./modules/home/page'));
-const OpportunityDetaitls = lazy(() => import('./modules/opportunity/page'));
+const OpportunityDetaitls = lazy(() => import('./modules/post/page'));
 const OpportunitiesPage = lazy(() => import('./modules/opportunities/page'));
 const OAuthCallback = lazy(
   () => import('./modules/auth/signin/components/googleCallback')
@@ -31,7 +31,7 @@ import InternshipsAndProblemsPage from './modules/internships&problems/page';
 import CreateTeamCard from './modules/teams/components/CreateTeamCard';
 const Chat = lazy(() => import('./modules/chat/page'));
 import { QueryProvider } from './modules/shared/providers/QueryProvider';
-import CreateOpportunityPage from './modules/opportunity/components/opportunity.create';
+import CreateOpportunityPage from './modules/post/components/opportunity.create';
 const QAPage = lazy(() => import('./modules/qa/page'));
 const ContactPage = lazy(() => import('./modules/contact/page'));
 const CompanyDashboardTest = lazy(() => import('./modules/company/test/page'));

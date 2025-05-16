@@ -1,3 +1,5 @@
+import { Student, Company } from '@/modules/shared/types/shared.types';
+
 export interface User {
   id: number;
   name: string;
@@ -20,10 +22,10 @@ export interface User {
 
 export interface Message {
   id: number;
+  message: string;
   sender: number;
   receiver: number;
-  sent_time: string;
-  message: string;
+  sentTime: Date;
 }
 
 export interface Chat {
@@ -45,13 +47,10 @@ export interface ChatResponse {
 }
 
 export interface MessagesResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: {
-    details: string;
-    messages: Message[];
-  };
+  messages: Message[];
+  hasMore: boolean;
+  totalCount: number;
+  nextPage: number | null;
 }
 
 export interface CreateChatResponse {
@@ -62,10 +61,67 @@ export interface CreateChatResponse {
 export interface Conversation {
   id: number;
   name: string;
-  avatar?: string;
+  avatar: string | null;
+  lastMessage: {
+    id: number;
+    sender: number;
+    receiver: number;
+    sent_time: string;
+    message: string;
+  };
+  email: string;
   roomName: string;
   userType: string;
-  email: string;
-  lastMessage?: Message;
-  lastMessageTime?: Date;
+}
+
+export interface ConversationResponse {
+  id: number;
+  student: Student;
+  company: Company;
+  room_name: string;
+  last_message: {
+    id: number;
+    sender: number;
+    receiver: number;
+    sent_time: string;
+    message: string;
+  };
+}
+
+export interface MessageResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: {
+    details: string;
+    messages: {
+      id: number;
+      sender: number;
+      receiver: number;
+      sent_time: string;
+      message: string;
+    }[];
+  };
+}
+
+export interface CreateRoomResponse {
+  details?: string;
+  chat: {
+    id: number;
+    student: Student;
+    company: Company;
+    room_name: string;
+    last_message: {
+      id: number;
+      sender: number;
+      receiver: number;
+      sent_time: string;
+      message: string;
+    };
+  };
+}
+
+export interface SearchUsersParams {
+  username: string;
+  type?: string;
 } 

@@ -1,18 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import axios from '@/api/axios.config';
-import { Team } from '../services/team.service';
-import { Opportunity } from '../services/opportunity.service';
-
-interface ApplicationResponse {
-  details: string;
-  data: {
-    id: number;
-    message: string;
-    status: string;
-    created_at: string;
-  };
-}
+import { opportunityService } from '../services/opportunity.service';
+import { Team} from '../types/team.types';
+import { Opportunity } from '../types/opportunity.types';
 
 interface UseApplicationProps {
   opportunity: Opportunity;
@@ -30,7 +20,7 @@ export const useApplication = ({ opportunity }: UseApplicationProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileSelect = (file: File | null) => {
-    if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
+    if (file && file.size > 5 * 1024 * 1024) { 
       toast.error('File size should not exceed 5MB');
       return;
     }
@@ -50,26 +40,14 @@ export const useApplication = ({ opportunity }: UseApplicationProps) => {
     
     setIsSubmitting(true);
     try {
-      const formData = new FormData();
-      formData.append('proposal', proposal);
-      
-      if (selectedFile) {
-        formData.append('file', selectedFile);
-      }
-
-      const response = await axios.post<ApplicationResponse>(
-        `/app/application/${opportunity.id}/`,
-        formData,
-        {
-          params: { team: selectedTeam?.name || '' },
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
+      const response = await opportunityService.submitApplication(
+        opportunity.id,
+        proposal,
+        selectedFile,
+        selectedTeam?.name
       );
 
-      console.log('Application response:', response);
-      if (response.status === 200) {
+      if (response) {
         toast.success('Your application has been submitted successfully!');
         setProposal('');
         setSelectedFile(null);
@@ -77,8 +55,6 @@ export const useApplication = ({ opportunity }: UseApplicationProps) => {
           setSelectedTeam(null);
           setSearchQuery('');
         }
-      } else {
-        throw new Error('Unexpected response status');
       }
     } catch (error: any) {
       console.error('Application submission error:', error);
@@ -107,7 +83,6 @@ export const useApplication = ({ opportunity }: UseApplicationProps) => {
   };
 
   return {
-    // State
     proposal,
     isSubmitting,
     isTeamApplication,
@@ -118,7 +93,6 @@ export const useApplication = ({ opportunity }: UseApplicationProps) => {
     isLoading,
     selectedFile,
 
-    // Setters
     setProposal,
     setIsTeamApplication,
     setSearchQuery,
@@ -126,7 +100,6 @@ export const useApplication = ({ opportunity }: UseApplicationProps) => {
     setFilteredTeams,
     setIsLoading,
 
-    // Actions
     handleSubmit,
     handleTeamSelect,
     resetTeamSelection,

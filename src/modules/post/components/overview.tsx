@@ -1,6 +1,6 @@
 'use client';
 import { MapPinIcon } from '@/modules/shared/icons';
-import { Opportunity } from '../services/opportunity.service';
+import { Opportunity } from '../types/opportunity.types';
 
 interface OverviewProps {
   opportunity: Opportunity;
@@ -8,7 +8,6 @@ interface OverviewProps {
 
 export default function Overview({ opportunity }: OverviewProps) {
 
- 
 
   return (
     <div className="rounded-lg bg-white p-6 shadow-sm relative overflow-hidden">
