@@ -9,7 +9,7 @@ const SearchSection = lazy(
 const Oppertunities = lazy(
   () => import('@/modules/home/Authedhome/components/oppertunities')
 );
-import { setType } from './services/set-type.service';
+import homeService from './services/home.service';
 
 const AuthedHome = () => {
   const { user, login } = useUserStore();
@@ -24,7 +24,7 @@ const AuthedHome = () => {
   const handleTypeSelect = async (type: 'Student' | 'Company') => {
     if (!user) return;
     try {
-      const updatedUser = await setType(type);
+      const updatedUser = await homeService.setUserType(type);
       login(updatedUser);
     } catch (error) {
       console.error('Failed to update user type from page:', error);

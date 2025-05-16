@@ -1,14 +1,14 @@
 import React from 'react';
 import { StatCardData } from '../types/dashboard.types';
-import { TrendUpIcon, TrendDownIcon } from '@/modules/shared/components/icons';
+import { TrendUpIcon, TrendDownIcon } from '@/modules/shared/icons';
 
 interface StatCardProps {
   title: string;
   value: string | number;
   icon?: React.ReactNode;
-  trend?: {
+  trend?: {                                                           
     value: string;
-    direction: 'up' | 'down';
+    direction: 'up' | 'down';                                                             
     color: string;
   };
   valueColor?: string;

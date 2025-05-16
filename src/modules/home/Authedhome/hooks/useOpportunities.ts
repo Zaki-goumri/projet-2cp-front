@@ -1,30 +1,30 @@
-import { useQuery } from '@tanstack/react-query';
-import { opportunitiesService } from '../services/opportunities.service';
-import { OpportunitiesResponse, Opportunity } from '../types/opportunities.types';
+import { useState, useEffect } from 'react';
+import homeService from '../services/home.service';
+import { OpportunitiesResponse } from '../types/opportunities.types';
 
 export const useOpportunities = (type: 'Internship' | 'Problem') => {
-  const queryKey = ['opportunities', type]; 
+  const [opportunities, setOpportunities] =
+    useState<OpportunitiesResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { 
-    data, 
-    isLoading, 
-    error, 
-    isFetching 
-  } = useQuery<OpportunitiesResponse, Error>(
-    queryKey,
-    () => opportunitiesService.fetchOpportunities(type),
-    {
-       staleTime: 5 * 60 * 1000, 
-       cacheTime: 15 * 60 * 1000, 
-      keepPreviousData: true,
-    }
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await homeService.fetchOpportunities(type);
+        setOpportunities(data);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('An error occurred'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const opportunities: Opportunity[] = data?.results ?? [];
+    fetchData();
+  }, [type]);
 
-  return {
-    opportunities,
-    isLoading: isLoading || isFetching, 
-    error,
-  };
-}; 
+  return { opportunities, isLoading, error };
+};
+

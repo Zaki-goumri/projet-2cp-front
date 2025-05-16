@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { useState, useMemo } from 'react';
-import opportunitiesService from '../services/opportunities.service';
+import {opportunitiesService} from '../services/opportunities.service';
 import { Opportunity, OpportunityFilterType } from '../types/opportunity.types';
 
 export const useOpportunities = (searchQuery: string = '') => {

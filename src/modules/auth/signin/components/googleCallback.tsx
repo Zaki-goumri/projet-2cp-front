@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { baseUrl } from '@/api/axios.config';
 import { useUserStore } from '@/modules/shared/store/userStore';
-
+import Loading from '@/loading';
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ const OAuthCallback = () => {
 
         const response = await axios.post(`${baseUrl}/Auth/google`, formData);
 
-        setUser({...response.data.user});
+        setUser({ ...response.data.user });
         document.cookie = `accessToken=${response.data.access}; path=/; max-age=3600`;
         document.cookie = `refreshToken=${response.data.refresh}; path=/; max-age=2592000`;
 
@@ -44,15 +44,9 @@ const OAuthCallback = () => {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-white">
-      {loading && (
-        <div className="text-center">
-          <p className="mb-2 text-lg">Processing your login...</p>
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-        </div>
-      )}
+      {loading && <Loading />}
     </div>
   );
 };
 
 export default OAuthCallback;
-
