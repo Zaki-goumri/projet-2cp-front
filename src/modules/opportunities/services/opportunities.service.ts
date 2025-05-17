@@ -23,7 +23,7 @@ export class OpportunitiesService {
 
   public async fetchOpportunities(): Promise<Opportunity[]> {
     const response = await axios.get(this.endpoints.opportunities);
-    return response.data.results;
+    return response.data;
   }
 
   public async fetchOpportunityById(id: number): Promise<Opportunity> {

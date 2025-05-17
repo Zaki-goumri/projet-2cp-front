@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import { useInternshipDetails } from '../hooks/useInternshipDetails';
-import { Opportunity } from '../services/opportunity.service';
+import { Opportunity } from '../types/opportunity.types';
 
 interface InternshipDetailsProps {
   opportunity: Opportunity;
