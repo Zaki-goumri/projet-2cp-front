@@ -8,7 +8,12 @@ interface UseApplicationProps {
   opportunity: Opportunity;
 }
 
-export const useApplication = ({ opportunity }: UseApplicationProps) => {
+export interface OpportunityResponse {
+  details: string;
+  data: Opportunity;
+}
+
+export const useApplication = ( opportunity : Opportunity) => {
   const [proposal, setProposal] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTeamApplication, setIsTeamApplication] = useState(false);
@@ -35,6 +40,12 @@ export const useApplication = ({ opportunity }: UseApplicationProps) => {
 
     if (isTeamApplication && !selectedTeam) {
       toast.error('Please select a team before submitting');
+      return;
+    }
+    console.log(opportunity)
+
+    if (!opportunity) {
+      toast.error('Opportunity not loaded. Please try again.');
       return;
     }
     

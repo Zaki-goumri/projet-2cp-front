@@ -1,16 +1,11 @@
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useMemo } from 'react';
-import {opportunitiesService} from '../services/opportunities.service';
+import { opportunitiesService } from '../services/opportunities.service';
 import { Opportunity, OpportunityFilterType } from '../types/opportunity.types';
 
 export const useOpportunities = (searchQuery: string = '') => {
   const queryClient = useQueryClient();
-  const [filterType, setFilterType] =
-    useState<OpportunityFilterType>('both');
+  const [filterType, setFilterType] = useState<OpportunityFilterType>('both');
 
   const {
     data: allOpportunities = [],
@@ -18,27 +13,28 @@ export const useOpportunities = (searchQuery: string = '') => {
     error: opportunitiesError,
   } = useQuery<Opportunity[], Error>({
     queryKey: ['opportunities'],
-    queryFn: opportunitiesService.fetchOpportunities,
+    queryFn: () => opportunitiesService.fetchOpportunities(),
     staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
-  const isLoading = isLoadingOpportunities ;
+  const isLoading = isLoadingOpportunities;
 
   const error = useMemo(() => {
-    const err = opportunitiesError ;
+    const err = opportunitiesError;
     return err instanceof Error ? err : null;
   }, [opportunitiesError]);
-
 
   const filteredOpportunities = useMemo(() => {
     let typeFiltered = allOpportunities;
     if (filterType === 'internships') {
-      typeFiltered = allOpportunities.filter((opp) => opp.type === 'internship');
+      typeFiltered = allOpportunities.filter(
+        (opp) => opp.type === 'internship'
+      );
     } else if (filterType === 'problems') {
       typeFiltered = allOpportunities.filter((opp) => opp.type === 'problem');
-    } 
+    }
     const query = searchQuery.toLowerCase().trim();
     if (!query) {
       return typeFiltered;
@@ -55,7 +51,6 @@ export const useOpportunities = (searchQuery: string = '') => {
     });
   }, [allOpportunities, filterType, searchQuery]);
 
-  // Check if the filtered list is empty
   const isEmpty = useMemo(() => {
     return !isLoading && !error && filteredOpportunities.length === 0;
   }, [isLoading, error, filteredOpportunities]);
@@ -66,6 +61,6 @@ export const useOpportunities = (searchQuery: string = '') => {
     setFilterType,
     isLoading,
     error,
-    isEmpty, 
+    isEmpty,
   };
-}; 
+};
