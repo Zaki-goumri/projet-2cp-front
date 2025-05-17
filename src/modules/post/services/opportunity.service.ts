@@ -1,6 +1,7 @@
 import axios from '@/api/axios.config';
+import externalApi from 'axios';
 import { Team, TeamMember, TeamsResponse } from '../types/team.types';
-import { Opportunity, Company } from '../types/opportunity.types';
+import { Opportunity, Company, OpportunityResponse } from '../types/opportunity.types';
 
 interface ApplicationResponse {
   details: string;
@@ -15,13 +16,11 @@ interface ApplicationResponse {
 export class OpportunityService {
   private static instance: OpportunityService | null = null;
   private endpoints = {
-    opportunities: '/post/opportunity/',
-    internships: '/post/internship/',
-    problems: '/post/problem/',
+    opportunity: '/post/opportunity/',
     search: '/app/search/',
     teams: '/post/team/',
-    savedPosts: '/saved-posts/',
-    applications: '/app/application/'
+    applications: '/app/application/',
+    savedPosts: ''
   };
 
   private constructor() {}
@@ -44,35 +43,61 @@ export class OpportunityService {
     }
   }
 
+  /**
+   * Converts any text content to markdown format using Google's Gemini API
+   * @param content The text content to convert to markdown
+   * @returns A promise containing the markdown representation of the content
+   */
+  public async getMarkdownContent(content: string): Promise<string> {
+    if (!content) return '';
+  
+    const GEMINI_URL = import.meta.env.VITE_GEMINI_URL;
+    const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+  
+    if (!GEMINI_URL || !GEMINI_API_KEY) {
+      console.warn('Missing Gemini config.');
+      return `# Content\n\n${content}`;
+    }
+  
+    try {
+      const response = await externalApi.post(
+        `${GEMINI_URL}?key=${GEMINI_API_KEY}`,
+        {
+          contents: [
+            {
+              parts: [{ text: `Make this content markdown:\n\n${content}` }]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.2,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1024,
+          },
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+  
+      const markdown = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+      return markdown || `# Content\n\n${content}`;
+    } catch (error: any) {
+      console.error('Error converting to markdown with Gemini:', error.message);
+      return `# Content\n\n${content}`;
+    }
+  }
+  
+
   public searchTeams(teams: Team[], searchQuery: string): Team[] {
     const query = searchQuery.toLowerCase().trim();
     if (!query) return teams;
-    return teams.filter(team => team.name.toLowerCase().includes(query));
+    return teams.filter((team) => team.name.toLowerCase().includes(query));
   }
 
-  // Opportunity methods
-  public async fetchOpportunities(): Promise<Opportunity[]> {
-    const response = await axios.get(this.endpoints.opportunities);
-    return response.data.results;
-  }
-
-  public async fetchOpportunityById(id: number): Promise<Opportunity> {
-    const response = await axios.get(`${this.endpoints.opportunities}${id}/`);
-    return response.data;
-  }
-
-  public async fetchInternships(): Promise<Opportunity[]> {
-    const response = await axios.get(this.endpoints.internships);
-    return response.data.results;
-  }
-
-  public async fetchProblems(): Promise<Opportunity[]> {
-    const response = await axios.get(this.endpoints.problems);
-    return response.data.results;
-  }
-
-  public async searchOpportunitiesAndCompanies(query: string): Promise<{ opportunity: Opportunity[], company: Company[] }> {
-    const response = await axios.get(`${this.endpoints.search}?q=${encodeURIComponent(query)}`);
+  public async fetchOpportunityById(id: string): Promise<OpportunityResponse> {
+    const response = await axios.get(`${this.endpoints.opportunity}${id}`);
+    console.log(response);
     return response.data;
   }
 
@@ -84,10 +109,15 @@ export class OpportunityService {
     await axios.delete(`${this.endpoints.savedPosts}${id}/`);
   }
 
-  public async submitApplication(opportunityId: number, proposal: string, file: File | null, teamName?: string): Promise<ApplicationResponse> {
+  public async submitApplication(
+    opportunityId: number,
+    proposal: string,
+    file: File | null,
+    teamName?: string
+  ): Promise<ApplicationResponse> {
     const formData = new FormData();
     formData.append('proposal', proposal);
-    
+
     if (file) {
       formData.append('file', file);
     }
@@ -97,9 +127,6 @@ export class OpportunityService {
       formData,
       {
         params: { team: teamName || '' },
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
       }
     );
 
@@ -107,4 +134,5 @@ export class OpportunityService {
   }
 }
 
-export const opportunityService = OpportunityService.getInstance(); 
+export const opportunityService = OpportunityService.getInstance();
+

@@ -1,17 +1,13 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { useOpportunity } from './hooks/useOpportunity';
+import { useOpportunity } from './hooks/useOpportunity.ts';
 import Loading from '@/loading';
 
-const OverView = React.lazy(
-  () => import('@/modules/post/components/overview')
-);
+const OverView = React.lazy(() => import('@/modules/post/components/overview'));
 const AdditionalInformation = React.lazy(
   () => import('@/modules/post/components/additionalInformation')
 );
-const Contact = React.lazy(
-  () => import('@/modules/post/components/contact')
-);
+const Contact = React.lazy(() => import('@/modules/post/components/contact'));
 const InternshipDetails = React.lazy(
   () => import('@/modules/post/components/internshipDetails')
 );
@@ -19,7 +15,6 @@ const InternshipDetails = React.lazy(
 export default function InternshipListing() {
   const { id } = useParams();
   const { data: opportunity, isLoading, error } = useOpportunity(id || '');
-
   if (isLoading) {
     return <Loading />;
   }
@@ -41,11 +36,11 @@ export default function InternshipListing() {
   }
 
   return (
-      <div className="mx-auto h-full max-w-6xl bg-[#2D81940A] p-6 space-y-6">
-        <OverView opportunity={opportunity} />
-        <InternshipDetails opportunity={opportunity} />
-        <AdditionalInformation opportunity={opportunity} />
-        <Contact opportunity={opportunity} />
-      </div>
+    <div className="mx-auto h-full max-w-6xl space-y-6 bg-[#2D81940A] p-6">
+      <OverView opportunity={opportunity.data} />
+      <InternshipDetails opportunity={opportunity.data} />
+      <AdditionalInformation opportunity={opportunity.data} />
+      <Contact {...opportunity} />
+    </div>
   );
 }

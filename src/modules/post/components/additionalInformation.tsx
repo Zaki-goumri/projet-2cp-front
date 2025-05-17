@@ -5,7 +5,7 @@ import {
   GraduationCapIcon,
 } from '@/modules/shared/icons';
 import { Card } from '@/components/ui/card';
-import { Opportunity } from '../services/opportunity.service';
+import { Opportunity } from '../types/opportunity.types';
 
 interface AdditionalInformationProps {
   opportunity: Opportunity;
@@ -24,7 +24,7 @@ export default function AdditionalInformation({ opportunity }: AdditionalInforma
             <h3 className="font-medium text-gray-700">Internship Location(s)</h3>
           </div>
           <p className="text-gray-600 ml-7">
-            {opportunity.company.location || 'Not specified'}
+            {opportunity?.company?.location || 'Not specified'}
           </p>
         </div>
         
@@ -34,7 +34,7 @@ export default function AdditionalInformation({ opportunity }: AdditionalInforma
             <h3 className="font-medium text-gray-700">Educations</h3>
           </div>
           <p className="text-gray-600 ml-7">
-            {opportunity.education || 'No prior education required'}
+            {opportunity.category|| 'No prior education required'}
           </p>
         </div>
         

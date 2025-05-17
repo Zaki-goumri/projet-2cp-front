@@ -101,9 +101,9 @@ if (root) {
                 path="/chat"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <Chat />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <Chat />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
@@ -112,9 +112,9 @@ if (root) {
                 path="/opportunity/create"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <CreateOpportunityPage />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <CreateOpportunityPage />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
@@ -122,9 +122,9 @@ if (root) {
                 path="/chat/:id"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <Chat />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <Chat />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
@@ -132,9 +132,9 @@ if (root) {
                 path="/notifications"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <NotificationsPage />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <NotificationsPage />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
@@ -142,19 +142,19 @@ if (root) {
                 path="/opportunities"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <OpportunitiesPage />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <OpportunitiesPage />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
-              />  
+              />
               <Route
                 path="/opportunities/:id"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <OpportunityDetaitls />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <OpportunityDetaitls />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
@@ -162,9 +162,9 @@ if (root) {
                 path="/profile/:userName"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <ProfilePage />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <ProfilePage />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
@@ -172,9 +172,9 @@ if (root) {
                 path="/dashboard"
                 element={
                   <ProtectedRoute>
-                  <MainLayout>
-                    <Dashboard />
-                  </MainLayout>
+                    <MainLayout>
+                      <Dashboard />
+                    </MainLayout>
                   </ProtectedRoute>
                 }
               />
@@ -182,9 +182,9 @@ if (root) {
                 path="/search"
                 element={
                   <ProtectedRoute>
-                  <LayoutWithoutFooter>
-                    <InternshipsAndProblemsPage />
-                  </LayoutWithoutFooter>
+                    <LayoutWithoutFooter>
+                      <InternshipsAndProblemsPage />
+                    </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }
               />
