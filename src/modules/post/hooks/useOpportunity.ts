@@ -1,19 +1,10 @@
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { CreateInternshipForm } from '../components/opportunity.create';
+import { useQuery } from '@tanstack/react-query';
+import { opportunityService } from '../services/opportunity.service.ts';
 
-export const useOpportunity = () => {
-  return useMutation({
-    mutationFn: async (data: CreateInternshipForm) => {
-      const response = await axios.post('/post/create', data);
-      return response.data;
-    },
-    onSuccess: () => {
-      toast.success('Opportunity created successfully');
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to create opportunity');
-    },
+export const useOpportunity = (id: string) => {
+  return useQuery({
+    queryKey: ['opportunity', id],
+    queryFn: () => opportunityService.fetchOpportunityById(id),
+    enabled: !!id,
   });
-}; 
+};

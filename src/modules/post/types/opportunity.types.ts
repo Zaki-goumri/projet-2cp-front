@@ -17,7 +17,7 @@ export interface Opportunity {
   description: string;
   markdown_content: string;
   status: 'open' | 'closed';
-  Type: 'internship' | 'job';
+  type: 'internship' | 'problem';
   category: string;
   skills: string[];
   enddate: string | null;
@@ -27,7 +27,29 @@ export interface Opportunity {
   startdate: string | null;
 }
 
+export interface OpportunitiesResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Opportunity[];
+}
+
 export interface OpportunityResponse {
   details: string;
   data: Opportunity;
+}
+
+export interface ApplicationResponse {
+  details: string;
+  data: {
+    id: number;
+    message: string;
+    status: string;
+    created_at: string;
+  };
+}
+
+export interface SearchResponse {
+  opportunity: Opportunity[];
+  company: Company[];
 } 

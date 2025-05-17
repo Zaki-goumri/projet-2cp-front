@@ -7,33 +7,30 @@ interface OverviewProps {
 }
 
 export default function Overview({ opportunity }: OverviewProps) {
-
-
   return (
-    <div className="rounded-lg bg-white p-6 shadow-sm relative overflow-hidden">
-      <div className="absolute left-0 top-0 h-full w-2 bg-green-400"></div>
-      
-      <div className="flex justify-between items-start">
+    <div className="relative overflow-hidden rounded-lg bg-white p-6 shadow-sm">
+      <div className="absolute top-0 left-0 h-full w-2 bg-green-400"></div>
+
+      <div className="flex items-start justify-between">
         <div className="pl-4">
           <img
-            src={opportunity.company.profilepic || '/default-company.png'}
-            alt={opportunity.company.name}
-            className="h-24 w-24 object-contain mb-4 rounded-full"
+            src={opportunity?.company?.profilepic || '/default-company.png'}
+            alt={opportunity?.company?.name}
+            className="mb-4 h-24 w-24 rounded-full object-contain"
           />
-          
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {opportunity.title}
+
+          <h1 className="mb-2 text-2xl font-bold text-gray-900">
+            {opportunity?.title}
           </h1>
-          
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            {opportunity.company.name}
+
+          <h2 className="mb-4 text-lg font-semibold text-gray-800">
+            {opportunity?.company?.name || 'company name'}
           </h2>
-          
-          <div className="flex items-center text-gray-600 mb-2">
-            <MapPinIcon className="h-5 w-5 mr-2" />
-            <span>{opportunity.company.location || 'Remote'}</span>
+
+          <div className="mb-2 flex items-center text-gray-600">
+            <MapPinIcon className="mr-2 h-5 w-5" />
+            <span>{opportunity?.company?.location || 'Remote'}</span>
           </div>
-                  
         </div>
       </div>
     </div>
