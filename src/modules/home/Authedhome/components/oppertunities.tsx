@@ -2,18 +2,19 @@
 
 import { motion } from 'framer-motion';
 import React from 'react';
+import { Sparkles } from 'lucide-react';
 
-const Slider = React.lazy(
+const OpportunitiesSection = React.lazy(
   () => import('@/modules/home/Authedhome/components/slider')
 );
 
 const Opportunities = () => {
   return (
-    <main className="overflow-hidde relative">
+    <main className="relative overflow-hidden">
       <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
         <div className="relative flex flex-col items-center justify-center">
           <motion.div
-            className="mrd:block absolute -bottom-12 -left-8 w-12 md:top-12 md:left-8 md:w-16 lg:top-16 lg:left-12 lg:w-20"
+            className="absolute -bottom-12 -left-8 w-12 md:top-12 md:left-8 md:w-16 lg:top-16 lg:left-12 lg:w-20"
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -62,17 +63,17 @@ const Opportunities = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
-            <h1 className="mb-6 text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">
-              Recommended <span className="text-[#98E9AB]">Opportunities</span>
+            <h1 className="mb-6 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+              Discover <span className="bg-gradient-to-r from-[#98E9AB] to-[#4CAF50] bg-clip-text text-transparent">Opportunities</span>
             </h1>
-            <p className="mx-auto max-w-[800px] text-sm text-gray-600 sm:text-base md:text-lg lg:text-xl">
-              Seeking outstanding opportunities? Check out the highest-rated
-              ones, trusted by the learners' community.
+            <p className="mx-auto max-w-[800px] text-base text-gray-600 sm:text-lg md:text-xl lg:text-2xl">
+              Find the perfect opportunities that match your skills and career goals.
+              From internships to real-world challenges, we've got you covered.
             </p>
           </motion.div>
         </div>
       </div>
-      <Slider />
+      <OpportunitiesSection />
     </main>
   );
 };

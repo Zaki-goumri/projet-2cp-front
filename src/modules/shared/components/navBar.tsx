@@ -32,6 +32,7 @@ import { useNotifications } from '@/modules/notifications/hooks/useNotifications
 import { formatDistanceToNow } from 'date-fns';
 import { Notification } from '@/modules/notifications/types/notification';
 import { clearAuthTokens } from '@/api/axios.config';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type NavItem = {
   to: string;
@@ -84,7 +85,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="bg-background sticky top-0 right-0 left-0 z-50 bg-white px-4 py-2 shadow sm:px-6 md:px-8">
+    <nav className="sticky top-0 right-0 left-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200/50 px-4 py-2 shadow-sm sm:px-6 md:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
@@ -108,9 +109,11 @@ export default function NavBar() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-300 hover:scale-105 hover:text-gray-900"
+                  className="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-300 hover:scale-105 hover:text-gray-900"
                 >
-                  {item.icon && <item.icon className="h-4 w-4" />}
+                  {item.icon && (
+                    <item.icon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                  )}
                   {item.label}
                 </Link>
               ))}
@@ -122,7 +125,7 @@ export default function NavBar() {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="rounded-md px-3 py-2 font-medium text-gray-700 transition-all duration-200 hover:scale-105 hover:text-gray-900"
+                    className="relative rounded-md px-3 py-2 font-medium text-gray-700 transition-all duration-200 hover:scale-105 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     {item.label}
                   </Link>
@@ -137,20 +140,23 @@ export default function NavBar() {
               <>
                 {/* Notification Bell */}
                 <div className="flex items-center gap-4">
-                  {/* Notification Bell */}
                   <div className="relative">
                     <DropdownMenu>
                       <DropdownMenuTrigger className="focus:outline-none">
                         <div className="relative">
-                          <Bell className="h-10 w-10 cursor-pointer rounded-full p-2 transition-colors duration-200 hover:bg-gray-100" />
+                          <Bell className="h-10 w-10 cursor-pointer rounded-full p-2 transition-all duration-200 hover:bg-gray-100 hover:scale-110" />
                           {unreadCount > 0 && (
-                            <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red-500" />
+                            <motion.span
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red-500"
+                            />
                           )}
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
                         align="end"
-                        className="!sm:max-w-sm !w-80 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white !p-2"
+                        className="!sm:max-w-sm !w-80 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white/95 !backdrop-blur-md !p-2 !shadow-lg"
                       >
                         <DropdownMenuLabel className="!px-2 !text-lg !font-semibold !text-black">
                           Notifications
@@ -163,12 +169,16 @@ export default function NavBar() {
                               .map((notification: Notification) => (
                                 <DropdownMenuItem
                                   key={notification.id}
-                                  className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100"
+                                  className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100/80 transition-colors duration-200"
                                 >
                                   <div className="!flex !w-full !items-start !justify-between">
                                     <span className="!flex !items-center !gap-2 !font-medium !text-black">
                                       {!notification.read && (
-                                        <span className="!h-2 !w-2 !rounded-full !bg-blue-500" />
+                                        <motion.span
+                                          initial={{ scale: 0 }}
+                                          animate={{ scale: 1 }}
+                                          className="!h-2 !w-2 !rounded-full !bg-blue-500"
+                                        />
                                       )}
                                       {notification.title}
                                     </span>
@@ -193,13 +203,13 @@ export default function NavBar() {
                         </div>
                         <DropdownMenuSeparator className="!bg-gray-200" />
                         <Link to="/notifications" className="block w-full">
-                          <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700">
+                          <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700 transition-colors duration-200">
                             View all notifications
                           </DropdownMenuItem>
                         </Link>
                         {unreadCount > 0 && (
                           <DropdownMenuItem
-                            className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700"
+                            className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700 transition-colors duration-200"
                             onClick={() => markAllAsRead()}
                           >
                             <CheckCircle2 className="h-4 w-4" />
@@ -214,7 +224,7 @@ export default function NavBar() {
                 {/* User Profile Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger className="mb-2 focus:outline-none">
-                    <Avatar className="cursor-pointer rounded-full transition-colors duration-200 hover:bg-gray-100">
+                    <Avatar className="cursor-pointer rounded-full transition-all duration-200 hover:scale-110 hover:bg-gray-100">
                       <AvatarImage
                         src={user.profilepic || ''}
                         className="!bg-white"
@@ -226,7 +236,7 @@ export default function NavBar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="!w-56 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white !p-2"
+                    className="!w-56 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white/95 !backdrop-blur-md !p-2 !shadow-lg"
                   >
                     <DropdownMenuLabel className="!px-2 !text-lg !font-semibold !text-black">
                       My Account
@@ -259,14 +269,14 @@ export default function NavBar() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100/80 transition-colors duration-200">
                               {item.icon}
                               {item.label}
                             </DropdownMenuItem>
                           </a>
                         ) : (
                           <Link to={item.to} key={index}>
-                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100">
+                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100/80 transition-colors duration-200">
                               {item.icon}
                               {item.label}
                             </DropdownMenuItem>
@@ -276,7 +286,7 @@ export default function NavBar() {
                     <DropdownMenuSeparator className="!bg-gray-200" />
                     <DropdownMenuItem
                       onClick={handleSignOut}
-                      className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 hover:!bg-red-50 hover:!text-red-700"
+                      className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 hover:!bg-red-50 hover:!text-red-700 transition-colors duration-200"
                     >
                       Sign out
                     </DropdownMenuItem>
@@ -309,83 +319,98 @@ export default function NavBar() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </div>
-            <div
-              className={`fixed inset-0 z-50 transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
-            >
-              <div
-                className="absolute inset-0 bg-black/50"
-                onClick={() => setIsOpen(false)}
-              />
-              <div
-                className={`absolute top-0 right-0 h-full w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
-              >
-                <div className="p-4">
-                  <button
+
+            {/* Mobile Menu */}
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-50 lg:hidden"
+                >
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                     onClick={() => setIsOpen(false)}
-                    className="absolute top-4 right-4 rounded-lg p-2 hover:bg-gray-100"
-                    aria-label="Close menu"
+                  />
+                  <motion.div
+                    initial={{ x: '100%' }}
+                    animate={{ x: 0 }}
+                    exit={{ x: '100%' }}
+                    transition={{ type: 'spring', damping: 20 }}
+                    className="absolute top-0 right-0 h-full w-64 bg-white shadow-lg"
                   >
-                    <X className="h-6 w-6" />
-                  </button>
-                  <div className="mt-8 space-y-3">
-                    {user ? (
-                      <>
-                        {privateNavItems.map((item) => (
-                          <a
-                            key={item.to}
-                            href={item.to}
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                            onClick={() => setIsOpen(false)}
-                          >
-                            {item.icon && <item.icon className="h-5 w-5" />}
-                            {item.label}
-                          </a>
-                        ))}
-                        <div className="my-2 h-px bg-gray-200" />
-                        <a
-                          href="#"
-                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setIsOpen(false);
-                            handleSignOut();
-                          }}
-                        >
-                          Sign out
-                        </a>
-                      </>
-                    ) : (
-                      <>
-                        {publicNavItems.map((item) => (
-                          <Link
-                            key={item.to}
-                            to={item.to}
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                            onClick={() => setIsOpen(false)}
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                        <a
-                          href="/auth/signin"
-                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          Sign in
-                        </a>
-                        <a
-                          href="/auth/signup"
-                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          Sign up
-                        </a>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+                    <div className="p-4">
+                      <button
+                        onClick={() => setIsOpen(false)}
+                        className="absolute top-4 right-4 rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200"
+                        aria-label="Close menu"
+                      >
+                        <X className="h-6 w-6" />
+                      </button>
+                      <div className="mt-8 space-y-3">
+                        {user ? (
+                          <>
+                            {privateNavItems.map((item) => (
+                              <Link
+                                key={item.to}
+                                to={item.to}
+                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {item.icon && <item.icon className="h-5 w-5" />}
+                                {item.label}
+                              </Link>
+                            ))}
+                            <div className="my-2 h-px bg-gray-200" />
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setIsOpen(false);
+                                handleSignOut();
+                              }}
+                              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                            >
+                              Sign out
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            {publicNavItems.map((item) => (
+                              <Link
+                                key={item.to}
+                                to={item.to}
+                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {item.label}
+                              </Link>
+                            ))}
+                            <Link
+                              to="/auth/signin"
+                              className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              Sign in
+                            </Link>
+                            <Link
+                              to="/auth/signup"
+                              className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              Sign up
+                            </Link>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

@@ -74,7 +74,6 @@ const EmptyState = ({ type, searchQuery }: EmptyStateProps) => {
   );
 };
 
-// Loading state component
 const LoadingState = () => (
   <div className="flex items-center justify-center py-16">
     <LoaderIcon className="text-primary h-8 w-8 animate-spin" />
@@ -101,6 +100,7 @@ const StatusBadge = ({ status }: StatusBadgeProps) => {
     pending: 'bg-yellow-50 text-yellow-700 border-yellow-200',
     accepted: 'bg-green-50 text-green-700 border-green-200',
     rejected: 'bg-red-50 text-red-700 border-red-200',
+    submitted:'bg-blue-50 text-green-700 border-green-200',
     default: 'bg-gray-50 text-gray-700 border-gray-200',
   };
 

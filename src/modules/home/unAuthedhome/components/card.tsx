@@ -1,5 +1,6 @@
-import { ArrowRight, Eye, Timer } from 'lucide-react';
+import { ArrowRight, Eye, Timer, Building2 } from 'lucide-react';
 import { Link } from 'react-router';
+import { motion } from 'framer-motion';
 
 interface InternshipCardProps {
   logo: string;
@@ -17,44 +18,75 @@ export default function InternshipCard({
   daysLeft,
 }: InternshipCardProps) {
   return (
-    <main className="group mx-auto my-10 flex h-full w-full max-w-md min-w-2 cursor-pointer flex-col overflow-hidden rounded-3xl border-transparent shadow-lg duration-300 ease-in-out hover:scale-110 sm:mx-0">
-      <aside className="relative -mt-6 flex flex-1 flex-col rounded-3xl bg-white px-5 pt-8 pb-6">
-        <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl bg-white p-2.5 shadow-sm sm:h-20 sm:w-20">
-          <img
-            src={logo}
-            alt="Company Logo"
-            width={50}
-            height={50}
-            className="object-contain"
-          />
+    <motion.div 
+      className="group h-full"
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:border-[#98E9AB] hover:shadow-lg">
+        {/* Header with company info */}
+        <div className="relative p-6 pb-0">
+          <div className="mb-4 flex items-start justify-between">
+            <div className="flex-1">
+              <h3 className="mb-2 text-lg font-semibold text-gray-900 line-clamp-1 group-hover:text-[#98E9AB] transition-colors">
+                {title}
+              </h3>
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#98E9AB]/10">
+                  <Building2 className="h-4 w-4 text-[#98E9AB]" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Company Name</p>
+                  <p className="text-xs text-gray-500">Location</p>
+                </div>
+              </div>
+            </div>
+            <div className="ml-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white p-2 shadow-sm transition-transform duration-300 group-hover:scale-110">
+              <img
+                src={logo}
+                alt="Company Logo"
+                className="h-full w-full object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'https://via.placeholder.com/64';
+                }}
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-1 flex-col justify-between space-y-4">
-          <div className="mt-5 flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium text-black">{title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed text-black">
-                {description} &nbsp;
-                <Link to="#" className="text-[#90D4A1] hover:underline">
-                  learn more
-                </Link>
-              </p>
-            </div>
-            <ArrowRight className="text-muted-foreground mt-1 h-5 w-5" />
-          </div>
+        {/* Description */}
+        <div className="flex-1 px-6 py-4">
+          <p className="text-sm leading-relaxed text-gray-600 line-clamp-2">
+            {description}
+          </p>
+        </div>
 
-          <div className="text-muted-foreground flex flex-col gap-4 pt-2 text-sm text-black sm:flex-row sm:gap-6">
-            <div className="flex items-center gap-2">
-              <Eye className="h-4 w-4" />
-              <span>{views} views</span>
+        {/* Footer with metadata */}
+        <div className="border-t border-gray-100 bg-gray-50/50 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Timer className="h-3.5 w-3.5" />
+                <span>{daysLeft} Days left</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Eye className="h-3.5 w-3.5" />
+                <span>{views}</span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
-              <Timer className="h-4 w-4" />
-              <span>{daysLeft} Days left</span>
+              <span className="rounded-full bg-[#98E9AB]/10 px-2.5 py-1 text-xs font-medium text-[#98E9AB]">
+                Internship
+              </span>
+              <ArrowRight className="h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-1" />
             </div>
           </div>
         </div>
-      </aside>
-    </main>
+
+        {/* Hover effect overlay */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#98E9AB]/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+      </div>
+    </motion.div>
   );
 }

@@ -18,7 +18,7 @@ export class HomeService {
   }
 
   public async fetchOpportunities(
-    type: 'Internship' | 'Problem'
+    type: 'internship' | 'problem'
   ): Promise<OpportunitiesResponse> {
     const { data } = await axios.get<OpportunitiesResponse>(
       `${this.endpoints.opportunities}?type=${type}`

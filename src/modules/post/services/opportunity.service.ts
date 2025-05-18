@@ -121,13 +121,12 @@ export class OpportunityService {
     if (file) {
       formData.append('file', file);
     }
-
+    
     const response = await axios.post<ApplicationResponse>(
       `${this.endpoints.applications}${opportunityId}/`,
-      formData,
-      {
-        params: { team: teamName || '' },
-      }
+      formData,{params:{
+        team:teamName
+      }}
     );
 
     return response.data;

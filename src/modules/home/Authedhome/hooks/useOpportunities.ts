@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import homeService from '../services/home.service';
 import { OpportunitiesResponse } from '../types/opportunities.types';
 
-export const useOpportunities = (type: 'Internship' | 'Problem') => {
+export const useOpportunities = (type: 'internship' | 'problem') => {
   const [opportunities, setOpportunities] =
     useState<OpportunitiesResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);

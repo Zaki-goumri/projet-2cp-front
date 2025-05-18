@@ -7,7 +7,7 @@ interface DescriptionInputProps {
 
 const DescriptionInput = ({ value = '', onChange }: DescriptionInputProps) => {
   const characterCount = value?.length || 0;
-  const maxLength = 5000; // Match the Zod schema max length
+  const maxLength = 5000; 
 
   return (
     <div className="space-y-2">

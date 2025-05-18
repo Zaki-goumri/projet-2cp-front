@@ -16,10 +16,9 @@ import { useEffect, useRef } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { teamsService } from '../../teams/services/teams.service';
 import { useApplication } from '../hooks/useApplication';
-import { Opportunity, OpportunityResponse,  } from '../types/opportunity.types';
-import { Team, TeamMember } from '../types/team.types';
+import {  OpportunityResponse,  } from '../types/opportunity.types';
+import { Team } from '../types/team.types';
 
-// Utility function for searching teams
 function searchTeams(teams: Team[], searchQuery: string): Team[] {
   const query = searchQuery.toLowerCase().trim();
   if (!query) return teams;

@@ -35,13 +35,19 @@ const StatusBadge = ({ status }: { status: Application['status'] }) => {
       color: 'bg-gray-50 text-gray-700 border-gray-200',
       label: 'Pending',
     },
-  };
+    submitted:{
+      color: 'bg-blue-50 text-blue-700 border-blue-200',
+      label: 'submitted',
+    }
 
+  };
+console.log(status)
   const config = statusConfig[status];
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${config.color}`}
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${config?.color}
+`}
     >
       {config.label}
     </span>
@@ -93,7 +99,7 @@ export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps)
         {application.team && (
           <div className="flex items-center text-sm text-gray-600">
             <Users className="mr-2 h-4 w-4 text-gray-400" />
-            Team: {application.team}
+            Team: {application.team.name}
           </div>
         )}
 

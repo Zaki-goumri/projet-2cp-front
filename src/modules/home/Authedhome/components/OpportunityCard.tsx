@@ -1,7 +1,8 @@
 import React from 'react';
 import { OpportunityCardProps } from '../types/opportunities.types';
-import { Calendar, Eye, ArrowRight } from 'lucide-react'; // Updated icons
+import { Calendar, Eye, ArrowRight, Building2, MapPin, Clock, Users, Briefcase } from 'lucide-react';
 import { Link } from 'react-router';
+import { motion } from 'framer-motion';
 
 // Helper function to calculate days left (example)
 const calculateDaysLeft = (endDate: string | null): string => {
@@ -10,62 +11,86 @@ const calculateDaysLeft = (endDate: string | null): string => {
   const now = new Date();
   const diffTime = end.getTime() - now.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays > 0 ? `${diffDays} Days left` : 'Ended'; // Added "Days left"
+  return diffDays > 0 ? `${diffDays} Days left` : 'Ended'; 
 };
 
 export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity }) => {
   const daysLeft = calculateDaysLeft(opportunity.endday);
-  // Placeholder for views, as it's not in the API response
-  const views = Math.floor(Math.random() * 500) + 50; // Random placeholder
-  const logo = opportunity.company.profilepic || 'https://via.placeholder.com/64'; // Default placeholder size
+  const views = Math.floor(Math.random() * 500) + 50; 
+  const logo = opportunity.company.profilepic || 'https://via.placeholder.com/64'; 
 
   return (
-    // Adjusted outer container for slider layout
-    <div className="px-2 h-full pt-10"> {/* Added padding for spacing and logo */}
+    <motion.div 
+      className="group h-full"
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.2 }}
+    >
       <Link 
-        to={`/opportunities/${opportunity.Type.toLowerCase()}/${opportunity.id}`} 
-        className="group relative block h-full w-full cursor-pointer overflow-hidden rounded-3xl border-transparent shadow-lg duration-300 ease-in-out hover:scale-105 bg-white" // Removed margins, added bg-white here
+        to={`/opportunities/${opportunity.id}`} 
+        className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:border-[#98E9AB] hover:shadow-lg"
       >
-       
-        <aside className="relative -mt-6 flex h-full flex-1 flex-col rounded-3xl px-5 pt-8 pb-6"> {/* Kept internal structure */}
-          <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl bg-white p-2.5 shadow-sm sm:h-20 sm:w-20">
-            <img
-              src={logo}
-              alt={`${opportunity.company.name} Logo`}
-              className="h-full w-full object-contain"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = 'https://via.placeholder.com/64'; // Fallback placeholder
-              }}
-            />
-          </div>
-
-          <div className="flex flex-1 flex-col justify-between space-y-4">
-            <div className="mt-5 flex items-start justify-between gap-4">
-              <div className="space-y-2 overflow-hidden"> {/* Added overflow-hidden */}
-                <h3 className="text-lg font-medium text-black line-clamp-1">{opportunity.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed text-gray-700 line-clamp-2">
-                  {opportunity.description}
-                </p>
-                {/* Removed learn more link as it might not be applicable here */}
+        {/* Header with company info */}
+        <div className="relative p-6 pb-0">
+          <div className="mb-4 flex items-start justify-between">
+            <div className="flex-1">
+              <h3 className="mb-2 text-lg font-semibold text-gray-900 line-clamp-1 group-hover:text-[#98E9AB] transition-colors">
+                {opportunity.title}
+              </h3>
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#98E9AB]/10">
+                  <Building2 className="h-4 w-4 text-[#98E9AB]" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{opportunity.company.name}</p>
+                  {opportunity.company.location && (
+                    <p className="text-xs text-gray-500">{opportunity.company.location}</p>
+                  )}
+                </div>
               </div>
-              {/* Keep ArrowRight for visual cue */}
-              <ArrowRight className="text-muted-foreground mt-1 h-5 w-5 flex-shrink-0 text-gray-400" /> 
             </div>
+            <div className="ml-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white p-2 shadow-sm transition-transform duration-300 group-hover:scale-110">
+              <img
+                src={logo}
+                alt={`${opportunity.company.name} Logo`}
+                className="h-full w-full object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'https://via.placeholder.com/64';
+                }}
+              />
+            </div>
+          </div>
+        </div>
 
-            <div className="text-muted-foreground flex flex-col gap-4 pt-2 text-sm text-gray-600 sm:flex-row sm:gap-6">
-              <div className="flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                <span>{views} views</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" /> 
+        {/* Description */}
+        <div className="flex-1 px-6 py-4">
+          <p className="text-sm leading-relaxed text-gray-600 line-clamp-2">
+            {opportunity.description}
+          </p>
+        </div>
+
+        {/* Footer with metadata */}
+        <div className="border-t border-gray-100 bg-gray-50/50 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Clock className="h-3.5 w-3.5" />
                 <span>{daysLeft}</span>
               </div>
+              
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="rounded-full bg-[#98E9AB]/10 px-2.5 py-1 text-xs font-medium text-[#98E9AB]">
+                {opportunity.Type}
+              </span>
+              <ArrowRight className="h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-1" />
             </div>
           </div>
-        </aside>
+        </div>
+
+        {/* Hover effect overlay */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#98E9AB]/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
       </Link>
-    </div>
+    </motion.div>
   );
 }; 

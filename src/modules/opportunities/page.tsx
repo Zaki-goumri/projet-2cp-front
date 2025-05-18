@@ -8,8 +8,16 @@ import {
   EyeIcon,
   ClockIcon,
   ArrowRightIcon,
-  BookmarkIcon
+  BookmarkIcon,
+  BriefcaseIcon,
+  Building2Icon,
+  FileIcon,
+  TrendUpIcon,
+  UsersIcon,
 } from '@/modules/shared/icons';
+import {FilterIcon,
+  SparklesIcon,
+  TrendingUpIcon,} from 'lucide-react'
 import { useOpportunitySearch } from './hooks/useOpportunitySearch';
 import { useOpportunities } from './hooks/useOpportunities';
 import {
@@ -24,6 +32,14 @@ import { Button } from '@/components/ui/button';
 import { opportunitiesService } from "./services/opportunities.service";
 import { toast } from 'react-toastify';
 import { useDebounce } from '@/modules/shared/hooks/useDebounce';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // UI Components
 const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
@@ -37,7 +53,11 @@ const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
     : `No ${typeText[filterType]} available at the moment.`;
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-gray-50 p-12 text-center">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-gray-50/50 p-12 text-center backdrop-blur-sm"
+    >
       <SearchXIcon className="mb-4 h-12 w-12 text-gray-400" />
       <h3 className="mb-2 text-lg font-semibold text-gray-700">{message}</h3>
       <p className="max-w-sm text-sm text-gray-500">
@@ -45,19 +65,27 @@ const EmptyState = ({ filterType, searchQuery }: EmptyStateProps) => {
           ? 'Try adjusting your search or filter terms.'
           : 'Check back later or adjust the filters.'}
       </p>
-    </div>
+    </motion.div>
   );
 };
 
 const LoadingState = () => (
-  <div className="flex h-64 items-center justify-center rounded-lg">
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="flex h-64 items-center justify-center rounded-xl bg-gray-50/50 backdrop-blur-sm"
+  >
     <LoaderIcon className="h-8 w-8 animate-spin text-blue-600" />
     <span className="ml-3 text-lg font-medium text-gray-600">Loading...</span>
-  </div>
+  </motion.div>
 );
 
 const ErrorState = ({ error }: ErrorStateProps) => (
-  <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-red-300 bg-red-50 p-12 text-center text-red-700">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="flex flex-col items-center justify-center rounded-xl border border-dashed border-red-300 bg-red-50/50 p-12 text-center backdrop-blur-sm"
+  >
     <div className="mb-4 rounded-full bg-red-100 p-3">
       <AlertTriangleIcon className="h-8 w-8" />
     </div>
@@ -73,7 +101,7 @@ const ErrorState = ({ error }: ErrorStateProps) => (
     >
       Refresh Page
     </Button>
-  </div>
+  </motion.div>
 );
 
 // Utility functions
@@ -112,41 +140,50 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
   const showLearnMore = opportunity.description.length > 70;
 
   return (
-    <li
-      className="group mx-auto my-2 flex h-full w-full max-w-md cursor-pointer flex-col overflow-hidden rounded-3xl border-transparent bg-white shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 sm:mx-0"
+    <motion.li
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -5 }}
+      className="group relative mx-auto my-2 flex h-full w-full max-w-md cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-lg"
       onClick={handleCardClick}
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && handleCardClick()}
     >
-      <div className="relative h-28 flex-shrink-0 bg-green-200 p-5 pb-12">
+      <div className="relative h-32 flex-shrink-0 bg-gradient-to-r from-primary to-primary/80 p-5">
+        <div className="absolute inset-0 bg-black/10" />
         <button
-          className="absolute top-2 right-2 rounded-full bg-white p-1.5 shadow-md hover:bg-gray-100"
+          className="absolute top-2 right-2 rounded-full bg-white/90 p-1.5 shadow-md backdrop-blur-sm transition-all duration-200 hover:bg-white hover:scale-110"
           onClick={(e) => handleSaveClick(e, Number(opportunity.id))}
           aria-label="Save opportunity"
         >
           <BookmarkIcon className="h-4 w-4 text-gray-600" />
         </button>
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <span className="inline-flex items-center rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-medium text-primary backdrop-blur-sm">
+            {opportunity.type}
+          </span>
+        </div>
       </div>
 
-      <div className="relative -mt-10 flex flex-1 flex-col rounded-t-3xl bg-white px-5 pt-12 pb-6">
-        <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl border-4 border-white bg-white p-2 shadow-md sm:h-20 sm:w-20">
+      <div className="relative -mt-8 flex flex-1 flex-col rounded-t-2xl bg-white px-5 pt-8 pb-6">
+        <div className="absolute -top-8 right-5 flex h-16 w-16 items-center justify-center rounded-xl border-4 border-white bg-white p-2 shadow-md">
           <img
             src={opportunity.company.profilepic || ''}
             alt={`${opportunity.company.name} Logo`}
-            className="h-full w-full object-contain p-1"
+            className="h-full w-full rounded-lg object-contain p-1"
           />
         </div>
         <div className="mt-2 flex flex-1 flex-col justify-between space-y-4">
           <div className="space-y-2 pr-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
               {opportunity.title}
             </h3>
-            <p className="text-sm leading-relaxed text-gray-600">
+            <p className="text-sm leading-relaxed text-gray-600 line-clamp-2">
               {descriptionSnippet}
               {showLearnMore && (
                 <>
                   ...{' '}
-                  <span className="cursor-pointer font-medium text-green-600 hover:underline">
+                  <span className="cursor-pointer font-medium text-primary hover:underline">
                     learn more
                   </span>
                 </>
@@ -155,7 +192,7 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-4 pt-2 text-sm text-gray-500">
+        <div className="mt-4 flex items-center justify-between gap-4 pt-2 text-sm text-gray-500">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {opportunity.views !== undefined && (
               <div className="flex items-center gap-1.5">
@@ -170,30 +207,50 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
               </div>
             )}
           </div>
-          <ArrowRightIcon className="h-5 w-5 flex-shrink-0 text-gray-600" />
+          <ArrowRightIcon className="h-5 w-5 flex-shrink-0 text-primary transition-transform group-hover:translate-x-1" />
         </div>
       </div>
-    </li>
+    </motion.li>
   );
 };
 
 // Companies list component
 const CompanyList = ({ companies }: { companies: Company[] }) => (
-  <div className="mt-8 border-t pt-6">
-    <h2 className="mb-4 text-xl font-semibold text-gray-800">Companies Found</h2>
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="mt-8 rounded-xl border bg-white p-6 shadow-sm"
+  >
+    <h2 className="mb-6 text-xl font-semibold text-gray-800">Companies Found</h2>
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {companies.map((company) => (
-        <li key={`search-comp-${company.id}`} className="rounded-lg border bg-gray-50 p-4 transition-colors hover:bg-gray-100">
-          <p className="font-medium">{company.name}</p>
-          <p className="text-sm text-gray-600">{company.location || 'Location N/A'}</p>
-        </li>
+        <motion.li
+          key={`search-comp-${company.id}`}
+          whileHover={{ y: -5 }}
+          className="group rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md"
+        >
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 overflow-hidden rounded-lg bg-gray-100">
+              <img
+                src={company.profilepic || ''}
+                alt={`${company.name} Logo`}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{company.name}</p>
+              <p className="text-sm text-gray-600">{company.location || 'Location N/A'}</p>
+            </div>
+          </div>
+        </motion.li>
       ))}
     </ul>
-  </div>
+  </motion.div>
 );
 
 const OpportunitiesPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedType, setSelectedType] = useState('all');
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const {
@@ -248,7 +305,7 @@ const OpportunitiesPage = () => {
       return (
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
           {defaultOpportunities.map((opportunity: Opportunity) => (
-            <OpportunityCard key={`default-opp-${opportunity.id}`} opportunity={opportunity} />
+            <OpportunityCard key={opportunity.id} opportunity={opportunity} />
           ))}
         </ul>
       );
@@ -256,25 +313,133 @@ const OpportunitiesPage = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="mb-6 text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-        Explore Opportunities
-      </h1>
-
-      <div className="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-        <div className="relative w-full max-w-lg sm:w-auto sm:flex-grow">
-          <Input
-            type="text"
-            placeholder="Search by title, company, skill..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border-gray-300 py-2 pl-10 pr-4 focus:border-blue-500 focus:ring-blue-500"
-          />
-          <SearchIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+    <div className="min-h-screen bg-gray-50/50">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-primary to-primary/80 py-20">
+        <div className="absolute inset-0 bg-grid-white/10" />
+        <div className="container relative mx-auto px-4">
+          <div className="mx-auto max-w-4xl text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 text-4xl font-bold text-white sm:text-5xl"
+            >
+              Discover Opportunities
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="mb-8 text-lg text-white/90"
+            >
+              Find internships and problems that match your skills and career goals
+            </motion.p>
+            
+            {/* Search and Filter Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col gap-4 sm:flex-row"
+            >
+              <div className="relative flex-1">
+                <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Search opportunities..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-full border-0 bg-white/90 pl-10 pr-4 shadow-lg backdrop-blur-sm focus:bg-white"
+                />
+              </div>
+              <Select value={selectedType} onValueChange={setSelectedType}>
+                <SelectTrigger className="w-full rounded-full border-0 bg-white/90 shadow-lg backdrop-blur-sm focus:bg-white sm:w-48">
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="internship">Internships</SelectItem>
+                  <SelectItem value="problem">Problems</SelectItem>
+                </SelectContent>
+              </Select>
+            </motion.div>
+          </div>
         </div>
       </div>
 
-      {renderContent()}
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-12">
+        {/* Stats Section */}
+        <div className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md"
+          >
+            <div className="flex items-center gap-4">
+              <div className="rounded-xl bg-primary/10 p-3">
+                <BriefcaseIcon className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Opportunities</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {defaultOpportunities.length}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-2xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md"
+          >
+            <div className="flex items-center gap-4">
+              <div className="rounded-xl bg-primary/10 p-3">
+                <Building2Icon className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600">Active Companies</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {searchResults?.company?.length || 0}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-2xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md"
+          >
+            <div className="flex items-center gap-4">
+              <div className="rounded-xl bg-primary/10 p-3">
+                <TrendingUpIcon className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600">Trending</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {defaultOpportunities.filter(opp => (opp.views || 0) > 100).length}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Opportunities Grid */}
+        <div className="space-y-8">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-2xl font-bold text-gray-900"
+          >
+            Available Opportunities
+          </motion.h2>
+          <AnimatePresence mode="wait">
+            {renderContent()}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };

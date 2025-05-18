@@ -42,7 +42,6 @@ export const useApplication = ( opportunity : Opportunity) => {
       toast.error('Please select a team before submitting');
       return;
     }
-    console.log(opportunity)
 
     if (!opportunity) {
       toast.error('Opportunity not loaded. Please try again.');
@@ -55,7 +54,7 @@ export const useApplication = ( opportunity : Opportunity) => {
         opportunity.id,
         proposal,
         selectedFile,
-        selectedTeam?.name
+        selectedTeam?.name,
       );
 
       if (response) {
