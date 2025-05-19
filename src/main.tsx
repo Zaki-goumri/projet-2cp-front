@@ -34,8 +34,7 @@ import { QueryProvider } from './modules/shared/providers/QueryProvider';
 import CreateOpportunityPage from './modules/post/components/opportunity.create';
 const QAPage = lazy(() => import('./modules/qa/page'));
 const ContactPage = lazy(() => import('./modules/contact/page'));
-const CompanyDashboardTest = lazy(() => import('./modules/company/test/page'));
-
+const CompanyDashboard = lazy(() => import('./modules/company/page'));
 const root = document.getElementById('root');
 if (root) {
   ReactDOM.createRoot(root).render(
@@ -91,7 +90,7 @@ if (root) {
                 path="/company/test"
                 element={
                   <MainLayout>
-                    <CompanyDashboardTest />
+                    <CompanyDashboard />
                   </MainLayout>
                 }
               />

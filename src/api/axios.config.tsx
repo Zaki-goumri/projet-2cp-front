@@ -30,6 +30,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (request) => {
+    console.log('Request:', request.url);
     const accessToken = document.cookie
       .split('; ')
       .find((cookie) => cookie.startsWith('accessToken='))
