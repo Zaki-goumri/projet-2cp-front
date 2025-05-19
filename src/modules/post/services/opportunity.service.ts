@@ -1,7 +1,11 @@
 import axios from '@/api/axios.config';
 import externalApi from 'axios';
 import { Team, TeamMember, TeamsResponse } from '../types/team.types';
-import { Opportunity, Company, OpportunityResponse } from '../types/opportunity.types';
+import {
+  Opportunity,
+  Company,
+  OpportunityResponse,
+} from '../types/opportunity.types';
 
 interface ApplicationResponse {
   details: string;
@@ -20,7 +24,7 @@ export class OpportunityService {
     search: '/app/search/',
     teams: '/post/team/',
     applications: '/app/application/',
-    savedPosts: ''
+    savedPosts: '',
   };
 
   private constructor() {}
@@ -50,23 +54,23 @@ export class OpportunityService {
    */
   public async getMarkdownContent(content: string): Promise<string> {
     if (!content) return '';
-  
+
     const GEMINI_URL = import.meta.env.VITE_GEMINI_URL;
     const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-  
+
     if (!GEMINI_URL || !GEMINI_API_KEY) {
       console.warn('Missing Gemini config.');
       return `# Content\n\n${content}`;
     }
-  
+
     try {
       const response = await externalApi.post(
         `${GEMINI_URL}?key=${GEMINI_API_KEY}`,
         {
           contents: [
             {
-              parts: [{ text: `Make this content markdown:\n\n${content}` }]
-            }
+              parts: [{ text: `Make this content markdown:\n\n${content}` }],
+            },
           ],
           generationConfig: {
             temperature: 0.2,
@@ -79,7 +83,7 @@ export class OpportunityService {
           headers: { 'Content-Type': 'application/json' },
         }
       );
-  
+
       const markdown = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
       return markdown || `# Content\n\n${content}`;
     } catch (error: any) {
@@ -87,7 +91,6 @@ export class OpportunityService {
       return `# Content\n\n${content}`;
     }
   }
-  
 
   public searchTeams(teams: Team[], searchQuery: string): Team[] {
     const query = searchQuery.toLowerCase().trim();
@@ -121,12 +124,15 @@ export class OpportunityService {
     if (file) {
       formData.append('file', file);
     }
-    
+
     const response = await axios.post<ApplicationResponse>(
-      `${this.endpoints.applications}${opportunityId}/`,
-      formData,{params:{
-        team:teamName
-      }}
+      `${this.endpoints.applications}${opportunityId}/q`,
+      formData,
+      {
+        params: {
+          team: teamName,
+        },
+      }
     );
 
     return response.data;
@@ -134,4 +140,3 @@ export class OpportunityService {
 }
 
 export const opportunityService = OpportunityService.getInstance();
-
