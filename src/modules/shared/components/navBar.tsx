@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
@@ -13,7 +11,6 @@ import {
   CheckCircle2,
   Menu,
   MessageCircle,
-  Search,
   Bookmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -65,7 +62,7 @@ export default function NavBar() {
   ];
 
   const privateNavItems: NavItem[] =
-    user?.type.toLowerCase() === 'student'
+    user?.type?.toLowerCase() === 'student'
       ? [
           { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
           { to: '/opportunities', label: 'opportunities', icon: Briefcase },
@@ -249,7 +246,7 @@ export default function NavBar() {
                       },
                     ]
                       .filter((element) =>
-                        element.type.includes(user?.type.toLowerCase())
+                        element.type.includes(user?.type?.toLowerCase())
                       )
                       .map((item, index) =>
                         item.isExternal ? (
