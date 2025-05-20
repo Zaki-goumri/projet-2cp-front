@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { opportunityService } from '../services/opportunity.service';
-import { Team} from '../types/team.types';
+import { Team } from '../types/team.types';
 import { Opportunity } from '../types/opportunity.types';
+import { globalErrorService } from '@/modules/shared/services/global-error.serivce';
 
 interface UseApplicationProps {
   opportunity: Opportunity;
@@ -13,7 +14,7 @@ export interface OpportunityResponse {
   data: Opportunity;
 }
 
-export const useApplication = ( opportunity : Opportunity) => {
+export const useApplication = (opportunity: Opportunity) => {
   const [proposal, setProposal] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTeamApplication, setIsTeamApplication] = useState(false);
@@ -25,7 +26,7 @@ export const useApplication = ( opportunity : Opportunity) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileSelect = (file: File | null) => {
-    if (file && file.size > 5 * 1024 * 1024) { 
+    if (file && file.size > 5 * 1024 * 1024) {
       toast.error('File size should not exceed 5MB');
       return;
     }
@@ -42,20 +43,19 @@ export const useApplication = ( opportunity : Opportunity) => {
       toast.error('Please select a team before submitting');
       return;
     }
-    console.log(opportunity)
 
     if (!opportunity) {
       toast.error('Opportunity not loaded. Please try again.');
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
       const response = await opportunityService.submitApplication(
         opportunity.id,
         proposal,
         selectedFile,
-        selectedTeam?.name
+        selectedTeam?.id
       );
 
       if (response) {
@@ -67,10 +67,11 @@ export const useApplication = ( opportunity : Opportunity) => {
           setSearchQuery('');
         }
       }
-    } catch (error: any) {
-      console.error('Application submission error:', error);
-      const errorMessage = error.response?.data?.details || 'There was an error submitting your application. Please try again.';
-      toast.error(errorMessage);
+    } catch (err: unknown) {
+      const errorMessage =
+        await globalErrorService.getErrorHandlingMessage(err);
+      toast.error(errorMessage || 'un error occured');
+      throw new Error(errorMessage || 'error in submition');
     } finally {
       setIsSubmitting(false);
     }
@@ -116,4 +117,4 @@ export const useApplication = ( opportunity : Opportunity) => {
     resetTeamSelection,
     handleFileSelect,
   };
-}; 
+};

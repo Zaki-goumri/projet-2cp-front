@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Application } from '../types/application.types';
 import { formatDistanceToNow } from 'date-fns';
+import { toast } from 'react-toastify';
 
 interface ApplicationCardProps {
   application: Application;
@@ -35,20 +36,27 @@ const StatusBadge = ({ status }: { status: Application['status'] }) => {
       color: 'bg-gray-50 text-gray-700 border-gray-200',
       label: 'Pending',
     },
+    submitted: {
+      color: 'bg-blue-50 text-blue-700 border-blue-200',
+      label: 'submitted',
+    },
   };
-
+  console.log(status);
   const config = statusConfig[status];
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${config.color}`}
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${config?.color} `}
     >
       {config.label}
     </span>
   );
 };
 
-export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps) => {
+export const ApplicationCard = ({
+  application,
+  onDelete,
+}: ApplicationCardProps) => {
   const { post } = application;
   const submittedDate = new Date(post.created_at);
 
@@ -56,7 +64,7 @@ export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps)
     <div className="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm transition-all hover:shadow-md">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h3 className="mb-2 text-lg font-medium text-gray-900 group-hover:text-primary line-clamp-1">
+          <h3 className="group-hover:text-primary mb-2 line-clamp-1 text-lg font-medium text-gray-900">
             {post.title}
           </h3>
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
@@ -74,9 +82,13 @@ export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps)
           <StatusBadge status={application.status} />
           {onDelete && (
             <button
-              className="mt-2 rounded-full p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition"
+              className="mt-2 rounded-full p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
               title="Delete Application"
-              onClick={() => onDelete(application.id)}
+              onClick={() =>
+                application.status === 'submitted'
+                  ? toast.error('cant delete a team application')
+                  : onDelete(application.id)
+              }
             >
               <Trash2 className="h-5 w-5" />
             </button>
@@ -86,14 +98,18 @@ export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps)
 
       <div className="mb-4 space-y-4">
         <div className="rounded-lg bg-gray-50 p-4">
-          <h4 className="mb-2 text-sm font-medium text-gray-700">Your Proposal</h4>
-          <p className="text-sm text-gray-600 line-clamp-3">{application.proposal}</p>
+          <h4 className="mb-2 text-sm font-medium text-gray-700">
+            Your Proposal
+          </h4>
+          <p className="line-clamp-3 text-sm text-gray-600">
+            {application.proposal}
+          </p>
         </div>
 
         {application.team && (
           <div className="flex items-center text-sm text-gray-600">
             <Users className="mr-2 h-4 w-4 text-gray-400" />
-            Team: {application.team}
+            Team: {application.team.name}
           </div>
         )}
 
@@ -103,7 +119,7 @@ export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps)
               href={application.atachedfile}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center hover:text-primary"
+              className="hover:text-primary flex items-center"
             >
               <FileText className="mr-1.5 h-4 w-4" />
               View Attachment
@@ -115,7 +131,7 @@ export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps)
               href={application.links}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center hover:text-primary"
+              className="hover:text-primary flex items-center"
             >
               <LinkIcon className="mr-1.5 h-4 w-4" />
               Additional Links
@@ -154,4 +170,5 @@ export const ApplicationCard = ({ application, onDelete }: ApplicationCardProps)
   );
 };
 
-export default ApplicationCard; 
+export default ApplicationCard;
+

@@ -1,3 +1,4 @@
+import { Team } from '@/modules/teams/types/teams.types';
 import { Company } from './internshipsAndProblems.types';
 
 export interface Post {
@@ -18,7 +19,7 @@ export interface Post {
 export interface Application {
   id: number;
   title: string | null;
-  team: string | null;
+  team: Team;
   proposal: string;
   status: 'under_review' | 'accepted' | 'rejected' | 'pending';
   atachedfile: string | null;
