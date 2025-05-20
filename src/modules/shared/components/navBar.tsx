@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
@@ -13,7 +11,6 @@ import {
   CheckCircle2,
   Menu,
   MessageCircle,
-  Search,
   Bookmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

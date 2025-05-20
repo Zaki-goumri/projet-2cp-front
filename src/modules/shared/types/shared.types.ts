@@ -29,7 +29,7 @@ export interface User {
   name: string;
   profilepic: string | null;
   type: string;
-  role: 'Student' | 'Company';
+  role?: 'Student' | 'Company';
   location: string | null;
   date_joined: string;
   links: string | null;
