@@ -1,6 +1,5 @@
 import { Message } from '../types';
 
-// WebSocket message format as specified in the API docs
 interface WebSocketMessage {
   type: 'chat_message';
   message: string;
@@ -65,8 +64,7 @@ export class WebSocketService {
         this.ws.onclose = (event) => {
           console.log('WebSocket Disconnected:', event.code, event.reason);
           this.isConnecting = false;
-          
-          // Only attempt reconnect if this is still the current room
+
           if (this.currentRoom === roomName) {
             this.handleDisconnect(roomName, token);
           }
@@ -75,7 +73,7 @@ export class WebSocketService {
         this.ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data) as ServerMessage;
-            this.messageHandlers.forEach(handler => handler(data));
+            this.messageHandlers.forEach((handler) => handler(data));
           } catch (error) {
             console.error('Error parsing WebSocket message:', error);
           }
@@ -91,13 +89,15 @@ export class WebSocketService {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000);
-      
+
       if (this.reconnectTimeout) {
         clearTimeout(this.reconnectTimeout);
       }
 
       this.reconnectTimeout = setTimeout(async () => {
-        console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+        console.log(
+          `Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
+        );
         try {
           await this.connect(roomName, token);
         } catch (error) {
@@ -117,7 +117,6 @@ export class WebSocketService {
     }
 
     if (this.ws) {
-      // Only close if the connection is still open
       if (this.ws.readyState === WebSocket.OPEN) {
         this.ws.close(1000, 'Normal closure');
       }
@@ -141,7 +140,7 @@ export class WebSocketService {
     try {
       const messageData: WebSocketMessage = {
         type: 'chat_message',
-        message
+        message,
       };
       this.ws?.send(JSON.stringify(messageData));
     } catch (error) {
@@ -158,7 +157,7 @@ export class WebSocketService {
   onMessage(handler: (message: ServerMessage) => void): () => void {
     this.messageHandlers.push(handler);
     return () => {
-      this.messageHandlers = this.messageHandlers.filter(h => h !== handler);
+      this.messageHandlers = this.messageHandlers.filter((h) => h !== handler);
     };
   }
 

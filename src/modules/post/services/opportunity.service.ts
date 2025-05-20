@@ -5,6 +5,7 @@ import {
   Opportunity,
   Company,
   OpportunityResponse,
+  createPost,
 } from '../types/opportunity.types';
 
 interface ApplicationResponse {
@@ -25,6 +26,7 @@ export class OpportunityService {
     teams: '/post/team/',
     applications: '/app/application/',
     savedPosts: '',
+    postCreation: '/post/opportunity/',
   };
 
   private constructor() {}
@@ -45,6 +47,10 @@ export class OpportunityService {
       console.error('Error fetching teams:', error);
       throw error;
     }
+  }
+
+  public async createPost(form: createPost): Promise<void> {
+    await axios.post(this.endpoints.postCreation, { ...form });
   }
 
   /**

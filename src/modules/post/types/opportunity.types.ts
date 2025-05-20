@@ -52,4 +52,16 @@ export interface ApplicationResponse {
 export interface SearchResponse {
   opportunity: Opportunity[];
   company: Company[];
-} 
+}
+
+export interface CreatePost {
+  title: string;
+  startdate: Date;
+  enddate: Date;
+  Type: string;
+  workType: string;
+  skills: string[];
+  description: string;
+  category: string;
+  location: string;
+}

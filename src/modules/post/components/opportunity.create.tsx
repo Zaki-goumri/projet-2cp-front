@@ -17,6 +17,8 @@ type FormValues = {
   workType: string;
   skills: string[];
   description: string;
+  category: string;
+  location: string;
 };
 
 // API submission type
@@ -52,6 +54,8 @@ const createInternshipSchema = z
       .string()
       .min(50, 'Description must be at least 50 characters')
       .max(5000, 'Description must not exceed 5000 characters'),
+    category: z.string().default('EC'),
+    location: z.string().default('alger'),
   })
   .refine((data) => data.enddate > data.startdate, {
     message: 'End date must be after start date',
@@ -268,7 +272,6 @@ const CreateOpportunityPage = () => {
             <div className="flex justify-end">
               <Button
                 type="submit"
-                disabled={isLoading}
                 className="cursor-pointer! rounded-lg bg-[#92E3A9]! px-8 py-2.5 text-sm font-medium text-white! transition-colors hover:bg-[#7ED196] focus:ring-2 focus:ring-[#92E3A9] focus:ring-offset-2 focus:outline-none"
               >
                 {isLoading ? 'Creating...' : 'Create Post'}
@@ -282,4 +285,3 @@ const CreateOpportunityPage = () => {
 };
 
 export default CreateOpportunityPage;
-

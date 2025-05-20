@@ -66,7 +66,7 @@ export default function NavBar() {
   ];
 
   const privateNavItems: NavItem[] =
-    user?.type.toLowerCase() === 'student'
+    user && user?.type?.toLowerCase() === 'student'
       ? [
           { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
           { to: '/opportunities', label: 'opportunities', icon: Briefcase },
@@ -85,7 +85,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="sticky top-0 right-0 left-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200/50 px-4 py-2 shadow-sm sm:px-6 md:px-8">
+    <nav className="sticky top-0 right-0 left-0 z-50 border-b border-gray-200/50 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-md sm:px-6 md:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
@@ -103,7 +103,7 @@ export default function NavBar() {
           </div>
 
           {/* Desktop Navigation */}
-          {user ? (
+          {user?.type ? (
             <div className="hidden lg:flex lg:items-center lg:gap-6">
               {privateNavItems.map((item) => (
                 <Link
@@ -125,7 +125,7 @@ export default function NavBar() {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="relative rounded-md px-3 py-2 font-medium text-gray-700 transition-all duration-200 hover:scale-105 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:after:w-full"
+                    className="relative rounded-md px-3 py-2 font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:scale-105 hover:text-gray-900 hover:after:w-full"
                   >
                     {item.label}
                   </Link>
@@ -144,7 +144,7 @@ export default function NavBar() {
                     <DropdownMenu>
                       <DropdownMenuTrigger className="focus:outline-none">
                         <div className="relative">
-                          <Bell className="h-10 w-10 cursor-pointer rounded-full p-2 transition-all duration-200 hover:bg-gray-100 hover:scale-110" />
+                          <Bell className="h-10 w-10 cursor-pointer rounded-full p-2 transition-all duration-200 hover:scale-110 hover:bg-gray-100" />
                           {unreadCount > 0 && (
                             <motion.span
                               initial={{ scale: 0 }}
@@ -156,7 +156,7 @@ export default function NavBar() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
                         align="end"
-                        className="!sm:max-w-sm !w-80 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white/95 !backdrop-blur-md !p-2 !shadow-lg"
+                        className="!sm:max-w-sm !w-80 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white/95 !p-2 !shadow-lg !backdrop-blur-md"
                       >
                         <DropdownMenuLabel className="!px-2 !text-lg !font-semibold !text-black">
                           Notifications
@@ -169,7 +169,7 @@ export default function NavBar() {
                               .map((notification: Notification) => (
                                 <DropdownMenuItem
                                   key={notification.id}
-                                  className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 hover:!bg-gray-100/80 transition-colors duration-200"
+                                  className="!flex !cursor-pointer !flex-col !items-start !gap-1 !rounded-lg !p-3 transition-colors duration-200 hover:!bg-gray-100/80"
                                 >
                                   <div className="!flex !w-full !items-start !justify-between">
                                     <span className="!flex !items-center !gap-2 !font-medium !text-black">
@@ -203,13 +203,13 @@ export default function NavBar() {
                         </div>
                         <DropdownMenuSeparator className="!bg-gray-200" />
                         <Link to="/notifications" className="block w-full">
-                          <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700 transition-colors duration-200">
+                          <DropdownMenuItem className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 transition-colors duration-200 hover:!bg-blue-50 hover:!text-blue-700">
                             View all notifications
                           </DropdownMenuItem>
                         </Link>
                         {unreadCount > 0 && (
                           <DropdownMenuItem
-                            className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 hover:!bg-blue-50 hover:!text-blue-700 transition-colors duration-200"
+                            className="!flex !items-center !justify-center !gap-2 !rounded-lg p-2 !text-blue-600 transition-colors duration-200 hover:!bg-blue-50 hover:!text-blue-700"
                             onClick={() => markAllAsRead()}
                           >
                             <CheckCircle2 className="h-4 w-4" />
@@ -236,7 +236,7 @@ export default function NavBar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="!w-56 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white/95 !backdrop-blur-md !p-2 !shadow-lg"
+                    className="!w-56 !max-w-[calc(100vw-2rem)] !border-gray-100 !bg-white/95 !p-2 !shadow-lg !backdrop-blur-md"
                   >
                     <DropdownMenuLabel className="!px-2 !text-lg !font-semibold !text-black">
                       My Account
@@ -259,7 +259,7 @@ export default function NavBar() {
                       },
                     ]
                       .filter((element) =>
-                        element.type.includes(user?.type.toLowerCase())
+                        element.type.includes(user?.type?.toLowerCase())
                       )
                       .map((item, index) =>
                         item.isExternal ? (
@@ -269,14 +269,14 @@ export default function NavBar() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100/80 transition-colors duration-200">
+                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black transition-colors duration-200 hover:!bg-gray-100/80">
                               {item.icon}
                               {item.label}
                             </DropdownMenuItem>
                           </a>
                         ) : (
                           <Link to={item.to} key={index}>
-                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black hover:!bg-gray-100/80 transition-colors duration-200">
+                            <DropdownMenuItem className="!flex !cursor-pointer !items-center !gap-2 !rounded-lg !p-3 !text-black transition-colors duration-200 hover:!bg-gray-100/80">
                               {item.icon}
                               {item.label}
                             </DropdownMenuItem>
@@ -286,7 +286,7 @@ export default function NavBar() {
                     <DropdownMenuSeparator className="!bg-gray-200" />
                     <DropdownMenuItem
                       onClick={handleSignOut}
-                      className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 hover:!bg-red-50 hover:!text-red-700 transition-colors duration-200"
+                      className="!flex !items-center !justify-center !gap-2 !rounded-lg !p-3 !text-red-600 transition-colors duration-200 hover:!bg-red-50 hover:!text-red-700"
                     >
                       Sign out
                     </DropdownMenuItem>
@@ -346,7 +346,7 @@ export default function NavBar() {
                     <div className="p-4">
                       <button
                         onClick={() => setIsOpen(false)}
-                        className="absolute top-4 right-4 rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200"
+                        className="absolute top-4 right-4 rounded-lg p-2 transition-colors duration-200 hover:bg-gray-100"
                         aria-label="Close menu"
                       >
                         <X className="h-6 w-6" />
@@ -358,7 +358,7 @@ export default function NavBar() {
                               <Link
                                 key={item.to}
                                 to={item.to}
-                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900"
                                 onClick={() => setIsOpen(false)}
                               >
                                 {item.icon && <item.icon className="h-5 w-5" />}
@@ -372,7 +372,7 @@ export default function NavBar() {
                                 setIsOpen(false);
                                 handleSignOut();
                               }}
-                              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900"
                             >
                               Sign out
                             </button>
@@ -383,7 +383,7 @@ export default function NavBar() {
                               <Link
                                 key={item.to}
                                 to={item.to}
-                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900"
                                 onClick={() => setIsOpen(false)}
                               >
                                 {item.label}
@@ -391,14 +391,14 @@ export default function NavBar() {
                             ))}
                             <Link
                               to="/auth/signin"
-                              className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                              className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900"
                               onClick={() => setIsOpen(false)}
                             >
                               Sign in
                             </Link>
                             <Link
                               to="/auth/signup"
-                              className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                              className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900"
                               onClick={() => setIsOpen(false)}
                             >
                               Sign up

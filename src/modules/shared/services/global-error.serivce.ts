@@ -19,25 +19,27 @@ export class GlobalErrorService {
 
   public async getErrorHandlingMessage(err: unknown): Promise<string | void> {
     if (!err) return '';
-  
+
     const GEMINI_URL = import.meta.env.VITE_GEMINI_URL;
     const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-  
+
     if (!GEMINI_URL || !GEMINI_API_KEY) {
       console.warn('Missing Gemini config.');
-      return ;
+      return;
     }
-  
+
     try {
       const response = await externalApi.post(
         `${GEMINI_URL}`,
         {
           contents: [
             {
-              parts: [{                 text: `Analyse this error and return ONLY a short, non-technical notification message suitable for END USERS (max 100 characters). The message should be friendly, avoid technical jargon, and provide simple guidance on what happened. This will be shown directly to clients, NOT developers:\n\n${JSON.stringify(err)}`
-
-              }]
-            }
+              parts: [
+                {
+                  text: `Analyse this error and return ONLY a short, non-technical notification message suitable for END USERS (max 100 characters). The message should be friendly, avoid technical jargon, and provide simple guidance on what happened. This will be shown directly to clients,Specify the messge depending on the error , NOT developers:\n\n${JSON.stringify(err)}`,
+                },
+              ],
+            },
           ],
           generationConfig: {
             temperature: 0.2,
@@ -50,9 +52,10 @@ export class GlobalErrorService {
           headers: { 'Content-Type': 'application/json' },
         }
       );
-  
-      const errorMessage = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-      return errorMessage ;
+
+      const errorMessage =
+        response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+      return errorMessage;
     } catch (error: any) {
       console.error('Error with Gemini:', error.message);
     }
