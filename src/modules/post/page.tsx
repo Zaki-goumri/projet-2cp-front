@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { useOpportunity } from './hooks/useOpportunity.ts';
+import { useGetOpportunity } from './hooks/useGetOpportunity';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangleIcon, LoaderIcon } from '@/modules/shared/icons';
 import { Button } from '@/components/ui/button';
@@ -21,8 +21,10 @@ const LoadingState = () => (
     className="flex h-[50vh] items-center justify-center"
   >
     <div className="flex flex-col items-center gap-4">
-      <LoaderIcon className="h-8 w-8 animate-spin text-primary" />
-      <p className="text-lg font-medium text-gray-600">Loading opportunity details...</p>
+      <LoaderIcon className="text-primary h-8 w-8 animate-spin" />
+      <p className="text-lg font-medium text-gray-600">
+        Loading opportunity details...
+      </p>
     </div>
   </motion.div>
 );
@@ -37,9 +39,12 @@ const ErrorState = ({ error }: { error: any }) => (
       <div className="rounded-full bg-red-100 p-3">
         <AlertTriangleIcon className="h-8 w-8 text-red-600" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900">Oops! Something went wrong</h3>
+      <h3 className="text-lg font-semibold text-gray-900">
+        Oops! Something went wrong
+      </h3>
       <p className="max-w-sm text-sm text-gray-600">
-        {error?.message || 'We encountered an error while loading the opportunity details.'}
+        {error?.message ||
+          'We encountered an error while loading the opportunity details.'}
       </p>
       <Button
         variant="outline"
@@ -62,7 +67,9 @@ const EmptyState = () => (
       <div className="rounded-full bg-gray-100 p-3">
         <AlertTriangleIcon className="h-8 w-8 text-gray-600" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900">No Opportunity Found</h3>
+      <h3 className="text-lg font-semibold text-gray-900">
+        No Opportunity Found
+      </h3>
       <p className="max-w-sm text-sm text-gray-600">
         The opportunity you're looking for doesn't exist or has been removed.
       </p>
@@ -79,10 +86,11 @@ const EmptyState = () => (
 
 export default function InternshipListing() {
   const { id } = useParams();
-  const { data: opportunity, isLoading, error } = useOpportunity(id || '');
+  const { data: opportunity, isLoading, error } = useGetOpportunity(id || '');
 
   if (isLoading) return <LoadingState />;
   if (error) return <ErrorState error={error} />;
+  console.log(opportunity);
   if (!opportunity) return <EmptyState />;
 
   return (
@@ -96,7 +104,7 @@ export default function InternshipListing() {
           >
             <OverView opportunity={opportunity.data} />
             <div className="grid gap-6 lg:grid-cols-3">
-              <div className="lg:col-span-2 space-y-6">
+              <div className="space-y-6 lg:col-span-2">
                 <InternshipDetails opportunity={opportunity.data} />
                 <AdditionalInformation opportunity={opportunity.data} />
               </div>

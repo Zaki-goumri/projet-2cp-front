@@ -130,17 +130,20 @@ export class OpportunityService {
     if (file) {
       formData.append('file', file);
     }
-
-    const response = await axios.post<ApplicationResponse>(
-      `${this.endpoints.applications}${opportunityId}/q`,
-      formData,
-      {
-        params: {
-          team: teamName,
-        },
-      }
-    );
-
+    const response = teamName
+      ? await axios.post<ApplicationResponse>(
+          `${this.endpoints.applications}${opportunityId}/q`,
+          formData,
+          {
+            params: {
+              team: teamName,
+            },
+          }
+        )
+      : await axios.post<ApplicationResponse>(
+          `${this.endpoints.applications}${opportunityId}/q`,
+          formData
+        );
     return response.data;
   }
 }
