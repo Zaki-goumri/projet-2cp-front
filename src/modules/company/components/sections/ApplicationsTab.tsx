@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useNavigate } from 'react-router';
 import {
   useApplications,
   useExport,
@@ -30,6 +31,7 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
   } = useApplications();
   const { getStatusColor, getStatusText } = useStatusUtils();
   const { handleExport } = useExport(activeTab);
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
@@ -91,7 +93,7 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
         <Button
           variant="outline"
           className="border-[#92E3A9]! bg-white! text-[#4A9D66]! hover:bg-[#92E3A9]/10!"
-          onClick={handleExport}
+          onClick={() => handleExport()}
         >
           <Download className="mr-2 h-4 w-4" />
           Export
@@ -114,10 +116,7 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
                     Applied Date
                   </th>
                   <th className="px-4 py-3 text-left text-gray-600!">
-                    Experience
-                  </th>
-                  <th className="px-4 py-3 text-left text-gray-600!">
-                    Education
+                  Proposal
                   </th>
                   <th className="px-4 py-3 text-left text-gray-600!">Status</th>
                   <th className="px-4 py-3 text-left text-gray-600!">
@@ -136,13 +135,10 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
                     </td>
                     <td className="px-4 py-3 text-gray-900!">{app.position}</td>
                     <td className="px-4 py-3 text-gray-900!">
-                      {app.appliedDate}
+                      {new Date(app.appliedDate).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-gray-900!">
                       {app.experience}
-                    </td>
-                    <td className="px-4 py-3 text-gray-900!">
-                      {app.education}
                     </td>
                     <td className="px-4 py-3">
                       <Badge className={getStatusColor(app.status)}>
@@ -155,6 +151,7 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
                           variant="ghost"
                           size="sm"
                           className="text-[#4A9D66]! hover:text-[#92E3A9]!"
+                          onClick={() => navigate(`/company/applications/${app.id}`)}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>

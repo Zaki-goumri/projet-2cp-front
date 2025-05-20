@@ -25,7 +25,7 @@ export interface JobPost {
   applications: number;
   status: 'open' | 'under_review' | 'closed';
 }
-//get Recent Appliccation to the comapany opportunites (get 5 recent applications)
+//get Recent Appliccation to the comapny opportunites (get 5 recent applications)
 //getAllApplicationOfCompany
 //get ApplicationByPostId
 export interface Application {
@@ -40,6 +40,15 @@ export interface Application {
     | 'rejected'
   experience: string;
   education: string;
+}
+
+export interface DetailedApplication extends Application {
+  email: string;
+  phone: string;
+  coverLetter: string;
+  resume: string; // URL to resume file
+  skills: string[];
+  proposal: string;
 }
 
 //getApplicationChartData

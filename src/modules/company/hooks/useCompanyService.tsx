@@ -1,8 +1,23 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { convertToCSV, downloadCSV, getApplications, getJobPosts, getApplicationChartData, getApplicationStatusData } from '../services/companyService';
-import { Application, JobPost, ApplicationChartData, ApplicationStatusData } from '../types/company.types';
+import {
+  convertToCSV,
+  downloadCSV,
+  getApplications,
+  getJobPosts,
+  getApplicationChartData,
+  getApplicationStatusData,
+  getOverviewData,
+} from '../services/companyService';
+import {
+  Application,
+  JobPost,
+  ApplicationChartData,
+  ApplicationStatusData,
+  ApplicationStatusPieChartData,
+  OverViewKeysType,
+} from '../types/company.types';
 
 // Hook for status utilities
 export const useStatusUtils = () => {
@@ -52,22 +67,23 @@ export const useStatusUtils = () => {
 // Hook for jobs management
 export const useJobs = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const jobsQuery = useQuery<JobPost[], Error>({
     queryKey: ['jobPosts'],
     queryFn: async () => {
       try {
         return getJobPosts();
       } catch (err) {
-        throw new Error(err instanceof Error ? err.message : 'Failed to fetch job posts');
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to fetch job posts'
+        );
       }
-    }
+    },
   });
 
   // Filter job posts based on search term
-  const filteredJobPosts = (jobsQuery.data || []).filter(post => 
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.department.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredJobPosts = (jobsQuery.data || []).filter(
+    (post) =>true
   );
 
   return {
@@ -77,7 +93,7 @@ export const useJobs = () => {
     error: jobsQuery.error,
     searchTerm,
     setSearchTerm,
-    refetch: jobsQuery.refetch
+    refetch: jobsQuery.refetch,
   };
 };
 
@@ -85,24 +101,27 @@ export const useJobs = () => {
 export const useApplications = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  
+
   const applicationsQuery = useQuery<Application[], Error>({
     queryKey: ['applications'],
     queryFn: async () => {
       try {
         return getApplications();
       } catch (err) {
-        throw new Error(err instanceof Error ? err.message : 'Failed to fetch applications');
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to fetch applications'
+        );
       }
-    }
+    },
   });
 
   // Filter applications based on status and search term
-  const filteredApplications = (applicationsQuery.data || []).filter(app => 
-    (filterStatus === 'all' || app.status === filterStatus) &&
-    (searchTerm === '' || 
-     app.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     app.position.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredApplications = (applicationsQuery.data || []).filter(
+    (app) =>
+      (filterStatus === 'all' || app.status === filterStatus) &&
+      (searchTerm === '' ||
+        app.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        app.position.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return {
@@ -114,7 +133,7 @@ export const useApplications = () => {
     setFilterStatus,
     searchTerm,
     setSearchTerm,
-    refetch: applicationsQuery.refetch
+    refetch: applicationsQuery.refetch,
   };
 };
 
@@ -126,34 +145,63 @@ export const useApplicationChartData = () => {
       try {
         return getApplicationChartData();
       } catch (err) {
-        throw new Error(err instanceof Error ? err.message : 'Failed to fetch chart data');
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to fetch chart data'
+        );
       }
-    }
+    },
   });
 
   return {
     chartData: chartDataQuery.data || [],
     isLoading: chartDataQuery.isLoading,
-    error: chartDataQuery.error
+    error: chartDataQuery.error,
   };
 };
 
 export const useApplicationStatusData = () => {
-  const statusDataQuery = useQuery<ApplicationStatusData[], Error>({
+  const statusDataQuery = useQuery<ApplicationStatusPieChartData[], Error>({
     queryKey: ['applicationStatusData'],
     queryFn: async () => {
       try {
         return getApplicationStatusData();
       } catch (err) {
-        throw new Error(err instanceof Error ? err.message : 'Failed to fetch status data');
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to fetch status data'
+        );
       }
-    }
+    },
   });
 
   return {
     statusData: statusDataQuery.data || [],
     isLoading: statusDataQuery.isLoading,
-    error: statusDataQuery.error
+    error: statusDataQuery.error,
+  };
+};
+
+// Hook for overview data
+export const useOverviewData = () => {
+  const overviewDataQuery = useQuery<
+    Map<OverViewKeysType, Omit<ApplicationStatusData, 'name'>>,
+    Error
+  >({
+    queryKey: ['overviewData'],
+    queryFn: async () => {
+      try {
+        return getOverviewData();
+      } catch (err) {
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to fetch overview data'
+        );
+      }
+    },
+  });
+
+  return {
+    overviewData: overviewDataQuery.data || new Map(),
+    isLoading: overviewDataQuery.isLoading,
+    error: overviewDataQuery.error,
   };
 };
 
@@ -162,80 +210,81 @@ export const useExport = (activeTab: string) => {
   const { filteredJobPosts } = useJobs();
   const { filteredApplications } = useApplications();
   const queryClient = useQueryClient();
-  
+
   // Using mutation for export functionality
   const exportMutation = useMutation({
     mutationFn: async () => {
       try {
-      let csvContent = '';
-      let filename = '';
-      
-      if (activeTab === 'jobs') {
-        // Export job posts
-        const jobHeaders = {
-          id: 'ID',
-          title: 'Job Title',
-          department: 'Department',
-          location: 'Location',
-          type: 'Type',
-          postedDate: 'Posted Date',
-          applications: 'Applications',
-          status: 'Status'
-        };
-        
-        csvContent = convertToCSV(filteredJobPosts, jobHeaders);
-        filename = 'job_posts.csv';
-      } else if (activeTab === 'applications') {
-        // Export applications
-        const applicationHeaders = {
-          id: 'ID',
-          applicantName: 'Applicant Name',
-          position: 'Position',
-          appliedDate: 'Applied Date',
-          status: 'Status',
-          experience: 'Experience',
-          education: 'Education'
-        };
-        
-        csvContent = convertToCSV(filteredApplications, applicationHeaders);
-        filename = 'applications.csv';
-      } else {
-        // Export overview data (combine job posts and applications)
-        const jobPosts = getJobPosts();
-        const applications = getApplications();
-        
-        const jobHeaders = {
-          id: 'ID',
-          title: 'Job Title',
-          department: 'Department',
-          location: 'Location',
-          type: 'Type',
-          postedDate: 'Posted Date',
-          applications: 'Applications',
-          status: 'Status'
-        };
-        
-        const applicationHeaders = {
-          id: 'ID',
-          applicantName: 'Applicant Name',
-          position: 'Position',
-          appliedDate: 'Applied Date',
-          status: 'Status',
-          experience: 'Experience',
-          education: 'Education'
-        };
-        
-        const jobCSV = convertToCSV(jobPosts, jobHeaders);
-        const applicationCSV = convertToCSV(applications, applicationHeaders);
-        
-        csvContent = `Job Posts\n${jobCSV}\n\nApplications\n${applicationCSV}`;
-        filename = 'dashboard_overview.csv';
-      }
-      
+        let csvContent = '';
+        let filename = '';
+
+        if (activeTab === 'jobs') {
+          // Export job posts
+          const jobHeaders = {
+            id: 'ID',
+            title: 'Job Title',
+            department: 'Department',
+            location: 'Location',
+            type: 'Type',
+            postedDate: 'Posted Date',
+            applications: 'Applications',
+            status: 'Status',
+          };
+
+          csvContent = convertToCSV(filteredJobPosts, jobHeaders);
+          filename = 'job_posts.csv';
+        } else if (activeTab === 'applications') {
+          // Export applications
+          const applicationHeaders = {
+            id: 'ID',
+            applicantName: 'Applicant Name',
+            position: 'Position',
+            appliedDate: 'Applied Date',
+            status: 'Status',
+            experience: 'Experience',
+            education: 'Education',
+          };
+
+          csvContent = convertToCSV(filteredApplications, applicationHeaders);
+          filename = 'applications.csv';
+        } else {
+          // Export overview data (combine job posts and applications)
+          const jobPosts = getJobPosts();
+          const applications = getApplications();
+
+          const jobHeaders = {
+            id: 'ID',
+            title: 'Job Title',
+            department: 'Department',
+            location: 'Location',
+            type: 'Type',
+            postedDate: 'Posted Date',
+            applications: 'Applications',
+            status: 'Status',
+          };
+
+          const applicationHeaders = {
+            id: 'ID',
+            applicantName: 'Applicant Name',
+            position: 'Position',
+            appliedDate: 'Applied Date',
+            status: 'Status',
+            experience: 'Experience',
+            education: 'Education',
+          };
+
+          const jobCSV = convertToCSV(await jobPosts, jobHeaders);
+          const applicationCSV = convertToCSV(await applications, applicationHeaders);
+
+          csvContent = `Job Posts\n${jobCSV}\n\nApplications\n${applicationCSV}`;
+          filename = 'dashboard_overview.csv';
+        }
+
         downloadCSV(csvContent, filename);
         return { success: true, filename };
       } catch (error) {
         console.error('Error exporting data:', error);
+        
         throw new Error('Failed to export data');
       }
     },
@@ -244,12 +293,12 @@ export const useExport = (activeTab: string) => {
     },
     onError: (error) => {
       toast.error('Failed to export data. Please try again.');
-    }
+    },
   });
 
-  return { 
+  return {
     handleExport: exportMutation.mutate,
     isExporting: exportMutation.isLoading,
-    exportError: exportMutation.error 
+    exportError: exportMutation.error,
   };
 };
