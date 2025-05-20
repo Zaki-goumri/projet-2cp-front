@@ -1,4 +1,8 @@
-import { Opportunity, SearchResults, Company } from '../types/opportunity.types';
+import {
+  Opportunity,
+  SearchResults,
+  Company,
+} from '../types/opportunity.types';
 import axios from '@/api/axios.config';
 import { isAxiosError } from 'axios';
 
@@ -9,7 +13,7 @@ export class OpportunitiesService {
     internships: '/post/internship/',
     problems: '/post/problem/',
     search: '/app/search/',
-    save:'/Auth/post/'
+    save: '/Auth/post/',
   };
 
   private constructor() {}
@@ -41,14 +45,19 @@ export class OpportunitiesService {
     return response.data.results;
   }
 
-  public async searchOpportunitiesAndCompanies(query: string): Promise<{ opportunity: Opportunity[], company: Company[] }> {
-    const response = await axios.get(`${this.endpoints.search}?q=${encodeURIComponent(query)}`);
+  public async searchOpportunitiesAndCompanies(
+    query: string
+  ): Promise<{ opportunity: Opportunity[]; company: Company[] }> {
+    const response = await axios.get(
+      `${this.endpoints.search}?q=${encodeURIComponent(query)}`
+    );
     return response.data;
   }
-  public async savePost(id:number): Promise<String[]> {
-    const response = await axios.get(`${this.endpoints.save}${id}/`);
+  public async savePost(id: number): Promise<String[]> {
+    const response = await axios.post(`${this.endpoints.save}${id}/`);
     return response.data;
   }
 }
 
-export const opportunitiesService = OpportunitiesService.getInstance(); 
+export const opportunitiesService = OpportunitiesService.getInstance();
+

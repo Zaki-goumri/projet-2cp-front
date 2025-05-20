@@ -6,38 +6,36 @@ import { WebSocketService } from '../services/websocket.service';
 import { useNavigate } from 'react-router';
 import { useMessages } from './useMessages';
 import { toast } from 'react-toastify';
-
-export const useChat = (currentUser: any) => {
+import { useUserStore } from '@/modules/shared/store/userStore';
+export const useChat = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [wsService] = useState(() => new WebSocketService());
   const [error, setError] = useState<string | null>(null);
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [activeConversation, setActiveConversation] =
+    useState<Conversation | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
-  const {
-    messages,
-    hasMore,
-    isLoadingMore,
-    loadMoreMessages,
-    addNewMessage,
-  } = useMessages({
-    roomName: activeConversation?.roomName || null,
-    onError: setError
-  });
-
+  const { messages, hasMore, isLoadingMore, loadMoreMessages, addNewMessage } =
+    useMessages({
+      roomName: activeConversation?.roomName || null,
+      onError: setError,
+    });
+  const currentUser = useUserStore((state) => state.user);
   const { data: conversations, isLoading: isLoadingConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: async () => {
       const response = await chatService.getConversations();
       return chatService.parseConversationList(response, currentUser);
     },
+    enabled: !!currentUser,
   });
 
   const { data: messagesData, isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedRoom],
-    queryFn: () => selectedRoom ? chatService.getMessages(selectedRoom) : null,
+    queryFn: () =>
+      selectedRoom ? chatService.getMessages(selectedRoom) : null,
     enabled: !!selectedRoom,
   });
 
@@ -56,7 +54,7 @@ export const useChat = (currentUser: any) => {
   });
 
   const searchUsersMutation = useMutation({
-    mutationFn: (params: { username: string; type?: string }) => 
+    mutationFn: (params: { username: string; type?: string }) =>
       chatService.searchUsers(params),
   });
 
@@ -104,10 +102,10 @@ export const useChat = (currentUser: any) => {
       try {
         // Disconnect from previous connection if any
         wsService.disconnect();
-        
+
         // Connect to new room
         await wsService.connect(activeConversation.roomName, token);
-        
+
         if (!isSubscribed) return;
 
         const cleanup = wsService.onMessage((serverMessage) => {
@@ -124,25 +122,27 @@ export const useChat = (currentUser: any) => {
           addNewMessage(newMessage);
 
           // Update conversation in cache
-          queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
-            oldData?.map((conv) =>
-              conv.id === activeConversation.id
-                ? { ...conv, lastMessage: newMessage }
-                : conv
-            )
+          queryClient.setQueryData(
+            ['conversations'],
+            (oldData: Conversation[] | undefined) =>
+              oldData?.map((conv) =>
+                conv.id === activeConversation.id
+                  ? { ...conv, lastMessage: newMessage }
+                  : conv
+              )
           );
         });
 
         return cleanup;
       } catch (err: any) {
         if (!isSubscribed) return;
-        
+
         if (err.message?.includes('invalid token')) {
           setError('Session expired. Please log in again.');
         } else {
           setError('Failed to connect to chat');
           console.error('WebSocket connection error:', err);
-          
+
           // Attempt to reconnect after a delay
           reconnectTimeout = setTimeout(() => {
             if (isSubscribed) {
@@ -164,18 +164,28 @@ export const useChat = (currentUser: any) => {
       }
       wsService.disconnect();
     };
-  }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient, addNewMessage, currentUser]);
+  }, [
+    activeConversation?.roomName,
+    activeConversation?.id,
+    wsService,
+    queryClient,
+    addNewMessage,
+    currentUser,
+  ]);
 
-  const selectConversation = useCallback(async (conversation: Conversation) => {
-    try {
-      wsService.disconnect();
-      setError(null);
-      setActiveConversation(conversation);
-    } catch (err) {
-      console.error('Error switching conversation:', err);
-      setError('Failed to switch conversation');
-    }
-  }, [wsService]);
+  const selectConversation = useCallback(
+    async (conversation: Conversation) => {
+      try {
+        wsService.disconnect();
+        setError(null);
+        setActiveConversation(conversation);
+      } catch (err) {
+        console.error('Error switching conversation:', err);
+        setError('Failed to switch conversation');
+      }
+    },
+    [wsService]
+  );
 
   const sendMessage = useCallback(
     async (content: string) => {
@@ -216,12 +226,14 @@ export const useChat = (currentUser: any) => {
         wsService.sendMessage(content);
         addNewMessage(tempMessage);
 
-        queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
-          oldData?.map((conv) =>
-            conv.id === activeConversation.id
-              ? { ...conv, lastMessage: tempMessage }
-              : conv
-          )
+        queryClient.setQueryData(
+          ['conversations'],
+          (oldData: Conversation[] | undefined) =>
+            oldData?.map((conv) =>
+              conv.id === activeConversation.id
+                ? { ...conv, lastMessage: tempMessage }
+                : conv
+            )
         );
       } catch (err) {
         setError('Failed to send message');

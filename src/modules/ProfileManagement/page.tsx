@@ -34,13 +34,13 @@ const ProfilePage = () => {
     setAboutMe(data?.description || '');
     setIsEditing(false);
   }, [data]);
-  // const handleEditToggle = () => {
-  //   if (isEditing) {
-  //     // Save changes when exiting edit mode
-  //     handleSaveChanges();
-  //   }
-  //   setIsEditing(!isEditing);
-  // };
+  const handleEditToggle = () => {
+    if (isEditing) {
+      // Save changes when exiting edit mode
+      handleSaveChanges();
+    }
+    setIsEditing(!isEditing);
+  };
 
   const handleSaveChanges = () => {
     // eslint-disable-next-line
