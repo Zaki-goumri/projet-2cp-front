@@ -6,15 +6,18 @@ import {
   JobPost,
   OverViewKeysType,
 } from '../types/company.types';
+import axios from '@/api/axios.config';
 
-export const getOverviewData = (): Map<
+export const getOverviewData = async(): Promise<Map<
   OverViewKeysType,
   Omit<ApplicationStatusData, 'name'>
-> => {
+>> => {
+  const response=await axios.get<ApplicationStatusData[]>("/Auth/company/dashboard/status-counts/")
+  console.log(response.data)
   const data = new Map<OverViewKeysType, Omit<ApplicationStatusData, 'name'>>();
-  data.set('total job  Posts', { value: 50, thisMonth: 5 });
-  data.set('Total applications', { value: 200, thisMonth: 20 });
-  data.set('total accepted', { value: 100, thisMonth: 10 });
+  data.set('total job  Posts', { value: response.data[0].value, thisMonth: response.data[0].thisMonth });
+  data.set('Total applications', { value: response.data[1].value, thisMonth: response.data[1].thisMonth });
+  data.set('total accepted', { value: response.data[2].value, thisMonth: response.data[2].thisMonth });
   return data;
 };
 // Mock data for charts
@@ -27,97 +30,32 @@ export const getApplicationChartData = (): ApplicationChartData[] => [
   { month: 'Jun', applications: 30, jobs: 11 },
 ];
 
-export const getApplicationStatusData = (): ApplicationStatusPieChartData[] => [
-  { status: 'submitted', value: 40 },
-  { status: 'under_review', value: 30 },
-  { status: 'rejected', value: 20 },
-  { status: 'accepted', value: 10 },
-];
+export const getApplicationStatusData = async(): Promise<ApplicationStatusPieChartData[]> => {
+  try {
+    const response=await axios.get<ApplicationStatusPieChartData[]>('/Auth/company/dashboard/status-pie-chart/');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching application status data:', error);
+    throw new Error('Failed to fetch application status data');
+  }
+};
 
 // Mock data for job posts
-export const getJobPosts = (): JobPost[] => [
-  {
-    id: 1,
-    title: 'Frontend Developer',
-    department: 'Engineering',
-    location: 'Remote',
-    type: 'Full-time',
-    postedDate: '2023-06-15',
-    applications: 24,
-    status: 'open',
-  },
-  {
-    id: 2,
-    title: 'UI/UX Designer',
-    department: 'Design',
-    location: 'Hybrid',
-    type: 'Full-time',
-    postedDate: '2023-06-10',
-    applications: 18,
-    status: 'under_review',
-  },
-  {
-    id: 3,
-    title: 'Backend Developer',
-    department: 'Engineering',
-    location: 'On-site',
-    type: 'Full-time',
-    postedDate: '2023-06-05',
-    applications: 32,
-    status: 'closed',
-  },
-  {
-    id: 4,
-    title: 'Product Manager',
-    department: 'Product',
-    location: 'Remote',
-    type: 'Full-time',
-    postedDate: '2023-05-28',
-    applications: 15,
-    status: 'closed',
-  },
-];
+export const getJobPosts = async(): Promise<JobPost[]> => {
+  try {
+    const jobPosts = await axios.get<JobPost[]>('/Auth/company/dashboard/opportunities/');
+    return jobPosts.data;
+  } catch (error) {
+    console.error('Error fetching job posts:', error);
+    throw new Error('Failed to fetch job posts');
+  }
+};
 
 // Mock data for applications
-export const getApplications = (): Application[] => [
-  {
-    id: 1,
-    applicantName: 'John Doe',
-    position: 'Frontend Developer',
-    appliedDate: '2023-06-18',
-    status: 'submitted',
-    experience: '3 years',
-    education: 'Bachelor in Computer Science',
-  },
-  {
-    id: 2,
-    applicantName: 'Jane Smith',
-    position: 'UI/UX Designer',
-    appliedDate: '2023-06-17',
-    status: 'under_review',
-    experience: '5 years',
-    education: 'Master in Design',
-  },
-  {
-    id: 3,
-    applicantName: 'Mike Johnson',
-    position: 'Backend Developer',
-    appliedDate: '2023-06-16',
-    status: 'accepted',
-    experience: '4 years',
-    education: 'Bachelor in Software Engineering',
-  },
-  {
-    id: 4,
-    applicantName: 'Sarah Williams',
-    position: 'Product Manager',
-    appliedDate: '2023-06-15',
-    status: 'rejected',
-    experience: '6 years',
-    education: 'MBA',
-  },
-];
-
+export const getApplications = async (): Promise<Application[]> => {
+  const applications = await axios.get<Application[]>('/Auth/company/dashboard/recent/');
+  return applications.data;
+}
 // Utility function for CSV export
 export const convertToCSV = (
   data: any[],

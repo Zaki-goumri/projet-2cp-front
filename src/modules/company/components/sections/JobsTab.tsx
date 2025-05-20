@@ -9,12 +9,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useJobs, useStatusUtils } from '../../hooks/useCompanyService';
 
 const JobsTab = () => {
   const { filteredJobPosts, searchTerm, setSearchTerm } = useJobs();
   const { getStatusColor, getStatusText } = useStatusUtils();
+  const navigate = useNavigate();
+
+  const handleEditPost = (jobId: number) => {
+    // Navigate to the edit page with the job id
+    navigate(`/company/post/edit/${jobId}`);
+  };
+
+  const handleDeletePost = (jobId: number) => {
+    console.log(`Delete job post with ID: ${jobId}`);
+    // In a real implementation, show confirmation dialog and delete
+  };
 
   return (
     <div className="space-y-6">
@@ -88,7 +99,7 @@ const JobsTab = () => {
                     </td>
                     <td className="px-4 py-3">
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild className="bg-white!">
+                        <DropdownMenuTrigger className="bg-white!">
                           <Button
                             variant="ghost"
                             size="sm"
@@ -105,15 +116,24 @@ const JobsTab = () => {
                             <Eye className="mr-2 h-4 w-4" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-gray-700! hover:bg-[#92E3A9]/10! hover:text-[#4A9D66]!">
+                          <DropdownMenuItem
+                            className="text-gray-700! hover:bg-[#92E3A9]/10! hover:text-[#4A9D66]!"
+                            onClick={() => handleEditPost(job.id)}
+                          >
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-gray-700! hover:bg-[#92E3A9]/10! hover:text-[#4A9D66]!">
+                          <DropdownMenuItem
+                            className="text-gray-700! hover:bg-[#92E3A9]/10! hover:text-[#4A9D66]!"
+                            onClick={() => navigate(`/company/post/applications/${job.id}`)}
+                          >
                             <Users className="mr-2 h-4 w-4" />
                             View Applications
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600! hover:bg-red-50!">
+                          <DropdownMenuItem
+                            className="text-red-600! hover:bg-red-50!"
+                            onClick={() => handleDeletePost(job.id)}
+                          >
                             <Trash className="mr-2 h-4 w-4" />
                             Delete
                           </DropdownMenuItem>

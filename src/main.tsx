@@ -35,6 +35,9 @@ import CreateOpportunityPage from './modules/post/components/opportunity.create'
 const QAPage = lazy(() => import('./modules/qa/page'));
 const ContactPage = lazy(() => import('./modules/contact/page'));
 const CompanyDashboard = lazy(() => import('./modules/company/page'));
+const ApplicationDetailPage = lazy(() => import('./modules/company/pages/ApplicationDetailPage'));
+const JobApplicationsPage = lazy(() => import('./modules/company/pages/JobApplicationsPage'));
+const EditPostPage = lazy(() => import('./modules/company/pages/EditPostPage'));
 const root = document.getElementById('root');
 if (root) {
   ReactDOM.createRoot(root).render(
@@ -91,6 +94,30 @@ if (root) {
                 element={
                   <MainLayout>
                     <CompanyDashboard />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/company/applications/:appId"
+                element={
+                  <MainLayout>
+                    <ApplicationDetailPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/company/post/applications/:postId"
+                element={
+                  <MainLayout>
+                    <JobApplicationsPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/company/post/edit/:postId"
+                element={
+                  <MainLayout>
+                    <EditPostPage />
                   </MainLayout>
                 }
               />

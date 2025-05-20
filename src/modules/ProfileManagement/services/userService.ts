@@ -22,7 +22,7 @@ export interface UpdateUserData {
   description?: string;
   skills?: string[];
   profilepic?: File;
-  
+ 
   education?:EducationData[];
   cv?: File;
 }
@@ -38,8 +38,9 @@ export async function updateUser(data: UpdateUserData): Promise<User> {
   if (data.profilepic) formData.append('pic', data.profilepic);
     if (data.education)
     formData.append('education', JSON.stringify(data.education));
-  if (data.cv) formData.append('cv', data.cv);
+  if (data.cv) formData.append('cv_input', data.cv);
 
+console.log('FormData:', data.cv);
   const res = await axios.put<User>('/Auth/user', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',

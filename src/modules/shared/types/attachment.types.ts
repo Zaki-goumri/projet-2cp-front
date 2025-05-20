@@ -1,10 +1,8 @@
 export interface Attachment {
   id: string;
-  fileName: string;
-  fileType: string;
-  fileSize: string;
-  fileUrl: string;
-  type: string;
+  name: string;
+  size: string;
+  link: string;
   createdAt?: string;
   updatedAt?: string;
 } 

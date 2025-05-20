@@ -17,7 +17,6 @@ interface ApplicationResponse {
     created_at: string;
   };
 }
-
 export class OpportunityService {
   private static instance: OpportunityService | null = null;
   private endpoints = {

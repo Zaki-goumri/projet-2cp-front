@@ -32,9 +32,9 @@ const RecentApplications = ({ applications }: RecentApplicationsProps) => {
             <tbody>
               {applications.slice(0, 5).map((app) => (
                 <tr key={app.id} className="border-b border-gray-100! hover:bg-gray-50!">
-                  <td className="py-3 px-4">{app.applicantName}</td>
-                  <td className="py-3 px-4">{app.position}</td>
-                  <td className="py-3 px-4">{app.appliedDate}</td>
+                  <td className="py-3 px-4 text-gray-900!">{app.applicantName}</td>
+                  <td className="py-3 px-4 text-gray-900!">{app.position}</td>
+                  <td className="py-3 px-4 text-gray-900!">{new Date(app.appliedDate).toLocaleDateString()}</td>
                   <td className="py-3 px-4">
                     <Badge className={getStatusColor(app.status)}>
                       {getStatusText(app.status)}

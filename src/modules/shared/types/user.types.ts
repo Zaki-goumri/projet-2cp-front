@@ -2,7 +2,7 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  profilepic: string | null;
+  profilepic:Attachment;
   type: string;
   role: 'Student' | 'Company';
   location: string | null;
