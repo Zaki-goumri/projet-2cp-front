@@ -45,24 +45,24 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 
   const addEmail = () => {
     if (!email) return;
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error('Please enter a valid email address');
       return;
     }
-    
+
     if (emails.includes(email)) {
       toast.warning('This email is already in the list');
       return;
     }
-    
+
     setEmails([...emails, email]);
     setEmail('');
   };
 
   const removeEmail = (emailToRemove: string) => {
-    setEmails(emails.filter(e => e !== emailToRemove));
+    setEmails(emails.filter((e) => e !== emailToRemove));
   };
 
   const handleSendInvite = async () => {
@@ -79,9 +79,9 @@ export const TeamCard: React.FC<TeamCardProps> = ({
     try {
       await api.post(`/post/team/inviter/`, {
         team_id: id,
-        invited_email: emails[0]
+        invited_emails: emails,
       });
-      
+
       toast.success('Invitations sent successfully');
       setEmails([]);
       setEmail('');
@@ -96,33 +96,34 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 
   return (
     <>
-      <Card className="!bg-white p-6 space-y-4 rounded-2xl shadow-sm !border-none">
+      <Card className="space-y-4 rounded-2xl !border-none !bg-white p-6 shadow-sm">
         <div className="flex items-start justify-between">
-          <div className="h-12 w-12 rounded-xl bg-primary/20  flex items-center justify-center text-emerald-500 dark:text-emerald-400">
+          <div className="bg-primary/20 flex h-12 w-12 items-center justify-center rounded-xl text-emerald-500 dark:text-emerald-400">
             {icon}
           </div>
-          <span className="text-xs font-medium text-emerald-500 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 px-2 py-1 rounded-full">
+          <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-500 dark:bg-emerald-400/10 dark:text-emerald-400">
             {status}
           </span>
         </div>
         <div>
           <h3 className="text-lg font-semibold text-black">{name}</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {memberCount} members{projectCount ? ` • ${projectCount} projects` : ''}
+            {memberCount} members
+            {projectCount ? ` • ${projectCount} projects` : ''}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Link to={`/teams/${id}`} className="flex-1">
             <Button
               variant="outline"
-              className="w-full !bg-primary/90 !text-white border-none"
+              className="!bg-primary/90 w-full border-none !text-white"
             >
               View Team
             </Button>
           </Link>
           <Button
             variant="outline"
-            className="flex-1 !bg-primary/20 !text-primary border-none"
+            className="!bg-primary/20 !text-primary flex-1 border-none"
             onClick={handleInvite}
           >
             Invite
@@ -131,7 +132,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
       </Card>
 
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
-        <DialogContent className="sm:max-w-md !bg-white">
+        <DialogContent className="!bg-white sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Invite to {name}</DialogTitle>
             <DialogDescription className="text-gray-500">
@@ -158,8 +159,8 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                     }
                   }}
                 />
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   onClick={addEmail}
                   className="!bg-primary !text-white"
                 >
@@ -167,18 +168,21 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                 </Button>
               </div>
             </div>
-            
+
             {emails.length > 0 && (
               <div className="mt-2">
                 <Label className="mb-2 block">Invitation List:</Label>
-                <div className="flex flex-wrap gap-2 p-2 border rounded-md">
+                <div className="flex flex-wrap gap-2 rounded-md border p-2">
                   {emails.map((email, index) => (
-                    <div key={index} className="flex items-center bg-gray-100 rounded-full px-3 py-1">
+                    <div
+                      key={index}
+                      className="flex items-center rounded-full bg-gray-100 px-3 py-1"
+                    >
                       <span className="text-sm">{email}</span>
-                      <Button 
-                        type="button" 
-                        variant="ghost" 
-                        className="h-5 w-5 p-0 ml-1"
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="ml-1 h-5 w-5 p-0"
                         onClick={() => removeEmail(email)}
                       >
                         ×
@@ -190,12 +194,17 @@ export const TeamCard: React.FC<TeamCardProps> = ({
             )}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setShowInviteDialog(false)} className="border-none shadow-sm !bg-gray-100 hover:!bg-gray-200 !text-gray-700">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowInviteDialog(false)}
+              className="border-none !bg-gray-100 !text-gray-700 shadow-sm hover:!bg-gray-200"
+            >
               Cancel
             </Button>
-            <Button 
-              type="button" 
-              onClick={handleSendInvite} 
+            <Button
+              type="button"
+              onClick={handleSendInvite}
               className="!bg-primary hover:!primary/90 !text-white"
               disabled={isLoading}
             >
@@ -206,4 +215,5 @@ export const TeamCard: React.FC<TeamCardProps> = ({
       </Dialog>
     </>
   );
-}; 
+};
+

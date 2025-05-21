@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { chatService } from '../services/chat.service';
 import { User } from '../types/chat.types';
 import { useDebounce } from '@/modules/shared/hooks/useDebounce';
-
+import { useUserStore } from '@/modules/shared/store/userStore';
 export const useUserSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 300);
-
+  const userType = useUserStore((state) => state.user?.type);
   const {
     data: users = [],
     isLoading,
@@ -17,10 +17,10 @@ export const useUserSearch = () => {
     queryFn: () =>
       chatService.searchUsers({
         username: debouncedSearch,
-        type: 'company', 
+        type: userType?.toLowerCase() === 'company' ? 'Student' : 'Company',
       }),
     enabled: debouncedSearch.length > 0,
-    staleTime: 1000 * 60, 
+    staleTime: 1000 * 60,
   });
 
   const handleSearch = useCallback((value: string) => {
@@ -34,4 +34,5 @@ export const useUserSearch = () => {
     searchTerm,
     handleSearch,
   };
-}; 
+};
+

@@ -35,12 +35,12 @@ function ProfileInfo({
   const profilePlaceHolder = '/assets/profile-placeholder.png';
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [profileImage, setProfileImage] = useState<string | null>(
-    user?.profilepic.link ?? profilePlaceHolder);
+    user?.profilepic.link ?? profilePlaceHolder
+  );
   const [, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const handleImageClick = () => {
     if (isEditing) {
-       
       fileInputRef.current?.click();
     }
   };

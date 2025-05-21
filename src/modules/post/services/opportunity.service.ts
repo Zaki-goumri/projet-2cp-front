@@ -5,7 +5,7 @@ import {
   Opportunity,
   Company,
   OpportunityResponse,
-  createPost,
+  CreatePost,
 } from '../types/opportunity.types';
 
 interface ApplicationResponse {
@@ -24,7 +24,7 @@ export class OpportunityService {
     search: '/app/search/',
     teams: '/post/team/',
     applications: '/app/application/',
-    savedPosts: '',
+    savedPosts: '/Auth/post/',
     postCreation: '/post/opportunity/',
   };
 
@@ -110,7 +110,7 @@ export class OpportunityService {
   }
 
   public async savePost(id: number): Promise<void> {
-    await axios.post(this.endpoints.savedPosts, { post_id: id });
+    await axios.post(`${this.endpoints.savedPosts}${id}/`);
   }
 
   public async unsavePost(id: number): Promise<void> {
