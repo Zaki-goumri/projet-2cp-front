@@ -72,7 +72,7 @@ export class WebSocketService {
       }
       
       // Create new WebSocket connection
-      const wsUrl = `ws://localhost:8001/ws/chat/${roomName}/?token=${encodeURIComponent(token)}`;
+      const wsUrl = `ws://db22-105-235-139-229.ngrok-free.app/chat/${roomName}/?token=${encodeURIComponent(token)}`;
       console.log(`Creating new WebSocket connection to ${roomName}`);
       this.ws = new WebSocket(wsUrl);
       this.currentRoom = roomName;
