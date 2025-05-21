@@ -1,7 +1,7 @@
 export interface Attachment {
-  id: string;
+  id: number;
   name: string;
-  size: string;
+  size: number;
   link: string;
   createdAt?: string;
   updatedAt?: string;

@@ -1,3 +1,6 @@
+import { Student, User } from '@/modules/shared/types';
+import { Team } from '@/modules/teams/types/teams.types';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const applicationStatus = {
   submitted: 'submitted',
@@ -33,11 +36,7 @@ export interface Application {
   applicantName: string;
   position: string;
   appliedDate: string;
-  status:
-    | 'submitted'
-    | 'under_review'
-    | 'accepted'
-    | 'rejected'
+  status: 'submitted' | 'under_review' | 'accepted' | 'rejected';
   experience: string;
   education: string;
 }
@@ -49,6 +48,8 @@ export interface DetailedApplication extends Application {
   resume: string; // URL to resume file
   skills: string[];
   proposal: string;
+  user?: Student;
+  team?: Team;
 }
 
 //getApplicationChartData

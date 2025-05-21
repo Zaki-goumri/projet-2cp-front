@@ -9,6 +9,9 @@ import {
   getApplicationChartData,
   getApplicationStatusData,
   getOverviewData,
+  deleteJobPost,
+  updatePost,
+  selectBolk,
 } from '../services/companyService';
 import {
   Application,
@@ -18,6 +21,7 @@ import {
   ApplicationStatusPieChartData,
   OverViewKeysType,
 } from '../types/company.types';
+import { queryClient } from '@/modules/shared/providers/queryClient';
 
 // Hook for status utilities
 export const useStatusUtils = () => {
@@ -64,6 +68,25 @@ export const useStatusUtils = () => {
   return { getStatusColor, getStatusText };
 };
 
+export const useSelectBulk = () => {
+  const selectBulkMutation = useMutation({
+    mutationFn: async ({ postId, ids }: { postId: number; ids: number[] }) => {
+      try {
+        await selectBolk(postId, ids, 'ACCEPT');
+        queryClient.invalidateQueries(['applications']);
+        toast.success('Bulk action successful!');
+      } catch (error) {
+        console.error('Error in bulk action:', error);
+        toast.error('Failed to perform bulk action. Please try again.');
+      }
+    },
+  });
+  return {
+    selectBulk: selectBulkMutation.mutate,
+    isSelecting: selectBulkMutation.isLoading,
+    selectError: selectBulkMutation.error,
+  };
+};
 // Hook for jobs management
 export const useJobs = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -82,9 +105,7 @@ export const useJobs = () => {
   });
 
   // Filter job posts based on search term
-  const filteredJobPosts = (jobsQuery.data || []).filter(
-    (post) =>true
-  );
+  const filteredJobPosts = (jobsQuery.data || []).filter((post) => true);
 
   return {
     jobPosts: jobsQuery.data || [],
@@ -137,6 +158,25 @@ export const useApplications = () => {
   };
 };
 
+export const useUpdatePostDetails = () => {
+  const updatePostMutation = useMutation({
+    mutationFn: async ({ postId, data }: { postId: number; data: JobPost }) => {
+      try {
+        await updatePost(postId, data);
+        queryClient.invalidateQueries(['jobPosts']);
+        toast.success('Job post updated successfully!');
+      } catch (error) {
+        console.error('Error updating job post:', error);
+        toast.error('Failed to update job post. Please try again.');
+      }
+    },
+  });
+  return {
+    updatePost: updatePostMutation.mutate,
+    isUpdating: updatePostMutation.isLoading,
+    updateError: updatePostMutation.error,
+  };
+};
 // Hooks for chart data
 export const useApplicationChartData = () => {
   const chartDataQuery = useQuery<ApplicationChartData[], Error>({
@@ -204,12 +244,31 @@ export const useOverviewData = () => {
     error: overviewDataQuery.error,
   };
 };
+export const useDeleteJobPost = () => {
+  const deleteJobPostMutation = useMutation({
+    mutationFn: async (jobId: number) => {
+      try {
+        await deleteJobPost(jobId);
 
+        queryClient.invalidateQueries(['jobPosts']);
+        toast.success('Job post deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting job post:', error);
+        toast.error('Failed to delete job post. Please try again.');
+      }
+    },
+  });
+
+  return {
+    deleteJobPost: deleteJobPostMutation.mutate,
+    isDeleting: deleteJobPostMutation.isLoading,
+    deleteError: deleteJobPostMutation.error,
+  };
+};
 // Hook for export functionality
 export const useExport = (activeTab: string) => {
   const { filteredJobPosts } = useJobs();
   const { filteredApplications } = useApplications();
-  const queryClient = useQueryClient();
 
   // Using mutation for export functionality
   const exportMutation = useMutation({
@@ -274,7 +333,10 @@ export const useExport = (activeTab: string) => {
           };
 
           const jobCSV = convertToCSV(await jobPosts, jobHeaders);
-          const applicationCSV = convertToCSV(await applications, applicationHeaders);
+          const applicationCSV = convertToCSV(
+            await applications,
+            applicationHeaders
+          );
 
           csvContent = `Job Posts\n${jobCSV}\n\nApplications\n${applicationCSV}`;
           filename = 'dashboard_overview.csv';
@@ -284,7 +346,7 @@ export const useExport = (activeTab: string) => {
         return { success: true, filename };
       } catch (error) {
         console.error('Error exporting data:', error);
-        
+
         throw new Error('Failed to export data');
       }
     },

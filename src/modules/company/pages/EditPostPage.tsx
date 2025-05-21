@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useJobs } from '../hooks/useCompanyService';
+import { useJobs, useUpdatePostDetails } from '../hooks/useCompanyService';
 import { JobPost } from '../types/company.types';
 import { ArrowLeft } from 'lucide-react';
 
@@ -51,6 +51,7 @@ const EditPostPage: React.FC = () => {
   const [jobPost, setJobPost] = useState<JobPost | null>(null);
   const [submitLoading, setSubmitLoading] = useState(false);
 
+  const {  updatePost } = useUpdatePostDetails();
   const {
     register,
     handleSubmit,
@@ -64,7 +65,7 @@ const EditPostPage: React.FC = () => {
   // Fetch job post data
   useEffect(() => {
     if (jobPosts.length > 0 && postId) {
-      const post = jobPosts.find(job => job.id === Number(postId));
+      const post = jobPosts.find((job) => job.id === Number(postId));
       if (post) {
         setJobPost(post);
         // Pre-populate the form with existing data
@@ -84,10 +85,11 @@ const EditPostPage: React.FC = () => {
 
   const onSubmit = (data: FormValues) => {
     setSubmitLoading(true);
-    
+
+    updatePost({ postId: parseInt(postId!), data });
     // In a real implementation, you would call an API to update the job post
     console.log('Updating job post with ID:', postId, 'Data:', data);
-    
+
     // Simulate API call
     setTimeout(() => {
       setSubmitLoading(false);
@@ -104,7 +106,7 @@ const EditPostPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-40">
+        <div className="flex h-40 items-center justify-center">
           <p className="text-gray-500">Loading job post data...</p>
         </div>
       </div>
@@ -115,15 +117,15 @@ const EditPostPage: React.FC = () => {
   if (!jobPost && !isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="mb-6 flex items-center text-gray-600 hover:text-gray-900"
           onClick={handleBack}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Jobs
         </Button>
-        <div className="flex items-center justify-center h-40">
+        <div className="flex h-40 items-center justify-center">
           <p className="text-gray-500">Job post not found</p>
         </div>
       </div>
@@ -133,15 +135,15 @@ const EditPostPage: React.FC = () => {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-[800px] px-4 py-8 md:px-6 lg:px-8">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="mb-6 flex items-center text-gray-600 hover:text-gray-900"
           onClick={handleBack}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Jobs
         </Button>
-        
+
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900 md:text-3xl">
             Edit <span className="text-[#92E3A9]">Job Post</span>
@@ -217,16 +219,15 @@ const EditPostPage: React.FC = () => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Job Type
+                  Opportunity Type
                 </label>
                 <select
                   {...register('type')}
                   className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors focus:border-[#92E3A9] focus:ring-1 focus:ring-[#92E3A9] focus:outline-none"
                 >
-                  <option value="Full-time">Full-time</option>
-                  <option value="Part-time">Part-time</option>
-                  <option value="Contract">Contract</option>
-                  <option value="Internship">Internship</option>
+                  <option value="Full-time">onsite</option>
+                  <option value="Part-time">online</option>
+                  <option value="Contract">hybrid</option>
                 </select>
                 {errors.type && (
                   <p className="mt-1 text-sm text-red-500">
