@@ -43,7 +43,7 @@ export default function NavBar() {
   const logout = useUserStore((state) => state.logout);
   const { data: notificationsData, markAllAsRead } = useNotifications();
   const notifications = notificationsData?.notifications || [];
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = notifications?.filter((n) => !n.read).length;
 
   useEffect(() => {
     const handleResize = () => {
