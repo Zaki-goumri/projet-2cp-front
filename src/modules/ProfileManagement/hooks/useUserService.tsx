@@ -8,11 +8,15 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 import { toast } from 'react-toastify';
 
 export function useUserInfo(id: string) {
-  const { isLoading, isError, data } = useQuery({
+  const {
+    isLoading,
+    isError,
+    data: user,
+  } = useQuery({
     queryKey: ['user', id],
     queryFn: () => getUserById(id),
   });
-  return { isLoading, isError, data };
+  return { isLoading, isError, user };
 }
 
 export function useUpdateUser() {
@@ -42,7 +46,13 @@ export function useProfileUpdate() {
   const { mutate: updateProfile, isLoading } = useUpdateUser();
   const { user } = useUserStore();
 
-  const handleProfileUpdate = ({sectionData,cb}: {sectionData: Partial<UpdateUserData>,cb:()=>void}) => {
+  const handleProfileUpdate = ({
+    sectionData,
+    cb,
+  }: {
+    sectionData: Partial<UpdateUserData>;
+    cb: () => void;
+  }) => {
     if (!user) return;
 
     const updateData: UpdateUserData = {

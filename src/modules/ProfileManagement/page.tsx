@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useUserInfo } from './hooks/useUserService';
 import ProfileInfo from './components/profileInfo';
 import AboutMe from './components/sections/AboutMe';
@@ -10,8 +10,10 @@ import UserNotFound from './components/UserNotFound';
 import { useProfileUpdate } from './hooks/useUserService';
 
 const ProfileManagement: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const { user, isLoading } = useUserInfo(id);
+  const { userName } = useParams<{ username: string }>();
+  const params = useParams();
+  console.log(params);
+  const { user, isLoading } = useUserInfo(userName);
   const [isEditing, setIsEditing] = React.useState(false);
   const { updateProfile, isLoading: isUpdating } = useProfileUpdate();
 

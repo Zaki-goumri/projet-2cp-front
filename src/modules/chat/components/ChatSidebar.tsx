@@ -51,10 +51,7 @@ const ChatSidebar = ({
           </button>
         </div>
         {showSearch && (
-          <UserSearchInput
-            value={searchTerm}
-            onChange={handleSearch}          
-          />
+          <UserSearchInput value={searchTerm} onChange={handleSearch} />
         )}
       </div>
 
@@ -74,7 +71,7 @@ const ChatSidebar = ({
                   disabled={isCreatingChat}
                 >
                   <img
-                    src={user.profilepic || '/default-avatar.png'}
+                    src={user?.profilepic?.link || '/default-avatar.png'}
                     alt={user.username}
                     className="h-10 w-10 rounded-full object-cover"
                   />

@@ -1,4 +1,4 @@
-  import axios from '@/api/axios.config';
+import axios from '@/api/axios.config';
 import { TeamResponse, Team, InvitationResponse } from '../types/teams.types';
 import { toast } from 'react-toastify';
 export const teamsService = {
@@ -21,18 +21,25 @@ export const teamsService = {
     description: string;
     category: string;
   }): Promise<Team> {
+    console.log(data);
     const response = await axios.post(`/post/team/`, data);
     return response.data;
   },
 
   async inviteMembers(teamId: string, emails: string[]): Promise<void> {
-    await axios.post(`/teams/invite`, { "invite_emails": emails,"id": teamId });
+    await axios.post(`/teams/invite`, { invite_emails: emails, id: teamId });
   },
 
-  async getInvitations(page: number = 1, limit: number = 5): Promise<InvitationResponse> {
-    const response = await axios.get<InvitationResponse>('post/team/receiver/', {
-      params: { page, limit },
-    });
+  async getInvitations(
+    page: number = 1,
+    limit: number = 5
+  ): Promise<InvitationResponse> {
+    const response = await axios.get<InvitationResponse>(
+      'post/team/receiver/',
+      {
+        params: { page, limit },
+      }
+    );
     return response.data;
   },
 
@@ -41,7 +48,9 @@ export const teamsService = {
   },
 
   async declineInvitation(invitationId: number): Promise<void> {
-    await axios.delete('/post/team/receiver/', { data: { invite_id: invitationId } });
+    await axios.delete('/post/team/receiver/', {
+      data: { invite_id: invitationId },
+    });
   },
 
   async joinTeam(teamId: string): Promise<void> {
@@ -49,10 +58,17 @@ export const teamsService = {
   },
 
   async leaveTeam(teamId: string): Promise<void> {
-    await axios.delete(`/post/team/managing/`, { data: { team_id: teamId } }).then(() => {
-      toast.success('Successfully left the team');
-    }).catch((error) => {
-      toast.error('Failed to leave team');
-    });
+    await axios
+      .delete(`/post/team/managing/`, { data: { team_id: teamId } })
+      .then(() => {
+        toast.success('Successfully left the team');
+      })
+      .catch((error) => {
+        toast.error('Failed to leave team');
+      });
+  },
+  async deleteTeam(teamId: numbet): Promise<void> {
+    console.log(teamId);
+    await axios.delete('/post/team/', { data: { team_id: teamId } });
   },
 };
