@@ -37,7 +37,6 @@ export class OpportunityService {
     return OpportunityService.instance;
   }
 
-  // Team methods
   public async getAllTeams(): Promise<Team[]> {
     try {
       const response = await axios.get<TeamsResponse>(this.endpoints.teams);
@@ -48,7 +47,7 @@ export class OpportunityService {
     }
   }
 
-  public async createPost(form: createPost): Promise<void> {
+  public async createPost(form: CreatePost): Promise<void> {
     await axios.post(this.endpoints.postCreation, { ...form });
   }
 
