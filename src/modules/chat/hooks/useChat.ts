@@ -6,33 +6,32 @@ import { WebSocketService } from '../services/websocket.service';
 import { useNavigate } from 'react-router';
 import { useMessages } from './useMessages';
 import { toast } from 'react-toastify';
+import { useUserStore } from '@/modules/shared/store/userStore';
 
-export const useChat = (currentUser: any) => {
+export const useChat = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [wsService] = useState(() => new WebSocketService());
+  const wsService = useRef(WebSocketService.getInstance()).current;
   const [error, setError] = useState<string | null>(null);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
-  const {
-    messages,
-    hasMore,
-    isLoadingMore,
-    loadMoreMessages,
-    addNewMessage,
-  } = useMessages({
-    roomName: activeConversation?.roomName || null,
-    onError: setError
-  });
 
+  const { messages, hasMore, isLoadingMore, loadMoreMessages, addNewMessage } = useMessages({
+    roomName: activeConversation?.roomName || null,
+    onError: setError,
+  });
+  
+  const currentUser = useUserStore((state) => state.user);
+  
   const { data: conversations, isLoading: isLoadingConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: async () => {
       const response = await chatService.getConversations();
       return chatService.parseConversationList(response, currentUser);
     },
+    enabled: !!currentUser,
   });
 
   const { data: messagesData, isLoading: isLoadingMessages } = useQuery({
@@ -47,17 +46,18 @@ export const useChat = (currentUser: any) => {
 
   const createRoomMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      setTimeout(() => navigate(`/chat/${data.id}`),1200)
     },
     onError: (error) => {
       toast.error('Failed to create chat room');
     },
+    retry:3
   });
 
   const searchUsersMutation = useMutation({
-    mutationFn: (params: { username: string; type?: string }) => 
-      chatService.searchUsers(params),
+    mutationFn: (params: { username: string; type?: string }) => chatService.searchUsers(params),
   });
 
   const handleRoomSelect = (roomName: string) => {
@@ -84,6 +84,14 @@ export const useChat = (currentUser: any) => {
     }
   };
 
+  // Get auth token from cookies
+  const getAuthToken = useCallback(() => {
+    return document.cookie
+      .split(';')
+      .find((cookie) => cookie.trim().startsWith('accessToken='))
+      ?.split('=')[1];
+  }, []);
+
   useEffect(() => {
     let isSubscribed = true;
     let reconnectTimeout: NodeJS.Timeout;
@@ -91,10 +99,7 @@ export const useChat = (currentUser: any) => {
     const connectWebSocket = async () => {
       if (!activeConversation?.roomName || !currentUser) return;
 
-      const token = document.cookie
-        .split(';')
-        .find((cookie) => cookie.trim().startsWith('accessToken='))
-        ?.split('=')[1];
+      const token = getAuthToken();
 
       if (!token) {
         setError('Authentication token not found');
@@ -102,12 +107,10 @@ export const useChat = (currentUser: any) => {
       }
 
       try {
-        // Disconnect from previous connection if any
-        wsService.disconnect();
-        
-        // Connect to new room
+        console.log(`Connecting to room: ${activeConversation.roomName}`);
+        // Using singleton service - don't need to create new one, just switch rooms
         await wsService.connect(activeConversation.roomName, token);
-        
+
         if (!isSubscribed) return;
 
         const cleanup = wsService.onMessage((serverMessage) => {
@@ -124,25 +127,27 @@ export const useChat = (currentUser: any) => {
           addNewMessage(newMessage);
 
           // Update conversation in cache
-          queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
-            oldData?.map((conv) =>
-              conv.id === activeConversation.id
-                ? { ...conv, lastMessage: newMessage }
-                : conv
-            )
+          queryClient.setQueryData(
+            ['conversations'],
+            (oldData: Conversation[] | undefined) =>
+              oldData?.map((conv) =>
+                conv.id === activeConversation.id
+                  ? { ...conv, lastMessage: newMessage }
+                  : conv
+              )
           );
         });
 
         return cleanup;
       } catch (err: any) {
         if (!isSubscribed) return;
-        
+
         if (err.message?.includes('invalid token')) {
           setError('Session expired. Please log in again.');
         } else {
           setError('Failed to connect to chat');
           console.error('WebSocket connection error:', err);
-          
+
           // Attempt to reconnect after a delay
           reconnectTimeout = setTimeout(() => {
             if (isSubscribed) {
@@ -162,46 +167,35 @@ export const useChat = (currentUser: any) => {
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
       }
-      wsService.disconnect();
     };
-  }, [activeConversation?.roomName, activeConversation?.id, wsService, queryClient, addNewMessage, currentUser]);
+  }, [
+    activeConversation?.roomName,
+    activeConversation?.id,
+    wsService,
+    queryClient,
+    addNewMessage,
+    currentUser,
+    getAuthToken
+  ]);
 
-  const selectConversation = useCallback(async (conversation: Conversation) => {
-    try {
-      wsService.disconnect();
-      setError(null);
-      setActiveConversation(conversation);
-    } catch (err) {
-      console.error('Error switching conversation:', err);
-      setError('Failed to switch conversation');
-    }
-  }, [wsService]);
+  const selectConversation = useCallback(
+    async (conversation: Conversation) => {
+      try {
+        setError(null);
+        setActiveConversation(conversation);
+      } catch (err) {
+        console.error('Error switching conversation:', err);
+        setError('Failed to switch conversation');
+      }
+    },
+    []
+  );
 
   const sendMessage = useCallback(
     async (content: string) => {
       if (!activeConversation || !currentUser) {
         setError('No active conversation or user not logged in');
         return;
-      }
-
-      if (!wsService.isConnected()) {
-        try {
-          const token = document.cookie
-            .split(';')
-            .find((cookie) => cookie.trim().startsWith('accessToken='))
-            ?.split('=')[1];
-
-          if (!token) {
-            setError('Authentication token not found');
-            return;
-          }
-
-          await wsService.connect(activeConversation.roomName, token);
-        } catch (err) {
-          setError('Failed to reconnect to chat');
-          console.error('Error reconnecting:', err);
-          return;
-        }
       }
 
       try {
@@ -213,15 +207,18 @@ export const useChat = (currentUser: any) => {
           sentTime: new Date(),
         };
 
-        wsService.sendMessage(content);
+        await wsService.sendMessage(content);
+        
         addNewMessage(tempMessage);
 
-        queryClient.setQueryData(['conversations'], (oldData: Conversation[] | undefined) =>
-          oldData?.map((conv) =>
-            conv.id === activeConversation.id
-              ? { ...conv, lastMessage: tempMessage }
-              : conv
-          )
+        queryClient.setQueryData(
+          ['conversations'],
+          (oldData: Conversation[] | undefined) =>
+            oldData?.map((conv) =>
+              conv.id === activeConversation.id
+                ? { ...conv, lastMessage: tempMessage }
+                : conv
+            )
         );
       } catch (err) {
         setError('Failed to send message');

@@ -32,7 +32,6 @@ export interface ConversationResponse {
   last_message: Message;
   room_name: string;
 }
-
 export interface User {
   id: number;
   username: string;
@@ -40,3 +39,4 @@ export interface User {
   type: string;
   profilepic: string | null;
 }
+
