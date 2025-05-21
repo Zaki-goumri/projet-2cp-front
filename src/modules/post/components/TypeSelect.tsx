@@ -17,7 +17,7 @@ const TypeSelect = ({ value, onChange }: TypeSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const types = [
     { id: 'internship', label: 'internship' },
-    { id: 'Problem', label: 'Problem' },
+    { id: 'problem', label: 'problem' },
   ];
   const selectedType = types.find((type) => type.id === value) || types[0];
 
