@@ -7,22 +7,23 @@ import { useNavigate } from 'react-router';
 import { useMessages } from './useMessages';
 import { toast } from 'react-toastify';
 import { useUserStore } from '@/modules/shared/store/userStore';
+
 export const useChat = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [wsService] = useState(() => new WebSocketService());
+  const wsService = useRef(WebSocketService.getInstance()).current;
   const [error, setError] = useState<string | null>(null);
-  const [activeConversation, setActiveConversation] =
-    useState<Conversation | null>(null);
+  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
-  const { messages, hasMore, isLoadingMore, loadMoreMessages, addNewMessage } =
-    useMessages({
-      roomName: activeConversation?.roomName || null,
-      onError: setError,
-    });
+  const { messages, hasMore, isLoadingMore, loadMoreMessages, addNewMessage } = useMessages({
+    roomName: activeConversation?.roomName || null,
+    onError: setError,
+  });
+  
   const currentUser = useUserStore((state) => state.user);
+  
   const { data: conversations, isLoading: isLoadingConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: async () => {
@@ -34,8 +35,7 @@ export const useChat = () => {
 
   const { data: messagesData, isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedRoom],
-    queryFn: () =>
-      selectedRoom ? chatService.getMessages(selectedRoom) : null,
+    queryFn: () => selectedRoom ? chatService.getMessages(selectedRoom) : null,
     enabled: !!selectedRoom,
   });
 
@@ -54,8 +54,7 @@ export const useChat = () => {
   });
 
   const searchUsersMutation = useMutation({
-    mutationFn: (params: { username: string; type?: string }) =>
-      chatService.searchUsers(params),
+    mutationFn: (params: { username: string; type?: string }) => chatService.searchUsers(params),
   });
 
   const handleRoomSelect = (roomName: string) => {
@@ -82,6 +81,14 @@ export const useChat = () => {
     }
   };
 
+  // Get auth token from cookies
+  const getAuthToken = useCallback(() => {
+    return document.cookie
+      .split(';')
+      .find((cookie) => cookie.trim().startsWith('accessToken='))
+      ?.split('=')[1];
+  }, []);
+
   useEffect(() => {
     let isSubscribed = true;
     let reconnectTimeout: NodeJS.Timeout;
@@ -89,10 +96,7 @@ export const useChat = () => {
     const connectWebSocket = async () => {
       if (!activeConversation?.roomName || !currentUser) return;
 
-      const token = document.cookie
-        .split(';')
-        .find((cookie) => cookie.trim().startsWith('accessToken='))
-        ?.split('=')[1];
+      const token = getAuthToken();
 
       if (!token) {
         setError('Authentication token not found');
@@ -100,10 +104,8 @@ export const useChat = () => {
       }
 
       try {
-        // Disconnect from previous connection if any
-        wsService.disconnect();
-
-        // Connect to new room
+        console.log(`Connecting to room: ${activeConversation.roomName}`);
+        // Using singleton service - don't need to create new one, just switch rooms
         await wsService.connect(activeConversation.roomName, token);
 
         if (!isSubscribed) return;
@@ -162,7 +164,6 @@ export const useChat = () => {
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
       }
-      wsService.disconnect();
     };
   }, [
     activeConversation?.roomName,
@@ -171,12 +172,12 @@ export const useChat = () => {
     queryClient,
     addNewMessage,
     currentUser,
+    getAuthToken
   ]);
 
   const selectConversation = useCallback(
     async (conversation: Conversation) => {
       try {
-        wsService.disconnect();
         setError(null);
         setActiveConversation(conversation);
       } catch (err) {
@@ -184,7 +185,7 @@ export const useChat = () => {
         setError('Failed to switch conversation');
       }
     },
-    [wsService]
+    []
   );
 
   const sendMessage = useCallback(
@@ -192,26 +193,6 @@ export const useChat = () => {
       if (!activeConversation || !currentUser) {
         setError('No active conversation or user not logged in');
         return;
-      }
-
-      if (!wsService.isConnected()) {
-        try {
-          const token = document.cookie
-            .split(';')
-            .find((cookie) => cookie.trim().startsWith('accessToken='))
-            ?.split('=')[1];
-
-          if (!token) {
-            setError('Authentication token not found');
-            return;
-          }
-
-          await wsService.connect(activeConversation.roomName, token);
-        } catch (err) {
-          setError('Failed to reconnect to chat');
-          console.error('Error reconnecting:', err);
-          return;
-        }
       }
 
       try {
@@ -223,7 +204,8 @@ export const useChat = () => {
           sentTime: new Date(),
         };
 
-        wsService.sendMessage(content);
+        await wsService.sendMessage(content);
+        
         addNewMessage(tempMessage);
 
         queryClient.setQueryData(
