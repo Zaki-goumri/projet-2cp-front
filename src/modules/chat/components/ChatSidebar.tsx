@@ -36,7 +36,6 @@ const ChatSidebar = ({
     }
     return 'No messages yet';
   };
-  console.log(conversations);
   return (
     <div className="flex h-full flex-col rounded-2xl bg-white shadow-lg">
       <div className="border-b border-gray-200 bg-white p-4">
@@ -54,11 +53,7 @@ const ChatSidebar = ({
         {showSearch && (
           <UserSearchInput
             value={searchTerm}
-            onChange={handleSearch}
-            onTypeChange={function (type: string): void {
-              throw new Error('Function not implemented.');
-            }}
-            selectedType={''}
+            onChange={handleSearch}          
           />
         )}
       </div>

@@ -4,31 +4,18 @@ import { ChangeEvent } from 'react';
 interface UserSearchInputProps {
   value: string;
   onChange: (value: string) => void;
-  onTypeChange: (type: string) => void;
-  selectedType: string;
   className?: string;
 }
-
-const USER_TYPES = [
-  { value: '', label: 'All' },
-  { value: 'student', label: 'Student' },
-  { value: 'company', label: 'Company' },
-];
 
 export const UserSearchInput = ({
   value,
   onChange,
-  onTypeChange,
-  selectedType,
   className = '',
 }: UserSearchInputProps) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
 
-  const handleTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onTypeChange(e.target.value);
-  };
 
   return (
     <div className={`space-y-2 ${className}`}>

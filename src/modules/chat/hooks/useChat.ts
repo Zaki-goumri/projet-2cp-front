@@ -17,6 +17,7 @@ export const useChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
+
   const { messages, hasMore, isLoadingMore, loadMoreMessages, addNewMessage } = useMessages({
     roomName: activeConversation?.roomName || null,
     onError: setError,
@@ -45,12 +46,14 @@ export const useChat = () => {
 
   const createRoomMutation = useMutation({
     mutationFn: (userId: number) => chatService.createRoom(userId),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      setTimeout(() => navigate(`/chat/${data.id}`),1200)
     },
     onError: (error) => {
       toast.error('Failed to create chat room');
     },
+    retry:3
   });
 
   const searchUsersMutation = useMutation({

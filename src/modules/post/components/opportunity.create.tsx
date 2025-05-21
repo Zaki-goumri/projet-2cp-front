@@ -126,7 +126,7 @@ const CreateOpportunityPage = () => {
                 {...register('title')}
                 type="text"
                 placeholder="Enter the internship post name"
-                className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors placeholder:text-gray-400 focus:border-[#92E3A9] focus:ring-1 focus:ring-[#92E3A9] focus:outline-none"
+                className="Mouloud Hasrane, [5/21/25 1:48 AM] placeholder:text- Mouloud Hasrane, [5/21/25 1:48 AM] gray-400 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors focus:border-[#92E3A9] focus:ring-1 focus:ring-[#92E3A9] focus:outline-none"
               />
               {errors.title && (
                 <p className="mt-1 text-sm text-red-500">
@@ -134,7 +134,6 @@ const CreateOpportunityPage = () => {
                 </p>
               )}
             </div>
-
             {/* Internship Duration */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
@@ -180,7 +179,6 @@ const CreateOpportunityPage = () => {
                 )}
               </div>
             </div>
-
             {/* Type and Work Type Selects */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
@@ -221,7 +219,6 @@ const CreateOpportunityPage = () => {
                 )}
               </div>
             </div>
-
             {/* Skills Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
@@ -243,7 +240,7 @@ const CreateOpportunityPage = () => {
                 </p>
               )}
             </div>
-
+            Mouloud Hasrane, [5/21/25 1:48 AM]
             {/* Description Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
