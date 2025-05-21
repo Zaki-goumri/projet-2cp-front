@@ -126,8 +126,10 @@ export class OpportunityService {
     const formData = new FormData();
     formData.append('proposal', proposal);
 
+    // Append the file if it exists
     if (file) {
-      formData.append('file', file);
+    console.log('File:', file);
+      formData.append('attechment', file);
     }
     const response = teamName
       ? await axios.post<ApplicationResponse>(
