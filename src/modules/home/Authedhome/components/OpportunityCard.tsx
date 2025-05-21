@@ -1,6 +1,15 @@
 import React from 'react';
 import { OpportunityCardProps } from '../types/opportunities.types';
-import { Calendar, Eye, ArrowRight, Building2, MapPin, Clock, Users, Briefcase } from 'lucide-react';
+import {
+  Calendar,
+  Eye,
+  ArrowRight,
+  Building2,
+  MapPin,
+  Clock,
+  Users,
+  Briefcase,
+} from 'lucide-react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
 
@@ -11,29 +20,32 @@ const calculateDaysLeft = (endDate: string | null): string => {
   const now = new Date();
   const diffTime = end.getTime() - now.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays > 0 ? `${diffDays} Days left` : 'Ended'; 
+  return diffDays > 0 ? `${diffDays} Days left` : 'Ended';
 };
 
-export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity }) => {
+export const OpportunityCard: React.FC<OpportunityCardProps> = ({
+  opportunity,
+}) => {
   const daysLeft = calculateDaysLeft(opportunity.endday);
-  const views = Math.floor(Math.random() * 500) + 50; 
-  const logo = opportunity.company.profilepic || 'https://via.placeholder.com/64'; 
+  const views = Math.floor(Math.random() * 500) + 50;
+  const logo =
+    opportunity.company.profilepic || 'https://via.placeholder.com/64';
 
   return (
-    <motion.div 
+    <motion.div
       className="group h-full"
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2 }}
     >
-      <Link 
-        to={`/opportunities/${opportunity.id}`} 
+      <Link
+        to={`/opportunities/${opportunity.id}`}
         className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:border-[#98E9AB] hover:shadow-lg"
       >
         {/* Header with company info */}
         <div className="relative p-6 pb-0">
           <div className="mb-4 flex items-start justify-between">
             <div className="flex-1">
-              <h3 className="mb-2 text-lg font-semibold text-gray-900 line-clamp-1 group-hover:text-[#98E9AB] transition-colors">
+              <h3 className="mb-2 line-clamp-1 text-lg font-semibold text-gray-900 transition-colors group-hover:text-[#98E9AB]">
                 {opportunity.title}
               </h3>
               <div className="flex items-center gap-2">
@@ -41,9 +53,13 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity })
                   <Building2 className="h-4 w-4 text-[#98E9AB]" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{opportunity.company.name}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {opportunity.company.name}
+                  </p>
                   {opportunity.company.location && (
-                    <p className="text-xs text-gray-500">{opportunity.company.location}</p>
+                    <p className="text-xs text-gray-500">
+                      {opportunity.company.location}
+                    </p>
                   )}
                 </div>
               </div>
@@ -55,7 +71,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity })
                 className="h-full w-full object-contain"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = 'https://via.placeholder.com/64';
+                  target.src = '';
                 }}
               />
             </div>
@@ -64,7 +80,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity })
 
         {/* Description */}
         <div className="flex-1 px-6 py-4">
-          <p className="text-sm leading-relaxed text-gray-600 line-clamp-2">
+          <p className="line-clamp-2 text-sm leading-relaxed text-gray-600">
             {opportunity.description}
           </p>
         </div>
@@ -77,7 +93,6 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity })
                 <Clock className="h-3.5 w-3.5" />
                 <span>{daysLeft}</span>
               </div>
-              
             </div>
             <div className="flex items-center gap-2">
               <span className="rounded-full bg-[#98E9AB]/10 px-2.5 py-1 text-xs font-medium text-[#98E9AB]">
@@ -93,4 +108,5 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity })
       </Link>
     </motion.div>
   );
-}; 
+};
+

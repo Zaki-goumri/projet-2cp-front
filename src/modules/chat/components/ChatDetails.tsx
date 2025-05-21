@@ -32,7 +32,7 @@ const ChatDetails = ({ contact }: ChatDetailsProps) => {
             </div>
           )}
         </div>
-        </div>
+      </div>
     </div>
   );
 };
