@@ -10,11 +10,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Link, useNavigate } from 'react-router';
-import { useJobs, useStatusUtils } from '../../hooks/useCompanyService';
+import {
+  useDeleteJobPost,
+  useJobs,
+  useStatusUtils,
+} from '../../hooks/useCompanyService';
 
 const JobsTab = () => {
   const { filteredJobPosts, searchTerm, setSearchTerm } = useJobs();
   const { getStatusColor, getStatusText } = useStatusUtils();
+  const { isDeleting, deleteJobPost } = useDeleteJobPost();
   const navigate = useNavigate();
 
   const handleEditPost = (jobId: number) => {
@@ -23,6 +28,7 @@ const JobsTab = () => {
   };
 
   const handleDeletePost = (jobId: number) => {
+    deleteJobPost(jobId);
     console.log(`Delete job post with ID: ${jobId}`);
     // In a real implementation, show confirmation dialog and delete
   };
@@ -125,7 +131,9 @@ const JobsTab = () => {
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             className="text-gray-700! hover:bg-[#92E3A9]/10! hover:text-[#4A9D66]!"
-                            onClick={() => navigate(`/company/post/applications/${job.id}`)}
+                            onClick={() =>
+                              navigate(`/company/post/applications/${job.id}`)
+                            }
                           >
                             <Users className="mr-2 h-4 w-4" />
                             View Applications

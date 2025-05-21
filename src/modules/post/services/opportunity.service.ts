@@ -5,7 +5,7 @@ import {
   Opportunity,
   Company,
   OpportunityResponse,
-  createPost,
+  CreatePost,
 } from '../types/opportunity.types';
 
 interface ApplicationResponse {
@@ -131,7 +131,7 @@ export class OpportunityService {
     }
     const response = teamName
       ? await axios.post<ApplicationResponse>(
-          `${this.endpoints.applications}${opportunityId}/q`,
+          `${this.endpoints.applications}${opportunityId}/`,
           formData,
           {
             params: {
@@ -140,7 +140,7 @@ export class OpportunityService {
           }
         )
       : await axios.post<ApplicationResponse>(
-          `${this.endpoints.applications}${opportunityId}/q`,
+          `${this.endpoints.applications}${opportunityId}/`,
           formData
         );
     return response.data;

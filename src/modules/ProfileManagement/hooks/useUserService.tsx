@@ -42,7 +42,7 @@ export function useProfileUpdate() {
   const { mutate: updateProfile, isLoading } = useUpdateUser();
   const { user } = useUserStore();
 
-  const handleProfileUpdate = (sectionData: Partial<UpdateUserData>) => {
+  const handleProfileUpdate = ({sectionData,cb}: {sectionData: Partial<UpdateUserData>,cb:()=>void}) => {
     if (!user) return;
 
     const updateData: UpdateUserData = {
@@ -54,6 +54,7 @@ export function useProfileUpdate() {
     };
 
     updateProfile(updateData);
+    cb();
   };
 
   return {

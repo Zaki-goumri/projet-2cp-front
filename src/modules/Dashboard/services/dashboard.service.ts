@@ -19,7 +19,6 @@ export class DashboardService {
   public async fetchDashboardData(): Promise<DashboardData> {
     try {
       const response = await axios.get<DashboardData>(this.endpoints.dashboard);
-      console.log("Dashboard data fetched:", response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
