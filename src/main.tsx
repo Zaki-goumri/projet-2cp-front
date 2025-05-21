@@ -35,8 +35,12 @@ import CreateOpportunityPage from './modules/post/components/opportunity.create'
 const QAPage = lazy(() => import('./modules/qa/page'));
 const ContactPage = lazy(() => import('./modules/contact/page'));
 const CompanyDashboard = lazy(() => import('./modules/company/page'));
-const ApplicationDetailPage = lazy(() => import('./modules/company/pages/ApplicationDetailPage'));
-const JobApplicationsPage = lazy(() => import('./modules/company/pages/JobApplicationsPage'));
+const ApplicationDetailPage = lazy(
+  () => import('./modules/company/pages/ApplicationDetailPage')
+);
+const JobApplicationsPage = lazy(
+  () => import('./modules/company/pages/JobApplicationsPage')
+);
 const EditPostPage = lazy(() => import('./modules/company/pages/EditPostPage'));
 const root = document.getElementById('root');
 if (root) {

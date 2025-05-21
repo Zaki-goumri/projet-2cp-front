@@ -8,31 +8,78 @@ import {
 } from '../types/company.types';
 import axios from '@/api/axios.config';
 
-export const getOverviewData = async(): Promise<Map<
-  OverViewKeysType,
-  Omit<ApplicationStatusData, 'name'>
->> => {
-  const response=await axios.get<ApplicationStatusData[]>("/Auth/company/dashboard/status-counts/")
-  console.log(response.data)
+export const selectBolk = async (
+  postId: number,
+  ids: number[],
+  cmd: 'ACCEPT' | 'REJECT'
+) => {
+  try {
+    const response = await axios.post(`app/choose/${postId}/`, {
+      id:ids,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error in bulk action:', error);
+    throw new Error('Failed to perform bulk action');
+  }
+};
+
+export const updatePost = async (postId: number, data: Omit<JobPost, 'id'>) => {
+  try {
+    await axios.put(`/post/opportunity/${postId}`, data);
+  } catch (error) {
+    console.error('Error updating job post:', error);
+    throw new Error('Failed to update job post');
+  }
+};
+export const getOverviewData = async (): Promise<
+  Map<OverViewKeysType, Omit<ApplicationStatusData, 'name'>>
+> => {
+  const response = await axios.get<ApplicationStatusData[]>(
+    '/Auth/company/dashboard/status-counts/'
+  );
+  console.log(response.data);
   const data = new Map<OverViewKeysType, Omit<ApplicationStatusData, 'name'>>();
-  data.set('total job  Posts', { value: response.data[0].value, thisMonth: response.data[0].thisMonth });
-  data.set('Total applications', { value: response.data[1].value, thisMonth: response.data[1].thisMonth });
-  data.set('total accepted', { value: response.data[2].value, thisMonth: response.data[2].thisMonth });
+  data.set('total job  Posts', {
+    value: response.data[0].value,
+    thisMonth: response.data[0].thisMonth,
+  });
+  data.set('Total applications', {
+    value: response.data[1].value,
+    thisMonth: response.data[1].thisMonth,
+  });
+  data.set('total accepted', {
+    value: response.data[2].value,
+    thisMonth: response.data[2].thisMonth,
+  });
   return data;
 };
 // Mock data for charts
-export const getApplicationChartData = (): ApplicationChartData[] => [
-  { month: 'Jan', applications: 12, jobs: 20 },
-  { month: 'Feb', applications: 19, jobs: 37 },
-  { month: 'Mar', applications: 15, jobs: 21 },
-  { month: 'Apr', applications: 25, jobs: 48 },
-  { month: 'May', applications: 22, jobs: 16 },
-  { month: 'Jun', applications: 30, jobs: 11 },
-];
-
-export const getApplicationStatusData = async(): Promise<ApplicationStatusPieChartData[]> => {
+export const getApplicationChartData = async (): Promise<
+  ApplicationChartData[]
+> => {
   try {
-    const response=await axios.get<ApplicationStatusPieChartData[]>('/Auth/company/dashboard/status-pie-chart/');
+    const response = await axios.get<ApplicationChartData[]>(
+      '/Auth/company/dashboard/chart-data/'
+    );
+
+    return response.data.map((item) => {
+      item.month = item.month.slice(0, 3);
+      return item;
+    });
+  } catch (error) {
+    console.error('Error fetching application chart data:', error);
+    throw new Error('Failed to fetch application chart data');
+  }
+};
+
+export const getApplicationStatusData = async (): Promise<
+  ApplicationStatusPieChartData[]
+> => {
+  try {
+    const response = await axios.get<ApplicationStatusPieChartData[]>(
+      '/Auth/company/dashboard/status-pie-chart/'
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching application status data:', error);
@@ -41,9 +88,11 @@ export const getApplicationStatusData = async(): Promise<ApplicationStatusPieCha
 };
 
 // Mock data for job posts
-export const getJobPosts = async(): Promise<JobPost[]> => {
+export const getJobPosts = async (): Promise<JobPost[]> => {
   try {
-    const jobPosts = await axios.get<JobPost[]>('/Auth/company/dashboard/opportunities/');
+    const jobPosts = await axios.get<JobPost[]>(
+      '/Auth/company/dashboard/opportunities/'
+    );
     return jobPosts.data;
   } catch (error) {
     console.error('Error fetching job posts:', error);
@@ -53,9 +102,20 @@ export const getJobPosts = async(): Promise<JobPost[]> => {
 
 // Mock data for applications
 export const getApplications = async (): Promise<Application[]> => {
-  const applications = await axios.get<Application[]>('/Auth/company/dashboard/recent/');
+  const applications = await axios.get<Application[]>(
+    '/Auth/company/dashboard/recent/'
+  );
   return applications.data;
-}
+};
+export const deleteJobPost = async (postId: number): Promise<void> => {
+  try {
+    await axios.delete(`/post/opportunity/${postId}`);
+  } catch (error) {
+    console.error('Error deleting job post:', error);
+    throw new Error('Failed to delete job post');
+  }
+};
+
 // Utility function for CSV export
 export const convertToCSV = (
   data: any[],

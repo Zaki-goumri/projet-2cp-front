@@ -1,7 +1,7 @@
 export interface ExperienceData {
-  id: string;
+  title: string;
   company: string;
-  role: string;
-  startDate: string;
-  endDate: string | null;
-} 
+  start: string;
+  end: string | null;
+}
+

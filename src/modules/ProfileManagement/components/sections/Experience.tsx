@@ -6,10 +6,10 @@ import AddItemModal from '../modals/AddItemModal';
 
 interface Experience {
   id: string;
+  title: string;
   company: string;
-  role: string;
-  startDate: string;
-  endDate: string | null;
+  start: string;
+  end: string | null;
 }
 
 interface ExperienceProps {
@@ -31,15 +31,6 @@ const Experience = ({ isEditing, experiences, onExperiencesChange }: ExperienceP
   };
 
   const handleModalSubmit = (data: any) => {
-    const newExperience: Experience = {
-      id: Date.now().toString(),
-      company: data.company,
-      role: data.role,
-      startDate: data.startDate,
-      endDate: data.endDate
-    };
-    const updatedExperiences = [...experiences, newExperience];
-    onExperiencesChange(updatedExperiences);
     setIsModalOpen(false);
   };
 
@@ -61,9 +52,9 @@ const Experience = ({ isEditing, experiences, onExperiencesChange }: ExperienceP
                 <div key={exp.id} className="rounded-lg border-[#92E3A9] p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold">{exp.company}</h3>
-                      <p className="text-gray-600">{exp.role}</p>
-                      <p className="text-sm text-gray-500">{exp.startDate} - {exp.endDate}</p>
+                      <h3 className="font-semibold">{exp.title}</h3>
+                      <p className="text-gray-600">{exp.company}</p>
+                      <p className="text-sm text-gray-500">{exp.start} - {exp.end}</p>
                     </div>
                     {isEditing && (
                       <div className="flex space-x-2">

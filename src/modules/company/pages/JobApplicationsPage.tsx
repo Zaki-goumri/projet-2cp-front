@@ -12,7 +12,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ArrowLeft, CheckCircle, Download, Eye, XCircle } from 'lucide-react';
-import { useApplications, useExport, useJobs, useStatusUtils } from '../hooks/useCompanyService';
+import {
+  useApplications,
+  useExport,
+  useJobs,
+  useSelectBulk,
+  useStatusUtils,
+} from '../hooks/useCompanyService';
 import { Application, JobPost } from '../types/company.types';
 import { Checkbox } from '@/components/ui/checkbox';
 const JobApplicationsPage: React.FC = () => {
@@ -22,15 +28,20 @@ const JobApplicationsPage: React.FC = () => {
   const { applications, isLoading: isLoadingApplications } = useApplications();
   const { jobPosts, isLoading: isLoadingJobs } = useJobs();
   const { handleExport } = useExport('applications');
-  
+
   // UI state
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [selectedApplications, setSelectedApplications] = useState<number[]>([]);
-  
+  const [selectedApplications, setSelectedApplications] = useState<number[]>(
+    []
+  );
+
   // Find the job post that matches the postId
-  const jobPost: JobPost | undefined = jobPosts.find(job => job.id === Number(postId));
-  
+  const jobPost: JobPost | undefined = jobPosts.find(
+    (job) => job.id === Number(postId)
+  );
+
+  const { selectBulk, selectError } = useSelectBulk();
   // Filter applications - in a real implementation, these would be fetched based on postId
   // For now, we're just using the same applications as the main page
   const filteredApplications = applications.filter(
@@ -49,22 +60,24 @@ const JobApplicationsPage: React.FC = () => {
     if (checked) {
       setSelectedApplications([...selectedApplications, appId]);
     } else {
-      setSelectedApplications(selectedApplications.filter(id => id !== appId));
+      setSelectedApplications(
+        selectedApplications.filter((id) => id !== appId)
+      );
     }
   };
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedApplications(filteredApplications.map(app => app.id));
+      setSelectedApplications(filteredApplications.map((app) => app.id));
     } else {
       setSelectedApplications([]);
     }
   };
 
   const handleBulkAccept = () => {
-    console.log('Accepting applications:', selectedApplications);
     // In a real implementation, call API to update status
     // Then clear selection
+    selectBulk({ postId: parseInt(postId!), ids: selectedApplications });
     setSelectedApplications([]);
   };
 
@@ -79,8 +92,8 @@ const JobApplicationsPage: React.FC = () => {
   if (jobPost === undefined && !isLoadingJobs) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="mb-6 flex items-center text-gray-600! hover:text-gray-900!"
           onClick={handleBack}
         >
@@ -111,15 +124,15 @@ const JobApplicationsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         className="mb-6 flex items-center text-gray-600! hover:text-gray-900!"
         onClick={handleBack}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Jobs
       </Button>
-      
+
       <Card className="mb-6 border border-gray-200! bg-white! shadow-sm!">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-gray-900!">
@@ -130,11 +143,15 @@ const JobApplicationsPage: React.FC = () => {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="rounded-md bg-gray-50! p-4">
               <p className="text-sm font-medium text-gray-500!">Department</p>
-              <p className="mt-1 font-medium text-gray-900!">{jobPost?.department}</p>
+              <p className="mt-1 font-medium text-gray-900!">
+                {jobPost?.department}
+              </p>
             </div>
             <div className="rounded-md bg-gray-50! p-4">
               <p className="text-sm font-medium text-gray-500!">Location</p>
-              <p className="mt-1 font-medium text-gray-900!">{jobPost?.location}</p>
+              <p className="mt-1 font-medium text-gray-900!">
+                {jobPost?.location}
+              </p>
             </div>
             <div className="rounded-md bg-gray-50! p-4">
               <p className="text-sm font-medium text-gray-500!">Type</p>
@@ -151,7 +168,7 @@ const JobApplicationsPage: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-      
+
       <div className="mb-6 flex flex-col items-start justify-between md:flex-row md:items-center">
         <div className="mb-4 flex items-center space-x-2 md:mb-0">
           <Input
@@ -237,7 +254,7 @@ const JobApplicationsPage: React.FC = () => {
           </Button>
         </div>
       </div>
-      
+
       <Card className="border border-gray-200! bg-white! shadow-sm!">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -245,9 +262,13 @@ const JobApplicationsPage: React.FC = () => {
               <thead>
                 <tr className="bg-gray-50!">
                   <th className="px-4 py-3 text-left">
-                    <Checkbox 
+                    <Checkbox
                       id="select-all"
-                      checked={selectedApplications.length === filteredApplications.length && filteredApplications.length > 0}
+                      checked={
+                        selectedApplications.length ===
+                          filteredApplications.length &&
+                        filteredApplications.length > 0
+                      }
                       onCheckedChange={(checked) => handleSelectAll(!!checked)}
                       className="border-gray-300!"
                     />
@@ -277,7 +298,9 @@ const JobApplicationsPage: React.FC = () => {
                       <Checkbox
                         id={`select-${app.id}`}
                         checked={selectedApplications.includes(app.id)}
-                        onCheckedChange={(checked) => handleSelectApplication(app.id, !!checked)}
+                        onCheckedChange={(checked) =>
+                          handleSelectApplication(app.id, !!checked)
+                        }
                         className="border-gray-300!"
                       />
                     </td>
@@ -301,7 +324,9 @@ const JobApplicationsPage: React.FC = () => {
                           variant="ghost"
                           size="sm"
                           className="text-[#4A9D66]! hover:text-[#92E3A9]!"
-                          onClick={() => navigate(`/company/applications/${app.id}`)}
+                          onClick={() =>
+                            navigate(`/company/applications/${app.id}`)
+                          }
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
