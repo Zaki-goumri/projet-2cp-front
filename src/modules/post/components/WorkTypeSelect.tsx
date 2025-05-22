@@ -9,7 +9,7 @@ interface WorkTypeSelectProps {
 const WorkTypeSelect = ({ value, onChange }: WorkTypeSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const workTypes = [
-    { id: 'remote', label: 'Remote' },
+    { id: 'online', label: 'Remote' },
     { id: 'hybrid', label: 'Hybrid' },
     { id: 'on-site', label: 'On Site' },
   ];
