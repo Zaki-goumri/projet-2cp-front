@@ -12,11 +12,11 @@ const Skills = ({ isEditing, skills, onSkillsChange }: SkillsProps) => {
   const [newSkill, setNewSkill] = useState('');
 
   const handleAddSkill = () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+
       const updatedSkills = [...skills, newSkill.trim()];
       onSkillsChange(updatedSkills);
       setNewSkill('');
-    }
+   
   };
 
   const handleRemoveSkill = (skillToRemove: string) => {

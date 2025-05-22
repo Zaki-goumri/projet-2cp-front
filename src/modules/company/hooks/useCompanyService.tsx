@@ -12,6 +12,7 @@ import {
   deleteJobPost,
   updatePost,
   selectBolk,
+  getJobApplications,
 } from '../services/companyService';
 import {
   Application,
@@ -68,12 +69,43 @@ export const useStatusUtils = () => {
   return { getStatusColor, getStatusText };
 };
 
-export const useSelectBulk = () => {
-  const selectBulkMutation = useMutation({
-    mutationFn: async ({ postId, ids }: { postId: number; ids: number[] }) => {
+export const useJobApplications = (jobId: number) => {
+  const applicationsQuery = useQuery<Application[], Error>({
+    queryKey: ['applications', jobId],
+    queryFn: async () => {
       try {
-        await selectBolk(postId, ids, 'ACCEPT');
+        return getJobApplications(jobId);
+      } catch (err) {
+        throw new Error(
+          err instanceof Error ? err.message : 'Failed to fetch applications'
+        );
+      }
+    },
+  });
+
+  return {
+    applications: applicationsQuery.data || [],
+    isLoading: applicationsQuery.isLoading,
+    error: applicationsQuery.error,
+    refetch: applicationsQuery.refetch,
+  };
+};
+export const useSelectBulk = (cb?: () => void) => {
+  const selectBulkMutation = useMutation({
+    onSuccess:cb,
+    mutationFn: async ({
+      postId,
+      ids,
+      cmd,
+    }: {
+      postId: number;
+      ids: number[];
+      cmd: 'ACCEPT' | 'REJECT';
+    }) => {
+      try {
+        await selectBolk(postId, ids, cmd);
         queryClient.invalidateQueries(['applications']);
+        queryClient.invalidateQueries({queryKey:['application', ids[0]]});
         toast.success('Bulk action successful!');
       } catch (error) {
         console.error('Error in bulk action:', error);
