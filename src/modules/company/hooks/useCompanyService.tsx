@@ -92,7 +92,7 @@ export const useJobApplications = (jobId: number) => {
 };
 export const useSelectBulk = (cb?: () => void) => {
   const selectBulkMutation = useMutation({
-    onSuccess:cb,
+    onSuccess: cb,
     mutationFn: async ({
       postId,
       ids,
@@ -105,7 +105,7 @@ export const useSelectBulk = (cb?: () => void) => {
       try {
         await selectBolk(postId, ids, cmd);
         queryClient.invalidateQueries(['applications']);
-        queryClient.invalidateQueries({queryKey:['application', ids[0]]});
+        queryClient.invalidateQueries({ queryKey: ['application', ids[0]] });
         toast.success('Bulk action successful!');
       } catch (error) {
         console.error('Error in bulk action:', error);
