@@ -6,7 +6,7 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { Student, Company } from '@/modules/shared/types/shared.types';
-
+import { requestFcmToken } from '@/api/firebase.messaging';
 const useSignup = () => {
   const setUser = useUserStore((state) => state.login);
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ const useSignup = () => {
     mutationFn: (values: RegisterRequest) => signupService.register(values),
     onSuccess: (data: Student | Company) => {
       setUser({ ...data });
+      requestFcmToken();
       navigate('/home');
     },
     onError: (error: unknown) => {
