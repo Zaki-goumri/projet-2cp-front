@@ -16,7 +16,6 @@ type ParamsType = { userName: string };
 const ProfilePage: React.FC = () => {
   const { userName } = useParams<ParamsType>();
   const params = useParams();
-  console.log(params);
   const { data, isLoading, isError } = useUserInfo(userName!);
 
   const [isEditing, setIsEditing] = useState(false);

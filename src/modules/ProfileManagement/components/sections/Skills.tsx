@@ -12,15 +12,13 @@ const Skills = ({ isEditing, skills, onSkillsChange }: SkillsProps) => {
   const [newSkill, setNewSkill] = useState('');
 
   const handleAddSkill = () => {
-
-      const updatedSkills = [...skills, newSkill.trim()];
-      onSkillsChange(updatedSkills);
-      setNewSkill('');
-   
+    const updatedSkills = [...skills, newSkill.trim()];
+    onSkillsChange(updatedSkills);
+    setNewSkill('');
   };
 
   const handleRemoveSkill = (skillToRemove: string) => {
-    const updatedSkills = skills.filter(skill => skill !== skillToRemove);
+    const updatedSkills = skills.filter((skill) => skill !== skillToRemove);
     onSkillsChange(updatedSkills);
   };
 
@@ -48,7 +46,7 @@ const Skills = ({ isEditing, skills, onSkillsChange }: SkillsProps) => {
                 onChange={(e) => setNewSkill(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Add a skill..."
-                className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#92E3A9]"
+                className="flex-1 rounded-md border border-gray-300 p-2 focus:ring-2 focus:ring-[#92E3A9] focus:outline-none"
               />
               <button
                 onClick={handleAddSkill}
@@ -61,7 +59,7 @@ const Skills = ({ isEditing, skills, onSkillsChange }: SkillsProps) => {
               {skills.map((skill, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-1 px-3 py-1 bg-[#92E3A91A] rounded-full"
+                  className="flex items-center gap-1 rounded-full bg-[#92E3A91A] px-3 py-1"
                 >
                   <span className="text-sm">{skill}</span>
                   <button
@@ -80,7 +78,7 @@ const Skills = ({ isEditing, skills, onSkillsChange }: SkillsProps) => {
               skills.map((skill, index) => (
                 <div
                   key={index}
-                  className="px-3 py-1 bg-[#92E3A91A] rounded-full"
+                  className="rounded-full bg-[#92E3A91A] px-3 py-1"
                 >
                   <span className="text-sm">{skill}</span>
                 </div>
