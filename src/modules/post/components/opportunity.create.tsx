@@ -240,7 +240,6 @@ const CreateOpportunityPage = () => {
                 </p>
               )}
             </div>
-            Mouloud Hasrane, [5/21/25 1:48 AM]
             {/* Description Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
