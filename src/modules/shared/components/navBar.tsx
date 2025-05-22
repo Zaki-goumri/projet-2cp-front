@@ -223,7 +223,10 @@ export default function NavBar() {
                   <DropdownMenuTrigger className="mb-2 focus:outline-none">
                     <Avatar className="cursor-pointer rounded-full transition-all duration-200 hover:scale-110 hover:bg-gray-100">
                       <AvatarImage
-                        src={user.profilepic?.link || ''}
+                        src={
+                          user.profilepic?.link ??
+                          'https://kzml916azhfp1n9qkkfj.lite.vusercontent.net/placeholder.svg?height=300&width=400'
+                        }
                         className="!bg-white"
                         placeholder="blur"
                         blurDataURL=""

@@ -8,15 +8,11 @@ import { TeamsList } from './teams-list';
 import { YearlyOverview } from './yearly-overview';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { ChartData } from '../types/dashboard.types'; // Import ChartData type
-
+import Loading from '@/loading';
 export const Dashboard: React.FC = () => {
   const { data: dashboardData, isLoading, error } = useDashboardData();
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-[#92E3A9]"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {
