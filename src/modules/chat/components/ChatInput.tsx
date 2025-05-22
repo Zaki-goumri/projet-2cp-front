@@ -97,13 +97,6 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
           rows={1}
         />
         <div className="absolute top-4 right-2 flex space-x-1">
-          <button
-            type="button"
-            className="text-gray-400 hover:text-gray-600"
-            title="Attach a file"
-          >
-            <PaperclipIcon className="mb-1 h-5 w-5" />
-          </button>
           <div className="relative">
             <button
               ref={emojiButtonRef}
