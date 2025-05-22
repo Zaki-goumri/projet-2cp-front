@@ -82,7 +82,7 @@ const CreateOpportunityPage = () => {
     defaultValues: {
       skills: [],
       description: '',
-      Type: 'Problem',
+      Type: 'problem',
       workType: 'Onsite',
     },
   });
