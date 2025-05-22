@@ -7,15 +7,15 @@ import {
   OverViewKeysType,
 } from '../types/company.types';
 import axios from '@/api/axios.config';
-
 export const selectBolk = async (
   postId: number,
   ids: number[],
   cmd: 'ACCEPT' | 'REJECT'
 ) => {
   try {
-    const response = await axios.post(`app/choose/${postId}/`, {
-      id:ids,
+    const keyWord= cmd === 'ACCEPT' ? 'choose' : 'reject_applicant';
+    const response = await axios.post(`app/${keyWord}/${postId}/`, {
+      id: ids,
     });
     return response.data;
   } catch (error) {
@@ -23,7 +23,20 @@ export const selectBolk = async (
     throw new Error('Failed to perform bulk action');
   }
 };
-
+export const getJobApplications = async (
+  postId: number
+): Promise<Application[]> => {
+  try {
+    const response = await axios.get<Application[]>(`app/${postId}/`);
+    return response.data.map((item) => {
+      item.experience = item['proposal'] ?? '';
+      return item;
+    });
+  } catch (error) {
+    console.error('Error fetching job applications:', error);
+    throw new Error('Failed to fetch job applications');
+  }
+};
 export const updatePost = async (postId: number, data: Omit<JobPost, 'id'>) => {
   try {
     await axios.put(`/post/opportunity/${postId}`, data);

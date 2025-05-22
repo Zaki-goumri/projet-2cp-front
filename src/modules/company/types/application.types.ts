@@ -1,3 +1,5 @@
+import { Attachment } from "@/modules/shared/types";
+
 export interface ProfilePic {
   link: string;
   name: string;
@@ -55,7 +57,7 @@ export interface ApplicationType {
   team: TeamType | null;
   proposal: string | null;
   status: string;
-  atachedfile: string | null;
+  atachedfile: Attachment| null;
   links: string | null;
 }
 
@@ -64,4 +66,6 @@ export interface ApiResponse {
   user: UserType | null;
   team: TeamType | null;
   type: 'user' | 'team';
+
+  post_id?: number;
 } 

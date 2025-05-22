@@ -15,17 +15,20 @@ import { ArrowLeft, CheckCircle, Download, Eye, XCircle } from 'lucide-react';
 import {
   useApplications,
   useExport,
+  useJobApplications,
   useJobs,
   useSelectBulk,
   useStatusUtils,
 } from '../hooks/useCompanyService';
-import { Application, JobPost } from '../types/company.types';
+import { JobPost } from '../types/company.types';
 import { Checkbox } from '@/components/ui/checkbox';
 const JobApplicationsPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
   const { getStatusColor, getStatusText } = useStatusUtils();
-  const { applications, isLoading: isLoadingApplications } = useApplications();
+  const { applications, isLoading: isLoadingApplications } = useJobApplications(
+    parseInt(postId!)
+  );
   const { jobPosts, isLoading: isLoadingJobs } = useJobs();
   const { handleExport } = useExport('applications');
 
@@ -40,17 +43,11 @@ const JobApplicationsPage: React.FC = () => {
   const jobPost: JobPost | undefined = jobPosts.find(
     (job) => job.id === Number(postId)
   );
+  const filteredApplications = applications;
 
   const { selectBulk, selectError } = useSelectBulk();
   // Filter applications - in a real implementation, these would be fetched based on postId
   // For now, we're just using the same applications as the main page
-  const filteredApplications = applications.filter(
-    (app) =>
-      (filterStatus === 'all' || app.status === filterStatus) &&
-      (searchTerm === '' ||
-        app.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.position.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
 
   const handleBack = () => {
     navigate('/company/test');
@@ -77,12 +74,20 @@ const JobApplicationsPage: React.FC = () => {
   const handleBulkAccept = () => {
     // In a real implementation, call API to update status
     // Then clear selection
-    selectBulk({ postId: parseInt(postId!), ids: selectedApplications });
+    selectBulk({
+      postId: parseInt(postId!),
+      ids: selectedApplications,
+      cmd: 'ACCEPT',
+    });
     setSelectedApplications([]);
   };
 
   const handleBulkReject = () => {
-    console.log('Rejecting applications:', selectedApplications);
+    selectBulk({
+      postId: parseInt(postId!),
+      ids: selectedApplications,
+      cmd: 'REJECT',
+    });
     // In a real implementation, call API to update status
     // Then clear selection
     setSelectedApplications([]);

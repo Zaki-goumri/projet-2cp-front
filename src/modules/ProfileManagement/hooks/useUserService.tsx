@@ -8,15 +8,11 @@ import { useUserStore } from '@/modules/shared/store/userStore';
 import { toast } from 'react-toastify';
 
 export function useUserInfo(id: string) {
-  const {
-    isLoading,
-    isError,
-    data: user,
-  } = useQuery({
+  const { isLoading, isError, data } = useQuery({
     queryKey: ['user', id],
     queryFn: () => getUserById(id),
   });
-  return { isLoading, isError, user };
+  return { isLoading, isError, data };
 }
 
 export function useUpdateUser() {

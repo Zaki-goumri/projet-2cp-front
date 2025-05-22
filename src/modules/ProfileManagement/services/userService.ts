@@ -1,9 +1,10 @@
 import axios from '@/api/axios.config';
 import { EducationData, User } from '@/modules/shared/types/shared.types';
 import Education from '../components/sections/Education';
+import { Student } from '@/modules/shared/types';
 
-export async function getUserById(id: string): Promise<User> {
-  const res = await axios.get<User>(`/Auth/user/${id}/`);
+export async function getUserById(id: string): Promise<Student> {
+  const res = await axios.get<Student>(`/Auth/user/${id}/`);
   if (res.status == 200) {
     return res.data;
   }
@@ -21,8 +22,7 @@ export interface UpdateUserData {
   email?: string;
   description?: string;
   skills?: string[];
-  profilepic?: File;
- 
+  profilepic?: File; 
   education?:EducationData[];
   cv?: File;
 }
