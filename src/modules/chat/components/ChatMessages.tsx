@@ -27,13 +27,16 @@ const useIntersectionObserver = (options: IntersectionOptions = {}) => {
   const targetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsIntersecting(entry.isIntersecting);
-    }, {
-      rootMargin: '100px 0px',
-      threshold: 0.1,
-      ...options
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+      },
+      {
+        rootMargin: '100px 0px',
+        threshold: 0.1,
+        ...options,
+      }
+    );
 
     const currentTarget = targetRef.current;
     if (currentTarget) {
@@ -57,7 +60,7 @@ const useInfiniteScroll = (
 ) => {
   const [loadMoreRef, isIntersecting] = useIntersectionObserver({
     rootMargin: '200px 0px',
-    threshold: 0.1
+    threshold: 0.1,
   });
 
   useEffect(() => {
@@ -137,10 +140,7 @@ const ChatMessages = ({
   );
 
   return (
-    <div
-      ref={containerRef}
-      className="h-full overflow-y-auto p-4"
-    >
+    <div ref={containerRef} className="h-full overflow-y-auto p-4">
       {loadingMore && (
         <div className="flex justify-center py-2">
           <div className="loader">Loading...</div>
@@ -148,21 +148,18 @@ const ChatMessages = ({
       )}
 
       {/* Load more trigger element */}
-      {hasMoreMessages && (
-        <div ref={loadMoreRef} className="h-4" />
-      )}
+      {hasMoreMessages && <div ref={loadMoreRef} className="h-4" />}
 
       <div className="mb-6 flex items-center justify-center">
         <div className="text-center">
           <div className="relative mx-auto mb-2 h-16 w-16">
             <img
-              src={activeConversation.avatar || ''}
+              src={activeConversation.avatar?.link || ''}
               alt={activeConversation.name}
               className="h-full w-full rounded-full"
             />
           </div>
           <h3 className="text-lg font-semibold">{activeConversation.name}</h3>
-          <p className="text-sm text-gray-500">{activeConversation.userType}</p>
         </div>
       </div>
 
@@ -185,7 +182,7 @@ const ChatMessages = ({
                 {!isSentByCurrentUser && (
                   <div className="mr-2 flex-shrink-0">
                     <img
-                      src={activeConversation.avatar || ''}
+                      src={activeConversation.avatar?.link || ''}
                       alt={activeConversation.name}
                       className="h-8 w-8 rounded-full"
                     />
@@ -195,7 +192,7 @@ const ChatMessages = ({
                 <div
                   className={`max-w-[70%] rounded-lg px-4 py-2 ${
                     isSentByCurrentUser
-                      ? 'rounded-br-none bg-blue-500 text-white'
+                      ? 'bg-primary rounded-br-none text-white'
                       : 'rounded-bl-none bg-gray-200 text-gray-800'
                   }`}
                 >
@@ -220,7 +217,7 @@ const ChatMessages = ({
                 {isSentByCurrentUser && (
                   <div className="ml-2 flex-shrink-0">
                     <img
-                      src={currentUser?.profilepic || ''}
+                      src={currentUser?.profilepic?.link || ''}
                       alt={currentUser?.name || 'Me'}
                       className="h-8 w-8 rounded-full"
                     />

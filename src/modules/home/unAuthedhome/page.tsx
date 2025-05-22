@@ -171,25 +171,25 @@ const UnAuthedhome = () => {
   const features = [
     {
       icon: <Sparkles className="h-6 w-6" />,
-      title: "Discover Opportunities",
-      description: "Find the perfect match for your skills and career goals"
+      title: 'Discover Opportunities',
+      description: 'Find the perfect match for your skills and career goals',
     },
     {
       icon: <Briefcase className="h-6 w-6" />,
-      title: "Career Growth",
-      description: "Take the next step in your professional journey"
+      title: 'Career Growth',
+      description: 'Take the next step in your professional journey',
     },
     {
       icon: <Target className="h-6 w-6" />,
-      title: "Real Challenges",
-      description: "Solve real-world problems and build your portfolio"
-    }
+      title: 'Real Challenges',
+      description: 'Solve real-world problems and build your portfolio',
+    },
   ];
 
   return (
-    <main className="relative overflow-hidden space-y-6">
+    <main className="relative space-y-6 overflow-hidden">
       <Introduction />
-      
+
       {/* Featured Categories */}
       <section className="mx-3 sm:mx-6 md:mx-8 lg:mx-16">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -204,7 +204,9 @@ const UnAuthedhome = () => {
               <div className="mb-4 inline-flex rounded-xl bg-[#98E9AB]/10 p-3 text-[#98E9AB]">
                 {feature.icon}
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-gray-900">{feature.title}</h3>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                {feature.title}
+              </h3>
               <p className="text-sm text-gray-500">{feature.description}</p>
               <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#98E9AB]/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             </motion.div>
@@ -218,7 +220,9 @@ const UnAuthedhome = () => {
           <div>
             <div className="mb-2 flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-[#98E9AB]" />
-              <span className="text-sm font-medium text-[#98E9AB]">Career Growth</span>
+              <span className="text-sm font-medium text-[#98E9AB]">
+                Career Growth
+              </span>
             </div>
             <h2 className="text-2xl font-bold md:text-3xl">
               <span className="text-[#98E9AB]">Internships</span> for you
@@ -239,7 +243,6 @@ const UnAuthedhome = () => {
             </div>
           ))}
         </Slider>
-       
       </section>
 
       {/* Problems Section */}
@@ -248,7 +251,9 @@ const UnAuthedhome = () => {
           <div>
             <div className="mb-2 flex items-center gap-2">
               <Target className="h-5 w-5 text-[#98E9AB]" />
-              <span className="text-sm font-medium text-[#98E9AB]">Skill Development</span>
+              <span className="text-sm font-medium text-[#98E9AB]">
+                Skill Development
+              </span>
             </div>
             <h2 className="text-2xl font-bold md:text-3xl">
               <span className="text-black">Real-world</span>
@@ -256,7 +261,8 @@ const UnAuthedhome = () => {
               <span className="text-black"> to solve</span>
             </h2>
             <p className="mt-2 text-sm text-gray-500">
-              Challenge yourself with real-world problems and build your portfolio
+              Challenge yourself with real-world problems and build your
+              portfolio
             </p>
           </div>
         </div>
@@ -271,12 +277,11 @@ const UnAuthedhome = () => {
             </div>
           ))}
         </Slider>
-        
       </section>
 
       {/* Call to Action */}
-      <section className="mx-3 sm:mx-6 md:mx-8 lg:mx-16 mb-8">
-        <motion.div 
+      <section className="mx-3 mb-8 sm:mx-6 md:mx-8 lg:mx-16">
+        <motion.div
           className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#98E9AB] to-[#4CAF50] p-8 text-white"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -284,12 +289,15 @@ const UnAuthedhome = () => {
           transition={{ duration: 0.5 }}
         >
           <div className="relative z-10">
-            <h3 className="mb-4 text-2xl font-bold md:text-3xl">Ready to get started?</h3>
+            <h3 className="mb-4 text-2xl font-bold md:text-3xl">
+              Ready to get started?
+            </h3>
             <p className="mb-6 max-w-2xl text-white/90">
-              Join our community of learners and start your journey towards professional growth.
-              Find opportunities that match your skills and aspirations.
+              Join our community of learners and start your journey towards
+              professional growth. Find opportunities that match your skills and
+              aspirations.
             </p>
-            <motion.button 
+            <motion.button
               className="rounded-full bg-white px-6 py-3 text-sm font-medium text-[#4CAF50] transition-colors hover:bg-white/90"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -302,10 +310,7 @@ const UnAuthedhome = () => {
         </motion.div>
       </section>
 
-      <SigninModel
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <SigninModel isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </main>
   );
 };

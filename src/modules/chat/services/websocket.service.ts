@@ -72,7 +72,8 @@ export class WebSocketService {
       }
 
       // Create new WebSocket connection
-      const wsUrl = `ws://localhost:8001/chat/${roomName}/?token=${encodeURIComponent(token)}`;
+      const socketBaseUrl = import.meta.env.VITE_SOCKET_BASE_URL;
+      const wsUrl = `${socketBaseUrl}//ws/chat/${roomName}/?token=${encodeURIComponent(token)}`;
       console.log(`Creating new WebSocket connection to ${roomName}`);
       this.ws = new WebSocket(wsUrl);
       this.currentRoom = roomName;

@@ -21,7 +21,7 @@ const ChatSidebar = ({
 }: ChatSidebarProps) => {
   const [showSearch, setShowSearch] = useState(false);
   const { users, isLoading, searchTerm, handleSearch } = useUserSearch();
-
+  console.log(conversations);
   const getMessageText = (lastMessage: string | { message: string }) => {
     if (!lastMessage) return 'No messages yet';
     if (typeof lastMessage === 'string') {
@@ -102,7 +102,7 @@ const ChatSidebar = ({
                   <div className="flex items-center">
                     <div className="relative">
                       <img
-                        src={conversation.avatar || '/default-avatar.png'}
+                        src={conversation.avatar?.link || '/default-avatar.png'}
                         alt={conversation.name}
                         className="h-12 w-12 rounded-full"
                       />

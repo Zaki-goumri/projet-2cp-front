@@ -5,7 +5,7 @@ const UnAuthedHome = React.lazy(
 );
 import { useUserStore } from '../shared/store/userStore';
 import { useEffect } from 'react';
-import { requestFcmToken } from '@/api/firebase.messagin';
+import { requestFcmToken } from '@/api/firebase.messaging';
 
 const HomaPage = () => {
   const user = useUserStore((state) => state.user);

@@ -1,5 +1,10 @@
 'use client';
-import { MapPinIcon, ClockIcon, EyeIcon, BookmarkIcon } from '@/modules/shared/icons';
+import {
+  MapPinIcon,
+  ClockIcon,
+  EyeIcon,
+  BookmarkIcon,
+} from '@/modules/shared/icons';
 import { Opportunity } from '../types/opportunity.types';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -26,10 +31,10 @@ export default function Overview({ opportunity }: OverviewProps) {
   const handleSaveClick = async () => {
     try {
       await opportunitiesService.savePost(Number(opportunity.id));
-      toast.success("Opportunity saved successfully");
+      toast.success('Opportunity saved successfully');
     } catch (error) {
-      console.error("Error saving opportunity:", error);
-      toast.error("Failed to save opportunity");
+      console.error('Error saving opportunity:', error);
+      toast.error('Failed to save opportunity');
     }
   };
 
@@ -39,15 +44,17 @@ export default function Overview({ opportunity }: OverviewProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/50 p-8 shadow-lg ring-1 ring-gray-100"
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/50 p-8 ring-1 shadow-lg ring-gray-100"
     >
-      <div className="absolute top-0 left-0 h-full w-1.5 bg-gradient-to-b from-primary to-primary/80"></div>
+      <div className="from-primary to-primary/80 absolute top-0 left-0 h-full w-1.5 bg-gradient-to-b"></div>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex gap-6">
-          <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border-4 border-white bg-white shadow-lg ring-1 ring-gray-100">
+          <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border-4 border-white bg-white ring-1 shadow-lg ring-gray-100">
             <img
-              src={opportunity?.company?.profilepic || '/default-company.png'}
+              src={
+                opportunity?.company?.profilepic?.link || '/default-company.png'
+              }
               alt={opportunity?.company?.name}
               className="h-full w-full object-contain p-2"
             />
@@ -55,7 +62,7 @@ export default function Overview({ opportunity }: OverviewProps) {
 
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center rounded-full bg-gradient-to-r from-primary/10 to-primary/5 px-3 py-1 text-xs font-medium text-primary ring-1 ring-primary/20">
+              <span className="from-primary/10 to-primary/5 text-primary ring-primary/20 inline-flex items-center rounded-full bg-gradient-to-r px-3 py-1 text-xs font-medium ring-1">
                 {opportunity.type}
               </span>
               {daysLeft !== null && (
@@ -75,11 +82,11 @@ export default function Overview({ opportunity }: OverviewProps) {
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-1.5 rounded-full bg-gray-50 px-3 py-1.5 ring-1 ring-gray-100">
-                <MapPinIcon className="h-4 w-4 text-primary" />
+                <MapPinIcon className="text-primary h-4 w-4" />
                 <span>{opportunity?.company?.location || 'Remote'}</span>
               </div>
               <div className="flex items-center gap-1.5 rounded-full bg-gray-50 px-3 py-1.5 ring-1 ring-gray-100">
-                <ClockIcon className="h-4 w-4 text-primary" />
+                <ClockIcon className="text-primary h-4 w-4" />
                 <span>{opportunity.worktype}</span>
               </div>
             </div>
@@ -90,7 +97,7 @@ export default function Overview({ opportunity }: OverviewProps) {
           <Button
             variant="outline"
             size="lg"
-            className="gap-2 !border-primary/20 !bg-white !text-primary hover:!bg-primary/5 hover:!text-primary"
+            className="!border-primary/20 !text-primary hover:!bg-primary/5 hover:!text-primary gap-2 !bg-white"
             onClick={handleSaveClick}
           >
             <BookmarkIcon className="h-4 w-4" />
