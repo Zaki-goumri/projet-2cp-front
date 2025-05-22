@@ -14,6 +14,7 @@ const ProfileManagement: React.FC = () => {
   const params = useParams();
   console.log(params);
   const { user, isLoading } = useUserInfo(userName);
+
   const [isEditing, setIsEditing] = React.useState(false);
   const { updateProfile, isLoading: isUpdating } = useProfileUpdate();
 

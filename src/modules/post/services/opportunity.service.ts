@@ -64,7 +64,7 @@ export class OpportunityService {
 
     if (!GEMINI_URL || !GEMINI_API_KEY) {
       console.warn('Missing Gemini config.');
-      return `# Content\n\n${content}`;
+      return content;
     }
 
     try {
@@ -89,10 +89,10 @@ export class OpportunityService {
       );
 
       const markdown = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-      return markdown || `# Content\n\n${content}`;
+      return markdown || content;
     } catch (error: any) {
       console.error('Error converting to markdown with Gemini:', error.message);
-      return `# Content\n\n${content}`;
+      return content;
     }
   }
 

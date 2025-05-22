@@ -37,19 +37,21 @@ const ChatPage = () => {
   }, [id, conversations, selectConversation, startNewConversation]);
 
   if (loading) {
-    return (<Loading/> );
+    return <Loading />;
   }
 
   if (error) {
     return (
-      <div className="bg-white flex h-[calc(100vh-100px)] w-full items-center justify-center">
-        <div className="flex flex-col items-center gap-4 p-6 bg-primary/10 rounded-lg border border-primary/20 max-w-md">
-          <AlertTriangleIcon className="h-12 w-12 text-primary" />
-          <h3 className="text-xl font-semibold text-gray-800">Something went wrong</h3>
-          <div className="text-base text-primary text-center">{error}</div>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="mt-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
+      <div className="flex h-[calc(100vh-100px)] w-full items-center justify-center bg-white">
+        <div className="bg-primary/10 border-primary/20 flex max-w-md flex-col items-center gap-4 rounded-lg border p-6">
+          <AlertTriangleIcon className="text-primary h-12 w-12" />
+          <h3 className="text-xl font-semibold text-gray-800">
+            Something went wrong
+          </h3>
+          <div className="text-primary text-center text-base">{error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-primary hover:bg-primary/80 mt-2 rounded-md px-4 py-2 text-white transition-colors"
           >
             Try Again
           </button>
@@ -85,11 +87,11 @@ const ChatPage = () => {
             <>
               <img
                 src={
-                  activeConversation.avatar ||
+                  activeConversation.avatar?.link ||
                   '/assets/servicesOfsignup/profilePicTemp.png'
                 }
                 alt="avatar"
-                className="h-10 w-10 rounded-full border object-cover"
+                className="h-10 w-10 rounded-full object-cover"
               />
               <div>
                 <div className="font-semibold">{activeConversation.name}</div>

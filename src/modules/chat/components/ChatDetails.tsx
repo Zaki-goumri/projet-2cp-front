@@ -13,7 +13,7 @@ const ChatDetails = ({ contact }: ChatDetailsProps) => {
 
         <div className="relative mx-auto mb-4 h-28 w-28">
           <img
-            src={contact.avatar || '/default-avatar.png'}
+            src={contact.avatar?.link || '/default-avatar.png'}
             alt={contact.name}
             className="h-full w-full rounded-full"
           />
