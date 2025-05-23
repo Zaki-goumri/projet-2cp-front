@@ -147,7 +147,7 @@ const OpportunitiesSection = () => {
               <span className="text-black">Real-world</span>
               <span className="text-[#98E9AB]"> Problems</span>
               <span className="text-black"> to solve</span>
-            </h2>
+          </h2>
             <p className="mt-2 text-sm text-gray-500">
               Challenge yourself with real-world problems and build your portfolio
             </p>
