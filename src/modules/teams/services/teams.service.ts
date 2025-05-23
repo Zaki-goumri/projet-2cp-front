@@ -29,7 +29,12 @@ export const teamsService = {
   async inviteMembers(teamId: string, emails: string[]): Promise<void> {
     await axios.post(`/teams/invite`, { invite_emails: emails, id: teamId });
   },
-
+  async kickMember(teamId: string, memberId: string) {
+    await axios.put(`/post/team/managing/`, {
+      team_id: teamId,
+      user_id: memberId,
+    });
+  },
   async getInvitations(
     page: number = 1,
     limit: number = 5

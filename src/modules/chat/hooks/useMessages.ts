@@ -9,48 +9,24 @@ interface UseMessagesProps {
 
 interface UseMessagesReturn {
   messages: Message[];
-  hasMore: boolean;
-  isLoadingMore: boolean;
-  loadMoreMessages: () => void;
   addNewMessage: (message: Message) => void;
   resetMessages: () => void;
 }
 
 export const useMessages = ({ roomName, onError }: UseMessagesProps): UseMessagesReturn => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const loadMessages = useCallback(async (page: number) => {
+  const loadMessages = useCallback(async () => {
     if (!roomName) return;
     
-    setIsLoadingMore(true);
     try {
-      const result = await chatService.getMessages(roomName, page);
-      
-      setMessages(prevMessages => {
-        if (page === 1) {
-          return result.messages;
-        }
-        return [...result.messages, ...prevMessages];
-      });
-      
-      setHasMore(result.hasMore);
-      setCurrentPage(page);
+      const result = await chatService.getMessages(roomName);
+      setMessages(result.messages);
     } catch (err) {
       console.error('Failed to load messages:', err);
       onError?.('Failed to load messages');
-    } finally {
-      setIsLoadingMore(false);
     }
   }, [roomName, onError]);
-
-  const loadMoreMessages = useCallback(() => {
-    if (hasMore && !isLoadingMore) {
-      loadMessages(currentPage + 1);
-    }
-  }, [hasMore, isLoadingMore, currentPage, loadMessages]);
 
   const addNewMessage = useCallback((newMessage: Message) => {
     setMessages(prevMessages => {
@@ -70,9 +46,7 @@ export const useMessages = ({ roomName, onError }: UseMessagesProps): UseMessage
 
   const resetMessages = useCallback(() => {
     setMessages([]);
-    setCurrentPage(1);
-    setHasMore(true);
-    loadMessages(1);
+    loadMessages();
   }, [loadMessages]);
 
   // Load initial messages when room changes
@@ -84,9 +58,6 @@ export const useMessages = ({ roomName, onError }: UseMessagesProps): UseMessage
 
   return {
     messages,
-    hasMore,
-    isLoadingMore,
-    loadMoreMessages,
     addNewMessage,
     resetMessages,
   };

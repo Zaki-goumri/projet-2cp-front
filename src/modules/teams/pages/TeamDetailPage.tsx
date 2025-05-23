@@ -46,13 +46,11 @@ const TeamDetailPage: React.FC = () => {
       setIsLeaving(true);
       const success = await leaveTeam();
       if (success) {
-        toast.success('Successfully left the team');
         setConfirmLeaveDialogOpen(false);
         navigate('/teams');
       }
     } catch (err) {
       console.error('Error leaving team:', err);
-      toast.error('Failed to leave team. Please try again.');
     } finally {
       setIsLeaving(false);
     }
@@ -66,12 +64,10 @@ const TeamDetailPage: React.FC = () => {
         teamId: parseInt(teamId),
         memberId: selectedMember.id,
       });
-      toast.success(`Successfully kicked ${selectedMember.name} from the team`);
       setConfirmKickDialogOpen(false);
       retryFetch();
     } catch (err) {
       console.error('Error kicking member:', err);
-      toast.error('Failed to kick member. Please try again.');
     } finally {
       setIsKicking(false);
       setSelectedMember(null);
@@ -163,21 +159,20 @@ const TeamDetailPage: React.FC = () => {
             </h1>
           </div>
           <div className="flex gap-2">
-            {isLeader ? (
+            {isLeader && (
               <button
                 onClick={() => setConfirmDeleteDialogOpen(true)}
                 className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
               >
                 Delete Team
               </button>
-            ) : (
-              <button
-                onClick={() => setConfirmLeaveDialogOpen(true)}
-                className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
-              >
-                Leave Team
-              </button>
             )}
+            <button
+              onClick={() => setConfirmLeaveDialogOpen(true)}
+              className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+            >
+              Leave Team
+            </button>
           </div>
         </div>
 
@@ -208,14 +203,14 @@ const TeamDetailPage: React.FC = () => {
                   <div className="flex items-center space-x-3">
                     <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-gray-200">
                       <img
-                        src={student.profilepic || '/avatar.jpg'}
+                        src={student.profilepic?.link}
                         alt={student.name}
                         className="h-full w-full object-cover"
                         loading="lazy"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src =
-                            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces';
+                            'https://kzml916azhfp1n9qkkfj.lite.vusercontent.net/placeholder.svg?height=300&width=400';
                         }}
                       />
                     </div>
@@ -264,15 +259,14 @@ const TeamDetailPage: React.FC = () => {
             <div className="flex items-center">
               <div className="mr-4 h-16 w-16 overflow-hidden rounded-full bg-gray-200">
                 <img
-                  src={teamData.leader.profilepic || '/avatar.jpg'}
+                  src={teamData.leader.profilepic?.link}
+                  onError={(err) => {
+                    err.target.src =
+                      'https://kzml916azhfp1n9qkkfj.lite.vusercontent.net/placeholder.svg?height=300&width=400';
+                  }}
                   alt={`Leader: ${teamData.leader.name}`}
                   className="h-full w-full object-cover"
                   loading="lazy"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src =
-                      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces';
-                  }}
                 />
               </div>
               <div>
@@ -400,4 +394,3 @@ const TeamDetailPage: React.FC = () => {
 };
 
 export default TeamDetailPage;
-

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { Message, Conversation } from '../types';
 
 interface ChatMessagesProps {
@@ -11,113 +11,21 @@ interface ChatMessagesProps {
     type: string;
     profilepic: string | null;
   } | null;
-  hasMoreMessages?: boolean;
-  loadingMore?: boolean;
-  onLoadMore?: () => void;
 }
-
-interface IntersectionOptions {
-  rootMargin?: string;
-  threshold?: number | number[];
-  root?: Element | null;
-}
-
-const useIntersectionObserver = (options: IntersectionOptions = {}) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const targetRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
-      },
-      {
-        rootMargin: '100px 0px',
-        threshold: 0.1,
-        ...options,
-      }
-    );
-
-    const currentTarget = targetRef.current;
-    if (currentTarget) {
-      observer.observe(currentTarget);
-    }
-
-    return () => {
-      if (currentTarget) {
-        observer.unobserve(currentTarget);
-      }
-    };
-  }, [options]);
-
-  return [targetRef, isIntersecting] as const;
-};
-
-const useInfiniteScroll = (
-  onLoadMore: () => void,
-  hasMore: boolean,
-  isLoading: boolean
-) => {
-  const [loadMoreRef, isIntersecting] = useIntersectionObserver({
-    rootMargin: '200px 0px',
-    threshold: 0.1,
-  });
-
-  useEffect(() => {
-    if (isIntersecting && hasMore && !isLoading) {
-      onLoadMore();
-    }
-  }, [isIntersecting, hasMore, isLoading, onLoadMore]);
-
-  return loadMoreRef;
-};
 
 const ChatMessages = ({
   messages,
   activeConversation,
   currentUser,
-  hasMoreMessages,
-  loadingMore,
-  onLoadMore,
 }: ChatMessagesProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const prevScrollHeightRef = useRef<number>(0);
-  const prevScrollTopRef = useRef<number>(0);
-
-  const loadMoreRef = useInfiniteScroll(
-    () => {
-      if (onLoadMore) {
-        // Store current scroll position before loading more messages
-        const container = containerRef.current;
-        if (container) {
-          prevScrollHeightRef.current = container.scrollHeight;
-          prevScrollTopRef.current = container.scrollTop;
-        }
-        onLoadMore();
-      }
-    },
-    hasMoreMessages || false,
-    loadingMore || false
-  );
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container && prevScrollHeightRef.current) {
-      const newScrollHeight = container.scrollHeight;
-      const scrollDiff = newScrollHeight - prevScrollHeightRef.current;
-      container.scrollTop = prevScrollTopRef.current + scrollDiff;
-      prevScrollHeightRef.current = 0;
-      prevScrollTopRef.current = 0;
-    }
-  }, [messages]);
 
   // Scroll to bottom on initial load
   useEffect(() => {
-    if (messages.length > 0 && !loadingMore) {
+    if (messages.length > 0) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages.length, loadingMore]);
+  }, [messages.length]);
 
   if (!activeConversation) {
     return (
@@ -140,16 +48,7 @@ const ChatMessages = ({
   );
 
   return (
-    <div ref={containerRef} className="h-full overflow-y-auto p-4">
-      {loadingMore && (
-        <div className="flex justify-center py-2">
-          <div className="loader">Loading...</div>
-        </div>
-      )}
-
-      {/* Load more trigger element */}
-      {hasMoreMessages && <div ref={loadMoreRef} className="h-4" />}
-
+    <div className="h-full overflow-y-auto p-4">
       <div className="mb-6 flex items-center justify-center">
         <div className="text-center">
           <div className="relative mx-auto mb-2 h-16 w-16">

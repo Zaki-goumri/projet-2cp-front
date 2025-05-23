@@ -6,21 +6,21 @@ import { ErrorBoundary } from '@/modules/shared/components/error-boundary';
 import { useInvitations } from '../hooks/useInvitations';
 import { InvitationCard } from '../components/InvitationCard';
 import { Invitation } from '../types/teams.types';
-import { 
-  InboxIcon, 
-  PlusIcon, 
-  AlertCircleIcon, 
-  UsersRoundIcon, 
-  ChevronLeftIcon, 
-  ChevronRightIcon, 
-  SendIcon 
+import {
+  InboxIcon,
+  PlusIcon,
+  AlertCircleIcon,
+  UsersRoundIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  SendIcon,
 } from '@/modules/shared/icons';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { useSentInvitations } from '../hooks/useSentInvitations';
 import { SentInvitationCard } from '../components/SentInvitationCard';
 import { useUserStore } from '@/modules/shared/store/userStore';
-
+import Loading from '@/loading';
 interface PaginationControlsProps {
   currentPage: number;
   totalPages: number;
@@ -38,7 +38,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   onNext,
   onPrevious,
 }) => {
-  if (totalPages <= 1) return null; 
+  if (totalPages <= 1) return null;
 
   return (
     <div className="mt-6 flex items-center justify-center space-x-4">
@@ -112,21 +112,17 @@ const TeamsPage: React.FC = () => {
 
   const { user } = useUserStore();
 
-  
-  const isLoading = isLoadingTeams || isLoadingInvitations || isLoadingSentInvitations;
+  const isLoading =
+    isLoadingTeams || isLoadingInvitations || isLoadingSentInvitations;
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-[#92E3A9]"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (errorTeams) {
     const isForbidden = errorTeams.message.includes('403');
     const errorMessage = isForbidden
-      ? "You do not have permission to view teams. Please contact an administrator if you believe this is an error."
+      ? 'You do not have permission to view teams. Please contact an administrator if you believe this is an error.'
       : errorTeams.message;
 
     return (
@@ -168,8 +164,7 @@ const TeamsPage: React.FC = () => {
                 id={team.id}
                 name={team.name}
                 status={
-                  team.category.charAt(0).toUpperCase() +
-                  team.category.slice(1)
+                  team.category.charAt(0).toUpperCase() + team.category.slice(1)
                 }
                 icon={
                   <span className="text-lg font-medium text-[#92E3A9]">
@@ -191,12 +186,14 @@ const TeamsPage: React.FC = () => {
             />
           )}
           {teams?.length === 0 && !isLoadingTeams && (
-            <p className="mt-6 text-center text-gray-500">You are not part of any teams yet.</p>
+            <p className="mt-6 text-center text-gray-500">
+              You are not part of any teams yet.
+            </p>
           )}
         </ErrorBoundary>
 
         <div className="mt-12">
-          <h2 className="mb-6 text-lg font-medium text-gray-700 flex items-center gap-2">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-medium text-gray-700">
             <InboxIcon size={20} /> Team Invitations Received
           </h2>
           {errorInvitations && (
@@ -246,7 +243,7 @@ const TeamsPage: React.FC = () => {
         </div>
 
         <div className="mt-12">
-          <h2 className="mb-6 text-lg font-medium text-gray-700 flex items-center gap-2">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-medium text-gray-700">
             <SendIcon /> Sent Invitations
           </h2>
           {errorSentInvitations && (
@@ -274,7 +271,10 @@ const TeamsPage: React.FC = () => {
           {!errorSentInvitations && sentInvitations.length > 0 && (
             <div className="space-y-3">
               {sentInvitations
-                .filter((invitation: Invitation) => invitation.receiver?.id !== user?.id)
+                .filter(
+                  (invitation: Invitation) =>
+                    invitation.receiver?.id !== user?.id
+                )
                 .map((invitation: Invitation) => (
                   <SentInvitationCard
                     key={invitation.id}
@@ -285,7 +285,7 @@ const TeamsPage: React.FC = () => {
                 ))}
             </div>
           )}
-          {!errorSentInvitations && sentInvitations.length > 0 &&  (
+          {!errorSentInvitations && sentInvitations.length > 0 && (
             <PaginationControls
               currentPage={sentInvCurrentPage}
               totalPages={sentInvTotalPages}

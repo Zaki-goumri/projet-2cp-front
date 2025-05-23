@@ -33,7 +33,7 @@ const editJobPostSchema = z.object({
     .string()
     .min(2, 'Location is required')
     .max(100, 'Location must not exceed 100 characters'),
-  type: z.string().min(2, 'Job type is required'),
+  type: z.string().min(2, 'Job type is required').optional(),
   description: z
     .string()
     .min(50, 'Description must be at least 50 characters')
@@ -51,7 +51,7 @@ const EditPostPage: React.FC = () => {
   const [jobPost, setJobPost] = useState<JobPost | null>(null);
   const [submitLoading, setSubmitLoading] = useState(false);
 
-  const {  updatePost } = useUpdatePostDetails();
+  const { updatePost } = useUpdatePostDetails();
   const {
     register,
     handleSubmit,

@@ -16,8 +16,7 @@ type ParamsType = { userName: string };
 const ProfilePage: React.FC = () => {
   const { userName } = useParams<ParamsType>();
   const params = useParams();
-  console.log(params);
-  const { data, isLoading,isError } = useUserInfo(userName!);
+  const { data, isLoading, isError } = useUserInfo(userName!);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -63,7 +62,7 @@ const ProfilePage: React.FC = () => {
     if (profilePic) {
       updateData.profilepic = profilePic;
     }
-    updateProfile({sectionData: updateData , cb: () => setIsEditing(false) });
+    updateProfile({ sectionData: updateData, cb: () => setIsEditing(false) });
   };
 
   if (isLoading) return <Spinner size="lg" className="min-h-screen" />;
@@ -71,52 +70,52 @@ const ProfilePage: React.FC = () => {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <Suspense
-        fallback={<Spinner size="lg" className="min-h-screen" />}
-      ></Suspense>
-      <ErrorBoundary>
-        <section className="w-full px-4 py-4 md:px-6 lg:px-8">
-          <div className="mx-auto max-w-[90rem] rounded-xl bg-[#92E3A91A] p-3 md:p-4">
-            <ProfileInfo
-              isUserProfile={sameUser}
-              isEditing={isEditing}
-              isEditingLoading={isUpdating}
-              onCancel={() => setIsEditing(false)}
-              onEditToggle={() => setIsEditing(!isEditing)}
-              user={data}
-              onProfilePicChange={setProfilePic}
-              onSave={handleSaveChanges}
-            />
-            <div className="mt-3 space-y-3 md:space-y-4">
-              <AboutMe
+      <Suspense fallback={<Spinner size="lg" className="min-h-screen" />}>
+        <ErrorBoundary>
+          <section className="w-full px-4 py-4 md:px-6 lg:px-8">
+            <div className="mx-auto max-w-[90rem] rounded-xl bg-[#92E3A91A] p-3 md:p-4">
+              <ProfileInfo
+                isUserProfile={sameUser}
                 isEditing={isEditing}
-                text={aboutMe}
-                onTextChange={setAboutMe}
+                isEditingLoading={isUpdating}
+                onCancel={() => setIsEditing(false)}
+                onEditToggle={() => setIsEditing(!isEditing)}
+                user={data}
+                onProfilePicChange={setProfilePic}
+                j
+                onSave={handleSaveChanges}
               />
-              <Experience
-                isEditing={isEditing}
-                experiences={experiences}
-                onExperiencesChange={setExperiences}
-              />
-              <Education
-                isEditing={isEditing}
-                education={education}
-                onEducationChange={setEducation}
-              />
-              <Skills
-                 skills={skills}
-                isEditing={isEditing}
-                onSkillsChange={setSkills}
-              />
-              <Resume
-                isEditing={isEditing}
-                onResumeChange={setResume}
-                cv={data?.cv ?? undefined}
-              />
+              <div className="mt-3 space-y-3 md:space-y-4">
+                <AboutMe
+                  isEditing={isEditing}
+                  text={aboutMe}
+                  onTextChange={setAboutMe}
+                />
+                <Experience
+                  isEditing={isEditing}
+                  experiences={experiences}
+                  onExperiencesChange={setExperiences}
+                />
+                <Education
+                  isEditing={isEditing}
+                  education={education}
+                  onEducationChange={setEducation}
+                />
+                <Skills
+                  skills={skills}
+                  isEditing={isEditing}
+                  onSkillsChange={setSkills}
+                />
+                <Resume
+                  isEditing={isEditing}
+                  onResumeChange={setResume}
+                  cv={data?.cv ?? undefined}
+                />
+              </div>
             </div>
-          </div>
-        </section>
-      </ErrorBoundary>
+          </section>
+        </ErrorBoundary>
+      </Suspense>
     </main>
   );
 };

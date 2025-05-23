@@ -18,7 +18,10 @@ export const useTeams = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response: TeamResponse = await teamsService.getTeams(page, DEFAULT_LIMIT);
+      const response: TeamResponse = await teamsService.getTeams(
+        page,
+        DEFAULT_LIMIT
+      );
       setTeams(response.results);
       setTotalCount(response.count);
       setTotalPages(Math.ceil(response.count / DEFAULT_LIMIT));
@@ -84,4 +87,5 @@ export const useTeams = () => {
     goToNextPage,
     goToPreviousPage,
   };
-}; 
+};
+

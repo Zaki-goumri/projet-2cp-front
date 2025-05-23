@@ -13,7 +13,7 @@ export const selectBolk = async (
   cmd: 'ACCEPT' | 'REJECT'
 ) => {
   try {
-    const keyWord= cmd === 'ACCEPT' ? 'choose' : 'reject_applicant';
+    const keyWord = cmd === 'ACCEPT' ? 'choose' : 'reject_applicant';
     const response = await axios.post(`app/${keyWord}/${postId}/`, {
       id: ids,
     });
@@ -39,7 +39,10 @@ export const getJobApplications = async (
 };
 export const updatePost = async (postId: number, data: Omit<JobPost, 'id'>) => {
   try {
-    await axios.put(`/post/opportunity/${postId}`, data);
+    await axios.put(`/post/opportunity/`, {
+      ...data,
+      id: postId,
+    });
   } catch (error) {
     console.error('Error updating job post:', error);
     throw new Error('Failed to update job post');
