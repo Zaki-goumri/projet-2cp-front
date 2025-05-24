@@ -17,6 +17,7 @@ export class GlobalErrorService {
     return GlobalErrorService.instance;
   }
 
+  
   public async getErrorHandlingMessage(err: unknown): Promise<string | void> {
     if (!err) return '';
 
