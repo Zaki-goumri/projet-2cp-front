@@ -37,7 +37,7 @@ export interface UserType {
   skills: string[];
   rating: number;
   category: string | null;
-  cv: string | null;
+  cv: Attachment| null;
   experience: Experience[];
 }
 
@@ -55,6 +55,7 @@ export interface ApplicationType {
   id: number;
   title: string | null;
   team: TeamType | null;
+  post_id:number|null
   proposal: string | null;
   status: string;
   atachedfile: Attachment| null;

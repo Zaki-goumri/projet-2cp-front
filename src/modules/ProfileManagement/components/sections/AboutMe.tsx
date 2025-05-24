@@ -8,15 +8,15 @@ interface AboutMeProps {
 }
 
 const AboutMe = ({ isEditing, text, onTextChange }: AboutMeProps) => {
-  const [inputText, setInputText] = useState(text);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputText(e.target.value);
+    if (e.target.value==""){
+      onTextChange("")
+    }
     onTextChange(e.target.value);
   };
 
   const handleAddItem = () => {
-    onTextChange(inputText);
   };
 
   return (
@@ -32,7 +32,7 @@ const AboutMe = ({ isEditing, text, onTextChange }: AboutMeProps) => {
             <textarea
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#92E3A9]"
               rows={4}
-              value={inputText}
+              value={text}
               onChange={handleTextChange}
               placeholder="Tell us about yourself..."
             />

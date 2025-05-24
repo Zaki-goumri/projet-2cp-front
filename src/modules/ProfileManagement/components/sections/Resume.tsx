@@ -42,7 +42,13 @@ const ResumeSection = ({ isEditing, cv, onResumeChange }: ResumeProps) => {
     <div className="space-y-2">
       {resumes ? (
         <a
-          download
+        onClick={(e) => {
+          if (!cv?.link||isEditing) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+         download
           href={cv?.link}
           key={resumes.name}
           className="group flex items-center justify-between rounded-lg border border-gray-100 bg-white p-2.5 transition-all duration-200 hover:shadow-md"
