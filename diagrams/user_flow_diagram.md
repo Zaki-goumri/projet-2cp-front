@@ -13,7 +13,8 @@ flowchart TD
     OAuthLinkedIn["Login with LinkedIn"]
     
     %% Main Navigation Areas
-    Home["Home Dashboard"]
+    Home["Home"]
+    Dashboard["Dashboard"]
     Profile["Profile Management"]
     Opportunities["Opportunities"]
     Internships["Internships & Problems"]
@@ -21,6 +22,10 @@ flowchart TD
     Chat["Chat/Messaging"]
     Notifications["Notifications"]
     Applications["Applications"]
+    Company["Company"]
+    Posts["Posts"]
+    QA["Q&A"]
+    Contact["Contact"]
     
     %% Detailed Flows
     ViewOpportunity["View Opportunity Details"]
@@ -33,6 +38,12 @@ flowchart TD
     ViewConversation["View Conversation"]
     EditProfile["Edit Profile"]
     ViewApplication["View Application Status"]
+    ViewCompany["View Company Details"]
+    CreatePost["Create Post"]
+    ViewPost["View Post"]
+    AskQuestion["Ask Question"]
+    AnswerQuestion["Answer Question"]
+    SubmitContact["Submit Contact Form"]
     
     %% Connections
     Landing --> Auth
@@ -51,6 +62,7 @@ flowchart TD
     OAuthLinkedIn --> Home
     ResetPassword --> Login
     
+    Home --> Dashboard
     Home --> Profile
     Home --> Opportunities
     Home --> Internships
@@ -58,6 +70,10 @@ flowchart TD
     Home --> Chat
     Home --> Notifications
     Home --> Applications
+    Home --> Company
+    Home --> Posts
+    Home --> QA
+    Home --> Contact
     
     Opportunities --> ViewOpportunity
     ViewOpportunity --> ApplyOpportunity
@@ -75,12 +91,24 @@ flowchart TD
     
     Profile --> EditProfile
     
+    Company --> ViewCompany
+    
+    Posts --> CreatePost
+    Posts --> ViewPost
+    
+    QA --> AskQuestion
+    QA --> AnswerQuestion
+    
+    Contact --> SubmitContact
+    
     %% Conditional Flows
     ViewOpportunity -.-> |"If interested"| ApplyOpportunity
     ViewOpportunity -.-> |"If team required"| Teams
     ApplyOpportunity -.-> |"If team application"| Teams
     Notifications -.-> |"New message"| Chat
     Notifications -.-> |"Application update"| Applications
+    ViewCompany -.-> |"If interested"| ApplyOpportunity
+    ViewPost -.-> |"If has question"| QA
     
     %% Styling
     classDef primary fill:#2563eb,stroke:#1e40af,color:white;
@@ -88,17 +116,17 @@ flowchart TD
     classDef tertiary fill:#64748b,stroke:#475569,color:white;
     classDef success fill:#059669,stroke:#047857,color:white;
     
-    class Landing,Home primary;
+    class Landing,Home,Dashboard primary;
     class Auth,Login,Signup,ForgotPassword,ResetPassword,OAuthGoogle,OAuthLinkedIn secondary;
-    class Profile,Opportunities,Internships,Teams,Chat,Notifications,Applications tertiary;
-    class ViewOpportunity,ApplyOpportunity,CreateTeam,JoinTeam,ManageTeam,ViewTeamMembers,SendMessage,ViewConversation,EditProfile,ViewApplication tertiary;
+    class Profile,Opportunities,Internships,Teams,Chat,Notifications,Applications,Company,Posts,QA,Contact tertiary;
+    class ViewOpportunity,ApplyOpportunity,CreateTeam,JoinTeam,ManageTeam,ViewTeamMembers,SendMessage,ViewConversation,EditProfile,ViewApplication,ViewCompany,CreatePost,ViewPost,AskQuestion,AnswerQuestion,SubmitContact tertiary;
 ```
 
 ## User Flow Diagram - Textual Description
 
 ### Entry Points
 - Users begin at the **Landing Page**
-- They can either authenticate or proceed to the home dashboard (if already logged in)
+- They can either authenticate or proceed to the home page (if already logged in)
 
 ### Authentication Flow
 - Authentication options include Login, Signup, or Social Login (Google/LinkedIn)
@@ -106,14 +134,19 @@ flowchart TD
 
 ### Main Navigation Areas
 After authentication, users can access:
-1. **Home Dashboard** - Central hub with overview and access to all features
-2. **Profile Management** - View and edit personal information
-3. **Opportunities** - Browse and apply for available opportunities
-4. **Internships & Problems** - Browse and apply for internships and problem-solving opportunities
-5. **Teams Management** - Create, join, or manage teams
-6. **Chat/Messaging** - Communicate with team members or opportunity providers
-7. **Notifications** - View system notifications and updates
-8. **Applications** - Track status of submitted applications
+1. **Home** - Entry point to all features
+2. **Dashboard** - Overview of user's activities and metrics
+3. **Profile Management** - View and edit personal information
+4. **Opportunities** - Browse and apply for available opportunities
+5. **Internships & Problems** - Browse and apply for internships and problem-solving opportunities
+6. **Teams Management** - Create, join, or manage teams
+7. **Chat/Messaging** - Communicate with team members or opportunity providers
+8. **Notifications** - View system notifications and updates
+9. **Applications** - Track status of submitted applications
+10. **Company** - View company profiles and information
+11. **Posts** - Create and view posts
+12. **Q&A** - Ask and answer questions
+13. **Contact** - Submit contact forms and view contact information
 
 ### Key User Journeys
 
@@ -131,6 +164,16 @@ After authentication, users can access:
 #### Profile Management Flow
 1. User views profile information
 2. User edits profile details and preferences
+
+#### Content Creation Flow
+1. User creates posts or asks questions
+2. Other users can view and interact with the content
+3. Users can answer questions or comment on posts
+
+#### Company Interaction Flow
+1. User views company profiles
+2. User can apply to opportunities from company pages
+3. User can contact companies through the contact form
 
 ## Implementation Notes
 

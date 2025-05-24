@@ -18,18 +18,29 @@ flowchart TD
     
     %% Main Feature Modules
     HomeModule["Home Module"]
-    ProfileModule["Profile Module"]
+    DashboardModule["Dashboard Module"]
+    ProfileModule["Profile Management"]
     OpportunitiesModule["Opportunities Module"]
-    InternshipsModule["Internships Module"]
+    InternshipsModule["Internships & Problems"]
     TeamsModule["Teams Module"]
     ChatModule["Chat Module"]
     NotificationsModule["Notifications Module"]
     ApplicationsModule["Applications Module"]
+    CompanyModule["Company Module"]
+    PostModule["Post Module"]
+    QAModule["QA Module"]
+    ContactModule["Contact Module"]
+    LandingPageModule["Landing Page Module"]
     
     %% Home Components
-    Dashboard["Dashboard"]
+    HomeView["Home View"]
     Stats["Statistics/Overview"]
     RecentActivities["Recent Activities"]
+    
+    %% Dashboard Components
+    DashboardView["Dashboard View"]
+    DashboardStats["Dashboard Statistics"]
+    DashboardActivities["Dashboard Activities"]
     
     %% Profile Components
     ProfileView["Profile View"]
@@ -65,6 +76,30 @@ flowchart TD
     ApplicationDetail["Application Detail"]
     ApplicationStatus["Application Status"]
     
+    %% Company Components
+    CompanyList["Company List"]
+    CompanyDetail["Company Detail"]
+    CompanyProfile["Company Profile"]
+    
+    %% Post Components
+    PostList["Post List"]
+    PostDetail["Post Detail"]
+    PostCreate["Post Creation"]
+    
+    %% QA Components
+    QAList["QA List"]
+    QADetail["QA Detail"]
+    QACreate["QA Creation"]
+    
+    %% Contact Components
+    ContactForm["Contact Form"]
+    ContactInfo["Contact Information"]
+    
+    %% Landing Page Components
+    HeroSection["Hero Section"]
+    FeaturesSection["Features Section"]
+    AboutSection["About Section"]
+    
     %% Shared Components
     SharedComponents["Shared Components"]
     Buttons["Button Components"]
@@ -87,6 +122,7 @@ flowchart TD
     Layout --> Sidebar
     Layout --> AuthModule
     Layout --> HomeModule
+    Layout --> DashboardModule
     Layout --> ProfileModule
     Layout --> OpportunitiesModule
     Layout --> InternshipsModule
@@ -94,15 +130,24 @@ flowchart TD
     Layout --> ChatModule
     Layout --> NotificationsModule
     Layout --> ApplicationsModule
+    Layout --> CompanyModule
+    Layout --> PostModule
+    Layout --> QAModule
+    Layout --> ContactModule
+    Layout --> LandingPageModule
     
     AuthModule --> LoginForm
     AuthModule --> SignupForm
     AuthModule --> PasswordReset
     AuthModule --> SocialLogin
     
-    HomeModule --> Dashboard
-    Dashboard --> Stats
-    Dashboard --> RecentActivities
+    HomeModule --> HomeView
+    HomeView --> Stats
+    HomeView --> RecentActivities
+    
+    DashboardModule --> DashboardView
+    DashboardView --> DashboardStats
+    DashboardView --> DashboardActivities
     
     ProfileModule --> ProfileView
     ProfileModule --> ProfileEdit
@@ -134,6 +179,25 @@ flowchart TD
     ApplicationsModule --> ApplicationDetail
     ApplicationDetail --> ApplicationStatus
     
+    CompanyModule --> CompanyList
+    CompanyModule --> CompanyDetail
+    CompanyModule --> CompanyProfile
+    
+    PostModule --> PostList
+    PostModule --> PostDetail
+    PostModule --> PostCreate
+    
+    QAModule --> QAList
+    QAModule --> QADetail
+    QAModule --> QACreate
+    
+    ContactModule --> ContactForm
+    ContactModule --> ContactInfo
+    
+    LandingPageModule --> HeroSection
+    LandingPageModule --> FeaturesSection
+    LandingPageModule --> AboutSection
+    
     %% Shared Components
     App --> SharedComponents
     SharedComponents --> Buttons
@@ -155,7 +219,7 @@ flowchart TD
     
     class App,Layout primary;
     class Header,Footer,Sidebar secondary;
-    class AuthModule,HomeModule,ProfileModule,OpportunitiesModule,InternshipsModule,TeamsModule,ChatModule,NotificationsModule,ApplicationsModule module;
+    class AuthModule,HomeModule,DashboardModule,ProfileModule,OpportunitiesModule,InternshipsModule,TeamsModule,ChatModule,NotificationsModule,ApplicationsModule,CompanyModule,PostModule,QAModule,ContactModule,LandingPageModule module;
     class SharedComponents,UILibrary module;
 ```
 
@@ -174,14 +238,19 @@ This diagram represents the hierarchical structure of React components in your a
 Components handling user authentication including login, signup, password reset, and social logins.
 
 #### Feature-specific Components
-Each module (Home, Profile, Opportunities, etc.) contains its own set of components that handle specific functionality:
-- **Dashboard**: Overview components for the home page
+Each module contains its own set of components that handle specific functionality:
+- **Home & Dashboard**: Overview components for the home page and dashboard
 - **Profile**: Components for viewing and editing user profiles
 - **Opportunities/Internships**: Components for listing, filtering, and viewing opportunities
 - **Teams**: Components for team management
 - **Chat**: Components for messaging functionality
 - **Notifications**: Components for displaying system notifications
 - **Applications**: Components for tracking application status
+- **Company**: Components for company profiles and management
+- **Post**: Components for post creation and management
+- **QA**: Components for Q&A functionality
+- **Contact**: Components for contact information and forms
+- **Landing Page**: Components for the public landing page
 
 #### Shared Components
 Reusable components used across multiple features:
