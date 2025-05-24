@@ -332,7 +332,7 @@ export default function NavBar() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                    className="absolute inset-0 bg-black/50"
                     onClick={() => setIsOpen(false)}
                   />
                   <motion.div
@@ -342,7 +342,7 @@ export default function NavBar() {
                     transition={{ type: 'spring', damping: 20 }}
                     className="absolute top-0 right-0 h-full w-64 bg-white shadow-lg"
                   >
-                    <div className="p-4">
+                    <div className="h-full bg-white ">
                       <button
                         onClick={() => setIsOpen(false)}
                         className="absolute top-4 right-4 rounded-lg p-2 transition-colors duration-200 hover:bg-gray-100"
@@ -350,7 +350,7 @@ export default function NavBar() {
                       >
                         <X className="h-6 w-6" />
                       </button>
-                      <div className="mt-8 space-y-3">
+                      <div className="mt-8 space-y-3 bg-white h-screen w-64">
                         {user ? (
                           <>
                             {privateNavItems.map((item) => (

@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { EditIcon, SaveIcon, CameraIcon, X } from '@/modules/shared/icons';
 import { User } from '@/modules/shared/types';
 import { Spinner } from '@/modules/shared/components';
+import { profileStrengthService } from '@/modules/shared/services/profile-strength.service';
 import CVBuilderDialog from './CVBuilderDialog';
 
 interface ProfileInfoProps {
@@ -40,6 +41,19 @@ function ProfileInfo({
   );
   const [, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [profileStrength, setProfileStrength] = useState<number>(0);
+
+  useEffect(() => {
+    const calculateStrength = async () => {
+      if (user) {
+        const strength =
+          await profileStrengthService.calculateProfileStrength(user);
+        setProfileStrength(strength);
+      }
+    };
+    calculateStrength();
+  }, [user]);
+
   const handleImageClick = () => {
     if (isEditing) {
       fileInputRef.current?.click();
@@ -136,7 +150,9 @@ function ProfileInfo({
                       className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
                     >
                       <EditIcon className="h-5 w-5" />
-                      <span className="text-sm font-semibold">Edit Profile</span>
+                      <span className="text-sm font-semibold">
+                        Edit Profile
+                      </span>
                     </Button>
                   </>
                 )}
@@ -163,7 +179,7 @@ function ProfileInfo({
         <div className="hidden h-10 w-px bg-gray-200 sm:block"></div>
 
         <div className="flex flex-col items-center">
-          <p className="text-xl font-bold text-gray-800">60%</p>
+          <p className="text-xl font-bold text-gray-800">{profileStrength}%</p>
           <p className="text-sm text-gray-500">Profile Strength</p>
         </div>
       </div>

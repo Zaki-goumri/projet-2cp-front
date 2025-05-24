@@ -3,7 +3,12 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { EyeIcon, EyeOffIcon, MailIcon, LockIcon } from '@/modules/shared/icons';
+import {
+  EyeIcon,
+  EyeOffIcon,
+  MailIcon,
+  LockIcon,
+} from '@/modules/shared/icons';
 import { Link, useLocation } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -71,7 +76,9 @@ const SignForm = () => {
 
           <div className="relative my-6 flex items-center">
             <div className="flex-grow border-t border-gray-200"></div>
-            <span className="mx-3 flex-shrink text-sm text-gray-500">or continue with email</span>
+            <span className="mx-3 flex-shrink text-sm text-gray-500">
+              or continue with email
+            </span>
             <div className="flex-grow border-t border-gray-200"></div>
           </div>
 
@@ -84,12 +91,12 @@ const SignForm = () => {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <MailIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                        <MailIcon className="borde absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                         <Input
                           placeholder="Email"
                           type="email"
                           {...field}
-                          className="h-12 rounded-lg border-gray-200 bg-gray-50/50 pl-10 pr-4 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                          className="h-12 rounded-lg border-none bg-gray-50/50 pr-4 pl-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                         />
                       </div>
                     </FormControl>
@@ -105,17 +112,17 @@ const SignForm = () => {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <LockIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                        <LockIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                         <Input
                           placeholder="Password"
-                          type={showPassword ? "text" : "password"}
+                          type={showPassword ? 'text' : 'password'}
                           {...field}
-                          className="h-12 rounded-lg border-gray-200 bg-gray-50/50 pl-10 pr-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
+                          className="h-12 rounded-lg border-none bg-gray-50/50 pr-10 pl-10 text-gray-900 focus:border-[#98E9AB] focus:ring focus:ring-[#98E9AB]/20"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                         >
                           {showPassword ? (
                             <EyeOffIcon className="h-5 w-5" />
@@ -145,7 +152,7 @@ const SignForm = () => {
                   disabled={isLoading}
                   className="h-12 w-full rounded-lg bg-[#98E9AB] font-medium text-white shadow-md shadow-[#98E9AB]/20 transition-all hover:bg-[#7ad98e] hover:shadow-lg hover:shadow-[#98E9AB]/30 disabled:bg-gray-300 disabled:shadow-none"
                 >
-                  {isLoading ? "Signing in..." : "Sign in"}
+                  {isLoading ? 'Signing in...' : 'Sign in'}
                 </Button>
               </div>
             </form>
@@ -155,7 +162,10 @@ const SignForm = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/auth/signup" className="font-medium text-[#98E9AB] hover:text-[#7ad98e] hover:underline">
+              <Link
+                to="/auth/signup"
+                className="font-medium text-[#98E9AB] hover:text-[#7ad98e] hover:underline"
+              >
                 Sign up
               </Link>
             </p>

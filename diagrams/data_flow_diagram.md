@@ -17,6 +17,11 @@ flowchart LR
     ChatData["Chat Data"]
     NotificationData["Notifications Data"]
     ApplicationData["Applications Data"]
+    CompanyData["Company Data"]
+    PostData["Post Data"]
+    QAData["QA Data"]
+    ContactData["Contact Data"]
+    DashboardData["Dashboard Data"]
     
     %% UI Components (simplified)
     UI["User Interface Components"]
@@ -63,6 +68,31 @@ flowchart LR
     Backend -->|"Notification\nData"| ReactQuery
     ReactQuery -->|"Cached\nNotifications"| UI
     
+    %% Company Flows
+    UI -->|"Company\nActions"| Backend
+    Backend -->|"Company\nData"| ReactQuery
+    ReactQuery -->|"Cached\nCompany Data"| UI
+    
+    %% Post Flows
+    UI -->|"Post\nActions"| Backend
+    Backend -->|"Post\nData"| ReactQuery
+    ReactQuery -->|"Cached\nPost Data"| UI
+    
+    %% QA Flows
+    UI -->|"QA\nActions"| Backend
+    Backend -->|"QA\nData"| ReactQuery
+    ReactQuery -->|"Cached\nQA Data"| UI
+    
+    %% Contact Flows
+    UI -->|"Contact\nForm"| Backend
+    Backend -->|"Contact\nStatus"| ReactQuery
+    ReactQuery -->|"Cached\nContact Data"| UI
+    
+    %% Dashboard Flows
+    UI -->|"Dashboard\nData Request"| Backend
+    Backend -->|"Dashboard\nMetrics"| ReactQuery
+    ReactQuery -->|"Cached\nDashboard Data"| UI
+    
     %% Global State Management
     ZustandStore -->|"Auth State"| UI
     ZustandStore -->|"User State"| UI
@@ -76,7 +106,7 @@ flowchart LR
     
     class Backend,OAuth external;
     class ZustandStore,ReactQuery,LocalStorage store;
-    class AuthData,UserData,OpportunityData,TeamData,ChatData,NotificationData,ApplicationData data;
+    class AuthData,UserData,OpportunityData,TeamData,ChatData,NotificationData,ApplicationData,CompanyData,PostData,QAData,ContactData,DashboardData data;
     class UI ui;
 ```
 
@@ -103,6 +133,11 @@ This diagram illustrates how data flows through your application, showing the in
 - **Chat Data**: Conversation history, messages
 - **Notifications Data**: System notifications
 - **Application Data**: Submitted applications, status
+- **Company Data**: Company profiles and information
+- **Post Data**: Post content and metadata
+- **QA Data**: Questions and answers
+- **Contact Data**: Contact form submissions
+- **Dashboard Data**: Analytics and metrics
 
 ### Main Data Flows
 

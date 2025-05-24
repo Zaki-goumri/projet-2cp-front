@@ -11,8 +11,7 @@ export const teamsService = {
 
   async getTeamById(id: string): Promise<TeamResponse> {
     const response = await axios.get(`/post/team/${id}`);
-    console.log(response.data);
-    return response.data;
+      return response.data;
   },
 
   async post_team_create(data: {
@@ -21,7 +20,6 @@ export const teamsService = {
     description: string;
     category: string;
   }): Promise<Team> {
-    console.log(data);
     const response = await axios.post(`/post/team/`, data);
     return response.data;
   },
@@ -72,8 +70,7 @@ export const teamsService = {
         toast.error('Failed to leave team');
       });
   },
-  async deleteTeam(teamId: numbet): Promise<void> {
-    console.log(teamId);
+  async deleteTeam(teamId: number): Promise<void> {
     await axios.delete('/post/team/', { data: { team_id: teamId } });
   },
 };

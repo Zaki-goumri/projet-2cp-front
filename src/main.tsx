@@ -42,6 +42,7 @@ const JobApplicationsPage = lazy(
   () => import('./modules/company/pages/JobApplicationsPage')
 );
 const EditPostPage = lazy(() => import('./modules/company/pages/EditPostPage'));
+
 const root = document.getElementById('root');
 if (root) {
   ReactDOM.createRoot(root).render(
@@ -250,6 +251,16 @@ if (root) {
                   }
                 />
               </Route>
+              <Route
+                path="/teams/:teamId"
+                element={
+                  <ProtectedRoute>
+                    <LayoutWithoutFooter>
+                      <TeamDetail />
+                    </LayoutWithoutFooter>
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Not found route */}
               <Route path="*" element={<NotFound />} />
