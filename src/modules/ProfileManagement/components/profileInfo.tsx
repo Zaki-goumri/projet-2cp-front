@@ -122,7 +122,7 @@ function ProfileInfo({
                   <>
                     <Button
                       onClick={onSave}
-                      className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
+                      className="flex text-white! items-center justify-center space-x-1 rounded-xl bg-green-500! px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
                       disabled={isEditingLoading}
                     >
                       {isEditingLoading ? (

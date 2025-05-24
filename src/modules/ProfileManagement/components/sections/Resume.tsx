@@ -58,7 +58,7 @@ const ResumeSection = ({ isEditing, cv, onResumeChange }: ResumeProps) => {
               <div className="mt-0.5 flex items-center text-xs text-gray-500">
                 <span>{resumes.createdAt}</span>
                 <span className="mx-1.5">•</span>
-                <span>{resumes.size}</span>
+                <span>{displaySize}</span>
               </div>
             </div>
           </div>
