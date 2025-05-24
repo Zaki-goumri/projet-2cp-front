@@ -4,6 +4,7 @@ import { EditIcon, SaveIcon, CameraIcon, X } from '@/modules/shared/icons';
 import { User } from '@/modules/shared/types';
 import { Spinner } from '@/modules/shared/components';
 import { profileStrengthService } from '@/modules/shared/services/profile-strength.service';
+import CVBuilderDialog from './CVBuilderDialog';
 
 interface ProfileInfoProps {
   isUserProfile: boolean;
@@ -45,7 +46,8 @@ function ProfileInfo({
   useEffect(() => {
     const calculateStrength = async () => {
       if (user) {
-        const strength = await profileStrengthService.calculateProfileStrength(user);
+        const strength =
+          await profileStrengthService.calculateProfileStrength(user);
         setProfileStrength(strength);
       }
     };
@@ -141,13 +143,18 @@ function ProfileInfo({
                     </Button>
                   </>
                 ) : (
-                  <Button
-                    onClick={onEditToggle}
-                    className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
-                  >
-                    <EditIcon className="h-5 w-5" />
-                    <span className="text-sm font-semibold">Edit Profile</span>
-                  </Button>
+                  <>
+                    <CVBuilderDialog userProfile={user} />
+                    <Button
+                      onClick={onEditToggle}
+                      className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
+                    >
+                      <EditIcon className="h-5 w-5" />
+                      <span className="text-sm font-semibold">
+                        Edit Profile
+                      </span>
+                    </Button>
+                  </>
                 )}
               </div>
             )}

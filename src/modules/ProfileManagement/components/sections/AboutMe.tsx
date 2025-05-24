@@ -12,6 +12,7 @@ const AboutMe = ({ isEditing, text, onTextChange }: AboutMeProps) => {
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value);
+    onTextChange(e.target.value);
   };
 
   const handleAddItem = () => {
