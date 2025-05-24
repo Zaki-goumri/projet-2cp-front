@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import InfoCard from '../InfoCard';
 import { Attachment } from '@/modules/shared/types/shared.types';
+import { FormatFileSize } from '@/lib/utils';
 
 interface ResumeProps {
   isEditing: boolean;
@@ -8,7 +9,7 @@ interface ResumeProps {
   cv?: Attachment;
 }
 
-const ResumeSection = ({ isEditing, cv }: ResumeProps) => {
+const ResumeSection = ({ isEditing, cv, onResumeChange }: ResumeProps) => {
   const [resumes, setResumes] = useState<Attachment | undefined>(cv);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -16,15 +17,10 @@ const ResumeSection = ({ isEditing, cv }: ResumeProps) => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const size = (file.size / (1024 * 1024)).toFixed(1);
-
       const newResume: Attachment = {
-        id: Date.now().toString(),
-        fileName: file.name,
-        fileType: file.type.split('/')[1].toUpperCase(),
-        fileSize: `${size} MB`,
-        fileUrl: URL.createObjectURL(file),
-        type: file.type.split('/')[1].toUpperCase(),
+        name: file.name,
+        size: file.size,
+        link: URL.createObjectURL(file),
         createdAt: new Date().toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
@@ -33,18 +29,22 @@ const ResumeSection = ({ isEditing, cv }: ResumeProps) => {
       };
 
       setResumes(newResume);
+      onResumeChange(file);
     }
   };
 
   const handleDelete = () => {
     setResumes(undefined);
   };
+  const displaySize = FormatFileSize(cv?.size || 0);
 
   return (
     <div className="space-y-2">
       {resumes ? (
-        <div
-          key={resumes.id}
+        <a
+          download
+          href={cv?.link}
+          key={resumes.name}
           className="group flex items-center justify-between rounded-lg border border-gray-100 bg-white p-2.5 transition-all duration-200 hover:shadow-md"
         >
           <div className="flex min-w-0 items-center space-x-3">
@@ -53,12 +53,12 @@ const ResumeSection = ({ isEditing, cv }: ResumeProps) => {
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="truncate text-sm font-medium text-gray-900">
-                {resumes.fileName}
+                {resumes.name}
               </h3>
               <div className="mt-0.5 flex items-center text-xs text-gray-500">
                 <span>{resumes.createdAt}</span>
                 <span className="mx-1.5">•</span>
-                <span>{resumes.fileSize}</span>
+                <span>{resumes.size}</span>
               </div>
             </div>
           </div>
@@ -79,7 +79,7 @@ const ResumeSection = ({ isEditing, cv }: ResumeProps) => {
               </button>
             )}
           </div>
-        </div>
+        </a>
       ) : (
         <div className="py-4 text-center">
           <p className="text-gray-500">No resume uploaded yet.</p>

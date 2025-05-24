@@ -47,6 +47,9 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleSaveChanges = () => {
+    console.log('Saving changes...');
+    console.log(aboutMe)
+
     // eslint-disable-next-line
     const updateData: any = {
       description: aboutMe,
@@ -82,7 +85,6 @@ const ProfilePage: React.FC = () => {
                 onEditToggle={() => setIsEditing(!isEditing)}
                 user={data}
                 onProfilePicChange={setProfilePic}
-                j
                 onSave={handleSaveChanges}
               />
               <div className="mt-3 space-y-3 md:space-y-4">

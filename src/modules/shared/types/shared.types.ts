@@ -5,14 +5,10 @@ export * from './experience.types';
 export * from './user.types';
 
 export interface Attachment {
-  id: string;
-  fileName: string;
-  fileType: string;
-  fileSize: string;
-  fileUrl: string;
-  type: string;
+  name: string;
+  size: number;
+  link: string;
   createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface ExperienceData {
