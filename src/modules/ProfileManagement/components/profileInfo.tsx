@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { EditIcon, SaveIcon, CameraIcon, X } from '@/modules/shared/icons';
 import { User } from '@/modules/shared/types';
 import { Spinner } from '@/modules/shared/components';
+import { profileStrengthService } from '@/modules/shared/services/profile-strength.service';
 
 interface ProfileInfoProps {
   isUserProfile: boolean;
@@ -39,6 +40,18 @@ function ProfileInfo({
   );
   const [, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [profileStrength, setProfileStrength] = useState<number>(0);
+
+  useEffect(() => {
+    const calculateStrength = async () => {
+      if (user) {
+        const strength = await profileStrengthService.calculateProfileStrength(user);
+        setProfileStrength(strength);
+      }
+    };
+    calculateStrength();
+  }, [user]);
+
   const handleImageClick = () => {
     if (isEditing) {
       fileInputRef.current?.click();
@@ -159,7 +172,7 @@ function ProfileInfo({
         <div className="hidden h-10 w-px bg-gray-200 sm:block"></div>
 
         <div className="flex flex-col items-center">
-          <p className="text-xl font-bold text-gray-800">60%</p>
+          <p className="text-xl font-bold text-gray-800">{profileStrength}%</p>
           <p className="text-sm text-gray-500">Profile Strength</p>
         </div>
       </div>

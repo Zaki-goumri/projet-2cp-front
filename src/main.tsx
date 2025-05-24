@@ -42,7 +42,7 @@ const JobApplicationsPage = lazy(
   () => import('./modules/company/pages/JobApplicationsPage')
 );
 const EditPostPage = lazy(() => import('./modules/company/pages/EditPostPage'));
-const InterviewPage = lazy(() => import('./modules/interview/page'));
+
 const root = document.getElementById('root');
 if (root) {
   ReactDOM.createRoot(root).render(
@@ -257,16 +257,6 @@ if (root) {
                   <ProtectedRoute>
                     <LayoutWithoutFooter>
                       <TeamDetail />
-                    </LayoutWithoutFooter>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/interview"
-                element={
-                  <ProtectedRoute>
-                    <LayoutWithoutFooter>
-                      <InterviewPage />
                     </LayoutWithoutFooter>
                   </ProtectedRoute>
                 }

@@ -159,20 +159,22 @@ const TeamDetailPage: React.FC = () => {
             </h1>
           </div>
           <div className="flex gap-2">
-            {isLeader && (
+            {isLeader ? (
               <button
                 onClick={() => setConfirmDeleteDialogOpen(true)}
                 className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
               >
                 Delete Team
               </button>
-            )}
+            ):(
             <button
               onClick={() => setConfirmLeaveDialogOpen(true)}
               className="flex-shrink-0 rounded-md bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
             >
               Leave Team
             </button>
+            )}
+            
           </div>
         </div>
 

@@ -13,16 +13,16 @@ import UserNotFound from './components/UserNotFound';
 import { EducationData, ExperienceData } from '../shared/types/shared.types';
 import Skills from './components/sections/Skills';
 type ParamsType = { userName: string };
+
 const ProfilePage: React.FC = () => {
   const { userName } = useParams<ParamsType>();
-  const params = useParams();
   const { data, isLoading, isError } = useUserInfo(userName!);
-
+  const currentUserName = useUserStore((state) => state.user?.name);
   const [isEditing, setIsEditing] = useState(false);
 
   const { updateProfile, isLoading: isUpdating } = useProfileUpdate();
-  const sameUser = userName === data?.name;
-
+  const sameUser = userName === currentUserName;
+  console.log(userName, currentUserName, sameUser);
   // State for all sections
   const [aboutMe, setAboutMe] = useState('');
   const [experiences, setExperiences] = useState<ExperienceData[]>([]);
