@@ -17,6 +17,7 @@ import {
   Users,
   User,
 } from 'lucide-react';
+import { useChat } from '@/modules/chat/hooks/useChat';
 
 const ApplicationDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ const ApplicationDetailPage: React.FC = () => {
 
   const { selectBulk, isSelecting } = useSelectBulk();
   const { getStatusColor, getStatusText } = useStatusUtils();
+  const { startNewConversation } = useChat();
+
   useEffect(() => {
     if (application) {
       setPostId(application.application.post_id ?? null);
@@ -77,9 +80,13 @@ const ApplicationDetailPage: React.FC = () => {
     }
   };
 
-  const handleChat = () => {
-    // TODO: Implement chat functionality
-    console.log(`Chat with applicant ${id}`);
+  const handleChat = async () => {
+    if (!application?.user?.id) return;
+    try {
+      await startNewConversation(application.user.id);
+    } catch (error) {
+      console.error('Error starting chat:', error);
+    }
   };
 
   const handleBack = () => {
