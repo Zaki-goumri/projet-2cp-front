@@ -33,7 +33,7 @@ const ApplicationDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (application) {
-      setPostId(application.application.post_id ?? null);
+      setPostId(application.application.post_id?? null);
     }
   }, [application]);
 
@@ -93,14 +93,7 @@ const ApplicationDetailPage: React.FC = () => {
     navigate('/company/test');
   };
 
-  const handleDownloadResume = () => {
-    if (application.user?.cv) {
-      // TODO: Implement download functionality
-      console.log(`Downloading resume: ${application.user.cv}`);
-    } else {
-      console.log('No resume available');
-    }
-  };
+  
 
   const isUserApplication = application.type === 'user';
   const applicantData = isUserApplication ? application.user : application.team;
@@ -222,15 +215,14 @@ const ApplicationDetailPage: React.FC = () => {
 
                     {application.user.cv && (
                       <div className="pt-2">
-                        <Button
+                       <a download href={application.user.cv.link}> <Button
                           variant="outline"
                           className="flex w-full items-center justify-center border-[#92E3A9] bg-white! text-[#4A9D66] hover:bg-[#92E3A9]/10"
-                          onClick={handleDownloadResume}
                         >
                           <FileText className="mr-2 h-4 w-4" />
                           <span>View Resume</span>
                           <Download className="ml-2 h-4 w-4" />
-                        </Button>
+                        </Button></a>
                       </div>
                     )}
                   </>

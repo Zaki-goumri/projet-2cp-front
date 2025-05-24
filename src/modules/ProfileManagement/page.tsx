@@ -12,6 +12,7 @@ import { Spinner } from '@/modules/shared/components';
 import UserNotFound from './components/UserNotFound';
 import { EducationData, ExperienceData } from '../shared/types/shared.types';
 import Skills from './components/sections/Skills';
+import { set } from 'date-fns';
 type ParamsType = { userName: string };
 
 const ProfilePage: React.FC = () => {
@@ -45,6 +46,10 @@ const ProfilePage: React.FC = () => {
     }
     setIsEditing(!isEditing);
   };
+  const handleAboutMeDesc=(text:string)=>{
+    
+    setAboutMe("")
+  }
 
   const handleSaveChanges = () => {
     console.log('Saving changes...');
@@ -91,7 +96,7 @@ const ProfilePage: React.FC = () => {
                 <AboutMe
                   isEditing={isEditing}
                   text={aboutMe}
-                  onTextChange={setAboutMe}
+                  onTextChange={handleAboutMeDesc}
                 />
                 <Experience
                   isEditing={isEditing}
