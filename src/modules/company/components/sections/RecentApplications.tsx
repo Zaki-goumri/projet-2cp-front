@@ -22,11 +22,17 @@ const RecentApplications = ({ applications }: RecentApplicationsProps) => {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200!">
-                <th className="text-left py-3 px-4 text-gray-600!">Applicant</th>
-                <th className="text-left py-3 px-4 text-gray-600!">Position</th>
-                <th className="text-left py-3 px-4 text-gray-600!">Applied Date</th>
-                <th className="text-left py-3 px-4 text-gray-600!">Status</th>
-                <th className="text-left py-3 px-4 text-gray-600!">Actions</th>
+                {[
+                  'Applicant',
+                  'Position',
+                  'Applied Date',
+                  'Status',
+                  'Actions'
+                ].map((header) => (
+                  <th key={header} className="text-left py-3 px-4 text-gray-600!">
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -36,12 +42,12 @@ const RecentApplications = ({ applications }: RecentApplicationsProps) => {
                   <td className="py-3 px-4 text-gray-900!">{app.position}</td>
                   <td className="py-3 px-4 text-gray-900!">{new Date(app.appliedDate).toLocaleDateString()}</td>
                   <td className="py-3 px-4">
-                    <Badge className={getStatusColor(app.status)}>
+                    <Badge className={getStatusColor(app.status)+' !border-none'}>
                       {getStatusText(app.status)}
                     </Badge>
                   </td>
                   <td className="py-3 px-4">
-                    <Button variant="ghost" size="sm" className="text-[#4A9D66]! hover:text-[#92E3A9]!">
+                    <Button variant="ghost" size="sm" className="text-[#4A9D66]! hover:!text-[#92E3A9]! hover:!bg-gray-200">
                       <Eye className="h-4 w-4" />
                     </Button>
                   </td>

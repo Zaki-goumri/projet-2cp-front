@@ -120,9 +120,9 @@ const ApplicationDetailPage: React.FC = () => {
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left column - Applicant info */}
         <div className="md:col-span-1">
-          <Card className="border border-gray-200 bg-white! shadow-sm">
+          <Card className=" bg-white! shadow-md !border-none h-full">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xl font-bold text-gray-900">
+              <CardTitle className="text-xl font-bold text-gray-900 ">
                 {isUserApplication
                   ? 'Applicant Information'
                   : 'Team Information'}
@@ -158,7 +158,7 @@ const ApplicationDetailPage: React.FC = () => {
 
                 <div className="mt-2">
                   <Badge
-                    className={getStatusColor(application.application.status)}
+                    className={getStatusColor(application.application.status)+' border-none'}
                   >
                     {getStatusText(application.application.status)}
                   </Badge>
@@ -289,7 +289,7 @@ const ApplicationDetailPage: React.FC = () => {
 
         {/* Right column - Application details */}
         <div className="md:col-span-2">
-          <Card className="border border-gray-200 bg-white! shadow-sm">
+          <Card className="border-none bg-white! shadow-sm ">
             <CardHeader className="pb-2">
               <CardTitle className="text-xl font-bold text-gray-900">
                 Application Details
@@ -361,7 +361,7 @@ const ApplicationDetailPage: React.FC = () => {
                       Proposal
                     </h3>
                     <div className="rounded-md bg-gray-50 p-4 text-gray-700">
-                      <p>{application.application.proposal}</p>
+                      <p className="whitespace-pre-wrap break-words">{application.application.proposal}</p>
                     </div>
                   </div>
                 )}
@@ -396,7 +396,7 @@ const ApplicationDetailPage: React.FC = () => {
                   application.application.status === 'under_review') && (
                   <div className="flex gap-3 pt-4">
                     <Button
-                      className="flex-1 cursor-pointer items-center justify-center bg-[#92E3A9]! text-white! hover:bg-[#4A9D66]!"
+                      className="flex-1 cursor-pointer items-center justify-center !bg-[#92E3A9] !text-white hover:!bg-[#4A9D66]"
                       onClick={handleAccept}
                     >
                       <CheckCircle className="mr-2 h-4 w-4" />
@@ -404,7 +404,7 @@ const ApplicationDetailPage: React.FC = () => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="flex-1 cursor-pointer items-center justify-center border-red-500 bg-red-400! text-red-500 text-white! hover:bg-red-700!"
+                      className="flex-1 cursor-pointer items-center justify-center !border-red-500 !bg-red-500 text-red-500 text-white! hover:bg-red-700!"
                       onClick={handleReject}
                       disabled={isSelecting}
                     >
@@ -413,7 +413,7 @@ const ApplicationDetailPage: React.FC = () => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="flex-1 cursor-pointer items-center justify-center border-blue-500 text-blue-500 hover:bg-blue-50"
+                      className="!flex-1 !cursor-pointer items-center !bg-blue-500 justify-center !border-blue-500 !text-white hover:!bg-blue-700  "
                       onClick={handleChat}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />

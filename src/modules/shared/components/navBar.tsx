@@ -326,31 +326,24 @@ export default function NavBar() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-50 lg:hidden"
+                  className="fixed inset-0 z-100 lg:hidden"
                 >
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/50"
-                    onClick={() => setIsOpen(false)}
-                  />
                   <motion.div
                     initial={{ x: '100%' }}
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ type: 'spring', damping: 20 }}
-                    className="absolute top-0 right-0 h-full w-64 bg-white shadow-lg"
+                    className="absolute top-0 right-0 h-full w-64 bg-white shadow-lg z-100"
                   >
                     <div className="h-full bg-white ">
                       <button
                         onClick={() => setIsOpen(false)}
-                        className="absolute top-4 right-4 rounded-lg p-2 transition-colors duration-200 hover:bg-gray-100"
+                        className="absolute top-4 right-4 rounded-lg p-2 transition-colors duration-200 hover:bg-gray-100 "
                         aria-label="Close menu"
                       >
                         <X className="h-6 w-6" />
                       </button>
-                      <div className="mt-8 space-y-3 bg-white h-screen w-64">
+                      <div className="mt-8 space-y-3 bg-white h-screen w-64 z-100">
                         {user ? (
                           <>
                             {privateNavItems.map((item) => (

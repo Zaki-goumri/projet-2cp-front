@@ -211,7 +211,7 @@ const companyAddress="Algeria, Sidi bel abbes"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className={`w-full ${errors.name ? 'border-red-500' : ''}`}
+                    className={`w-full !border-none ${errors.name ? 'border-red-500' : ''}`}
                     placeholder="Enter your name"
                   />
                   {errors.name && (
@@ -232,7 +232,7 @@ const companyAddress="Algeria, Sidi bel abbes"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className={`w-full ${errors.email ? 'border-red-500' : ''}`}
+                    className={`w-full !border-none ${errors.email ? 'border-red-500' : ''}`}
                     placeholder="Enter your email"
                   />
                   {errors.email && (
@@ -253,7 +253,7 @@ const companyAddress="Algeria, Sidi bel abbes"
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className={`w-full ${errors.subject ? 'border-red-500' : ''}`}
+                    className={`w-full !border-none  ${errors.subject ? 'border-red-500' : ''}`}
                     placeholder="Enter subject"
                   />
                   {errors.subject && (
@@ -273,7 +273,7 @@ const companyAddress="Algeria, Sidi bel abbes"
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    className={`w-full min-h-[120px] ${errors.message ? 'border-red-500' : ''}`}
+                    className={`w-full !border-none shadow-md min-h-[120px] ${errors.message ? 'border-red-500' : ''}`}
                     placeholder="Enter your message"
                   />
                   {errors.message && (

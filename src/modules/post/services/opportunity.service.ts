@@ -1,4 +1,5 @@
 import axios from '@/api/axios.config';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import externalApi from 'axios';
 import { Team, TeamMember, TeamsResponse } from '../types/team.types';
 import {
@@ -27,7 +28,7 @@ export class OpportunityService {
     savedPosts: '/Auth/post/',
     postCreation: '/post/opportunity/',
   };
-
+  private readonly MODEL_NAME = 'gemini-1.5-flash-latest';
   private constructor() {}
 
   public static getInstance(): OpportunityService {
@@ -52,46 +53,46 @@ export class OpportunityService {
   }
 
   /**
-   * Converts any text content to markdown format using Google's Gemini API
+   * Converts any text content to markdown format using Google's Gemini Flash API
    * @param content The text content to convert to markdown
    * @returns A promise containing the markdown representation of the content
    */
   public async getMarkdownContent(content: string): Promise<string> {
     if (!content) return '';
 
-    const GEMINI_URL = import.meta.env.VITE_GEMINI_URL;
     const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-
-    if (!GEMINI_URL || !GEMINI_API_KEY) {
-      console.warn('Missing Gemini config.');
+    if (!GEMINI_API_KEY) {
+      console.warn('Missing Gemini API key configuration.');
       return content;
     }
 
     try {
-      const response = await externalApi.post(
-        `${GEMINI_URL}?key=${GEMINI_API_KEY}`,
-        {
-          contents: [
-            {
-              parts: [{ text: `Make this content markdown:\n\n${content}` }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.2,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 1024,
-          },
+      // Initialize Gemini AI with the same pattern as GlobalErrorService
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({
+        model: this.MODEL_NAME,
+        generationConfig: {
+          temperature: 0.1,
+          topK: 32,
+          topP: 0.9,
+          maxOutputTokens: 2048,
         },
-        {
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      });
 
-      const markdown = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-      return markdown || content;
+      const prompt = `Convert the following content to clean, well-formatted markdown. Preserve the structure and meaning while improving readability. Return ONLY the markdown content without any additional explanations:
+
+${content}`;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const markdown = response.text();
+
+      return markdown?.trim() || content;
     } catch (error: any) {
-      console.error('Error converting to markdown with Gemini:', error.message);
+      console.error(
+        'Error converting to markdown with Gemini Flash:',
+        error.message
+      );
       return content;
     }
   }
@@ -122,26 +123,28 @@ export class OpportunityService {
     file: File | null,
     teamName?: string
   ): Promise<ApplicationResponse> {
-    const formData = new FormData();
-    formData.append('proposal', proposal);
-
+    const form = new FormData();
+    form.append('proposal', proposal);
     if (file) {
-      formData.append('attechment', file);
+      form.append('attechment', file);
+      console.log(file);
     }
     const response = teamName
-      ? await axios.post<ApplicationResponse>(
+      ? await axios.postForm<ApplicationResponse>(
           `${this.endpoints.applications}${opportunityId}/`,
-          formData,
+
+          { proposal, attechment: file },
           {
             params: {
               team: teamName,
             },
           }
         )
-      : await axios.post<ApplicationResponse>(
+      : await axios.postForm<ApplicationResponse>(
           `${this.endpoints.applications}${opportunityId}/`,
-          formData
+          { proposal, attechment: file }
         );
+    console.log(response);
     return response.data;
   }
 }
