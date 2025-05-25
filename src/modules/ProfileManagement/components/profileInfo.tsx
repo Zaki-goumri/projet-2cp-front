@@ -15,6 +15,8 @@ interface ProfileInfoProps {
   onProfilePicChange: (file: File) => void;
   isEditingLoading: boolean;
   onCancel: () => void;
+  isCompany?:boolean
+  internShipCount?:number
 }
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -33,6 +35,8 @@ function ProfileInfo({
   onSave,
   isEditingLoading,
   onCancel,
+  isCompany=false,
+  internShipCount
 }: ProfileInfoProps) {
   const profilePlaceHolder = '/assets/profile-placeholder.png';
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -144,7 +148,7 @@ function ProfileInfo({
                   </>
                 ) : (
                   <>
-                    <CVBuilderDialog userProfile={user} />
+                   { ( !isCompany&&isUserProfile ) &&( <CVBuilderDialog userProfile={user} /> ) }
                     <Button
                       onClick={onEditToggle}
                       className="flex items-center justify-center space-x-2 rounded-xl bg-[#92E3A9] px-4 py-2 transition-colors duration-200 hover:bg-[#7ED196]"
@@ -163,12 +167,14 @@ function ProfileInfo({
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col items-center justify-center sm:flex-row sm:space-x-8 md:mt-8 md:space-x-16 lg:space-x-24">
+       <div className="mt-6 flex flex-col items-center justify-center sm:flex-row sm:space-x-8 md:mt-8 md:space-x-16 lg:space-x-24">
+     { isCompany && ( 
         <div className="mb-4 flex flex-col items-center sm:mb-0">
-          <p className="text-xl font-bold text-gray-800">80</p>
+          <p className="text-xl font-bold text-gray-800">{internShipCount??0}</p>
           <p className="text-sm text-gray-500">InternShips</p>
-        </div>
-
+        </div> 
+        )
+ }
         <div className="hidden h-10 w-px bg-gray-200 sm:block"></div>
 
         <div className="mb-4 flex flex-col items-center sm:mb-0">

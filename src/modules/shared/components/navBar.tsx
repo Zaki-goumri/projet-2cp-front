@@ -243,7 +243,7 @@ export default function NavBar() {
                     <DropdownMenuSeparator className="!bg-gray-200" />
                     {[
                       {
-                        to: `/profile/${user.name}`,
+                        to: user.type=="Student"?`/profile/${user.name}`:`/profile/company/${user.name}`,
                         icon: <User className="h-4 w-4" />,
                         label: 'Profile',
                         isExternal: false,

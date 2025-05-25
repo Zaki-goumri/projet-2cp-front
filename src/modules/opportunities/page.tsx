@@ -115,7 +115,7 @@ const calculateDaysLeft = (endDate?: string | null): number | null => {
   return diffDays;
 };
 
-const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
+export const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {

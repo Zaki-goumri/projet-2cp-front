@@ -14,7 +14,7 @@ export const selectBolk = async (
 ) => {
   try {
     const keyWord = cmd === 'ACCEPT' ? 'choose' : 'reject_applicant';
-    const response = await axios.post(`app/${keyWord}/${postId}/`, {
+    const response = await axios.put(`app/${keyWord}/${postId}/`, {
       id: ids,
     });
     return response.data;

@@ -14,7 +14,7 @@ export class OpportunitiesService {
     problems: '/post/problem/',
     search: '/app/search/',
     save: '/Auth/post/',
-  };
+  }as const;
 
   private constructor() {}
 
