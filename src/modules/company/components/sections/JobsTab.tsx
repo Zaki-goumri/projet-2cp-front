@@ -59,10 +59,7 @@ const JobsTab = () => {
               <thead>
                 <tr className="bg-gray-50!">
                   <th className="px-4 py-3 text-left text-gray-600!">
-                    Job Title
-                  </th>
-                  <th className="px-4 py-3 text-left text-gray-600!">
-                    Department
+                    Opportunity Title
                   </th>
                   <th className="px-4 py-3 text-left text-gray-600!">
                     Location
@@ -87,9 +84,6 @@ const JobsTab = () => {
                     className="border-b border-gray-100! hover:bg-gray-50!"
                   >
                     <td className="px-4 py-3 text-gray-900!">{job.title}</td>
-                    <td className="px-4 py-3 text-gray-900!">
-                      {job.department}
-                    </td>
                     <td className="px-4 py-3 text-gray-900!">{job.location}</td>
                     <td className="px-4 py-3 text-gray-900!">{job.type}</td>
                     <td className="px-4 py-3 text-gray-900!">
@@ -99,17 +93,17 @@ const JobsTab = () => {
                       {job.applications}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge className={getStatusColor(job.status)}>
+                      <Badge className={getStatusColor(job.status)+ ' !border-none'}>
                         {getStatusText(job.status)}
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
                       <DropdownMenu>
-                        <DropdownMenuTrigger className="bg-white!">
+                        <DropdownMenuTrigger className="hover:!bg-gray-200 !rounded-sm">
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-gray-600!"
+                className="hover:!bg-gray-100 !rounded-sm text-black hover:!text-black"
                           >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
@@ -118,10 +112,6 @@ const JobsTab = () => {
                           align="end"
                           className="border border-gray-200! bg-white!"
                         >
-                          <DropdownMenuItem className="text-gray-700! hover:bg-[#92E3A9]/10! hover:text-[#4A9D66]!">
-                            <Eye className="mr-2 h-4 w-4" />
-                            View
-                          </DropdownMenuItem>
                           <DropdownMenuItem
                             className="text-gray-700! hover:bg-[#92E3A9]/10! hover:text-[#4A9D66]!"
                             onClick={() => handleEditPost(job.id)}

@@ -47,7 +47,7 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
             <SelectTrigger className="w-[180px] border-gray-200! focus:border-[#92E3A9]! focus:ring-[#92E3A9]!">
               <SelectValue
                 placeholder="Filter by status"
-                className="text-gray-900! hover:bg-[#92E3A9]/20!"
+                className="!text-gray-900 hover:!bg-[#92E3A9]/20"
               />
             </SelectTrigger>
             <SelectContent className="border-gray-200! bg-white! hover:bg-white!">
@@ -138,10 +138,10 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
                       {new Date(app.appliedDate).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-gray-900!">
-                      {app.experience}
+                      {app.experience?.length > 10 ? app.experience.slice(0,10)+'...' : app.experience}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge className={getStatusColor(app.status)}>
+                      <Badge className={getStatusColor(app.status)+' !border-none'}>
                         {getStatusText(app.status)}
                       </Badge>
                     </td>
@@ -150,7 +150,7 @@ const ApplicationsTab = ({ activeTab }: ApplicationsTabProps) => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-[#4A9D66]! hover:text-[#92E3A9]!"
+                          className="!text-[#4A9D66] hover:!text-[#92E3A9] hover:!bg-gray-200"
                           onClick={() => navigate(`/company/applications/${app.id}`)}
                         >
                           <Eye className="h-4 w-4" />

@@ -1,16 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { Message, Conversation } from '../types';
+import { Message, Conversation, User } from '../types';
 
 interface ChatMessagesProps {
   messages: Message[];
   activeConversation: Conversation | null;
-  currentUser?: {
-    id: number;
-    email: string;
-    name: string;
-    type: string;
-    profilepic: string | null;
-  } | null;
+  currentUser?: User | null;
 }
 
 const ChatMessages = ({
@@ -35,7 +29,12 @@ const ChatMessages = ({
     );
   }
 
-  const groupedMessages = messages.reduce<Record<string, Message[]>>(
+  // Sort messages by date and group them
+  const sortedMessages = [...messages].sort((a, b) => 
+    new Date(a.sentTime).getTime() - new Date(b.sentTime).getTime()
+  );
+
+  const groupedMessages = sortedMessages.reduce<Record<string, Message[]>>(
     (groups, message) => {
       const date = new Date(message.sentTime).toLocaleDateString();
       if (!groups[date]) {
@@ -53,7 +52,7 @@ const ChatMessages = ({
         <div className="text-center">
           <div className="relative mx-auto mb-2 h-16 w-16">
             <img
-              src={activeConversation.avatar?.link || ''}
+              src={activeConversation.avatar || ''}
               alt={activeConversation.name}
               className="h-full w-full rounded-full"
             />
@@ -62,7 +61,7 @@ const ChatMessages = ({
         </div>
       </div>
 
-      {Object.keys(groupedMessages).map((date) => (
+      {Object.entries(groupedMessages).map(([date, messages]) => (
         <div key={date}>
           <div className="my-4 flex justify-center">
             <span className="rounded-full bg-gray-200 px-3 py-1 text-xs text-gray-600">
@@ -70,7 +69,7 @@ const ChatMessages = ({
             </span>
           </div>
 
-          {groupedMessages[date].map((message) => {
+          {messages.map((message) => {
             const isSentByCurrentUser = currentUser?.id === message.sender;
             const messageKey = `${message.sender}-${message.message}-${new Date(message.sentTime).getTime()}`;
             return (
@@ -81,7 +80,7 @@ const ChatMessages = ({
                 {!isSentByCurrentUser && (
                   <div className="mr-2 flex-shrink-0">
                     <img
-                      src={activeConversation.avatar?.link || ''}
+                      src={activeConversation.avatar || ''}
                       alt={activeConversation.name}
                       className="h-8 w-8 rounded-full"
                     />
@@ -116,8 +115,8 @@ const ChatMessages = ({
                 {isSentByCurrentUser && (
                   <div className="ml-2 flex-shrink-0">
                     <img
-                      src={currentUser?.profilepic?.link || ''}
-                      alt={currentUser?.name || 'Me'}
+                      src={currentUser?.profilepic || ''}
+                      alt={currentUser?.username || 'Me'}
                       className="h-8 w-8 rounded-full"
                     />
                   </div>
