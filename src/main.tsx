@@ -32,6 +32,7 @@ import CreateTeamCard from './modules/teams/components/CreateTeamCard';
 const Chat = lazy(() => import('./modules/chat/page'));
 import { QueryProvider } from './modules/shared/providers/QueryProvider';
 import CreateOpportunityPage from './modules/post/components/opportunity.create';
+import CompanyProfile from './modules/company/pages/profile/companyProfile';
 const QAPage = lazy(() => import('./modules/qa/page'));
 const ContactPage = lazy(() => import('./modules/contact/page'));
 const CompanyDashboard = lazy(() => import('./modules/company/page'));
@@ -97,25 +98,36 @@ if (root) {
               <Route
                 path="/company/test"
                 element={
+                  <ProtectedRoute>
                   <MainLayout>
                     <CompanyDashboard />
                   </MainLayout>
+                  </ProtectedRoute>
                 }
+              />
+              <Route
+               path='profile/company/:companyName'
+               element={
+                <MainLayout>
+                  <CompanyProfile/>
+                </MainLayout>
+               }
               />
               <Route
                 path="/company/applications/:appId"
                 element={
+<ProtectedRoute>
                   <MainLayout>
                     <ApplicationDetailPage />
-                  </MainLayout>
+                  </MainLayout></ProtectedRoute>
                 }
               />
               <Route
                 path="/company/post/applications/:postId"
                 element={
-                  <MainLayout>
+<ProtectedRoute>                  <MainLayout>
                     <JobApplicationsPage />
-                  </MainLayout>
+                  </MainLayout></ProtectedRoute>
                 }
               />
               <Route
