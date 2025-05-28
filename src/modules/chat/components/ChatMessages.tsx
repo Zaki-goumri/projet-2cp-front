@@ -30,8 +30,8 @@ const ChatMessages = ({
   }
 
   // Sort messages by date and group them
-  const sortedMessages = [...messages].sort((a, b) => 
-    new Date(a.sentTime).getTime() - new Date(b.sentTime).getTime()
+  const sortedMessages = [...messages].sort(
+    (a, b) => new Date(a.sentTime).getTime() - new Date(b.sentTime).getTime()
   );
 
   const groupedMessages = sortedMessages.reduce<Record<string, Message[]>>(
@@ -52,7 +52,7 @@ const ChatMessages = ({
         <div className="text-center">
           <div className="relative mx-auto mb-2 h-16 w-16">
             <img
-              src={activeConversation.avatar || ''}
+              src={activeConversation.avatar?.link || ''}
               alt={activeConversation.name}
               className="h-full w-full rounded-full"
             />
@@ -80,7 +80,7 @@ const ChatMessages = ({
                 {!isSentByCurrentUser && (
                   <div className="mr-2 flex-shrink-0">
                     <img
-                      src={activeConversation.avatar || ''}
+                      src={activeConversation.avatar?.link || ''}
                       alt={activeConversation.name}
                       className="h-8 w-8 rounded-full"
                     />
@@ -115,7 +115,7 @@ const ChatMessages = ({
                 {isSentByCurrentUser && (
                   <div className="ml-2 flex-shrink-0">
                     <img
-                      src={currentUser?.profilepic || ''}
+                      src={currentUser?.profilepic.link || ''}
                       alt={currentUser?.username || 'Me'}
                       className="h-8 w-8 rounded-full"
                     />

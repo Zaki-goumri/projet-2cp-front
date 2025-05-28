@@ -243,9 +243,8 @@ const EditPostPage: React.FC = () => {
                   {...register('status')}
                   className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm transition-colors focus:border-[#92E3A9] focus:ring-1 focus:ring-[#92E3A9] focus:outline-none"
                 >
-                  <option value="active">Active</option>
+                  <option value="open">Active</option>
                   <option value="closed">Closed</option>
-                  <option value="draft">Draft</option>
                 </select>
                 {errors.status && (
                   <p className="mt-1 text-sm text-red-500">

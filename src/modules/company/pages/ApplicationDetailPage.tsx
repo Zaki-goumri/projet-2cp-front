@@ -33,7 +33,7 @@ const ApplicationDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (application) {
-      setPostId(application.application.post_id?? null);
+      setPostId(application.application.post_id ?? null);
     }
   }, [application]);
 
@@ -55,7 +55,7 @@ const ApplicationDetailPage: React.FC = () => {
 
   const handleAccept = async () => {
     try {
-    selectBulk({
+      selectBulk({
         ids: [application.application.id],
         postId: application.post_id ?? 0,
         cmd: 'ACCEPT',
@@ -93,8 +93,6 @@ const ApplicationDetailPage: React.FC = () => {
     navigate('/company/test');
   };
 
-  
-
   const isUserApplication = application.type === 'user';
   const applicantData = isUserApplication ? application.user : application.team;
 
@@ -120,9 +118,9 @@ const ApplicationDetailPage: React.FC = () => {
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left column - Applicant info */}
         <div className="md:col-span-1">
-          <Card className=" bg-white! shadow-md !border-none h-full">
+          <Card className="h-full !border-none bg-white! shadow-md">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xl font-bold text-gray-900 ">
+              <CardTitle className="text-xl font-bold text-gray-900">
                 {isUserApplication
                   ? 'Applicant Information'
                   : 'Team Information'}
@@ -158,7 +156,10 @@ const ApplicationDetailPage: React.FC = () => {
 
                 <div className="mt-2">
                   <Badge
-                    className={getStatusColor(application.application.status)+' border-none'}
+                    className={
+                      getStatusColor(application.application.status) +
+                      ' border-none'
+                    }
                   >
                     {getStatusText(application.application.status)}
                   </Badge>
@@ -215,14 +216,17 @@ const ApplicationDetailPage: React.FC = () => {
 
                     {application.user.cv && (
                       <div className="pt-2">
-                       <a download href={application.user.cv.link}> <Button
-                          variant="outline"
-                          className="flex w-full items-center justify-center border-[#92E3A9] bg-white! text-[#4A9D66] hover:bg-[#92E3A9]/10"
-                        >
-                          <FileText className="mr-2 h-4 w-4" />
-                          <span>View Resume</span>
-                          <Download className="ml-2 h-4 w-4" />
-                        </Button></a>
+                        <a download href={application.user.cv.link}>
+                          {' '}
+                          <Button
+                            variant="outline"
+                            className="flex w-full items-center justify-center !border-[#92E3A9] !bg-white !text-[#4A9D66] hover:!bg-[#92E3A9]/10"
+                          >
+                            <FileText className="mr-2 h-4 w-4" />
+                            <span>View Resume</span>
+                            <Download className="ml-2 h-4 w-4" />
+                          </Button>
+                        </a>
                       </div>
                     )}
                   </>
@@ -289,7 +293,7 @@ const ApplicationDetailPage: React.FC = () => {
 
         {/* Right column - Application details */}
         <div className="md:col-span-2">
-          <Card className="border-none bg-white! shadow-sm ">
+          <Card className="border-none bg-white! shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-xl font-bold text-gray-900">
                 Application Details
@@ -361,7 +365,9 @@ const ApplicationDetailPage: React.FC = () => {
                       Proposal
                     </h3>
                     <div className="rounded-md bg-gray-50 p-4 text-gray-700">
-                      <p className="whitespace-pre-wrap break-words">{application.application.proposal}</p>
+                      <p className="break-words whitespace-pre-wrap">
+                        {application.application.proposal}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -382,7 +388,7 @@ const ApplicationDetailPage: React.FC = () => {
                     <a download href={application.application.atachedfile.link}>
                       <Button
                         variant="outline"
-                        className="flex items-center justify-center border-[#92E3A9] bg-white! text-[#4A9D66] hover:bg-[#92E3A9]/10"
+                        className="flex items-center justify-center !border-[#92E3A9] !bg-white !text-[#4A9D66] hover:!bg-[#92E3A9]/10"
                       >
                         <FileText className="mr-2 h-4 w-4" />
                         <span>View Attached File</span>
@@ -413,7 +419,7 @@ const ApplicationDetailPage: React.FC = () => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="!flex-1 !cursor-pointer items-center !bg-blue-500 justify-center !border-blue-500 !text-white hover:!bg-blue-700  "
+                      className="!flex-1 !cursor-pointer items-center justify-center !border-blue-500 !bg-blue-500 !text-white hover:!bg-blue-700"
                       onClick={handleChat}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
@@ -427,7 +433,7 @@ const ApplicationDetailPage: React.FC = () => {
                     <div className="flex gap-3 pt-4">
                       <Button
                         variant="outline"
-                        className="flex-1 items-center justify-center border-blue-500 text-blue-500 hover:bg-blue-50"
+                        className="flex-1 items-center justify-center !border-blue-500 !bg-blue-100 !text-blue-500 hover:!bg-blue-50"
                         onClick={handleChat}
                       >
                         <MessageCircle className="mr-2 h-4 w-4" />

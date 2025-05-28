@@ -10,16 +10,7 @@ import { requestFcmToken } from '@/api/firebase.messaging';
 const HomaPage = () => {
   const user = useUserStore((state) => state.user);
 
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('firebase-messaging-sw.js')
-        .then(() => {
-          requestFcmToken();
-        })
-        .catch((err) => console.error('SW registration failed:', err));
-    }
-  }, []);
+ 
   return (
     <div className="flex flex-col">
       {user ? <AuthedHome /> : <UnAuthedHome />}

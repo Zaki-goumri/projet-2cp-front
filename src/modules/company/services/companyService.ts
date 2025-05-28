@@ -13,9 +13,16 @@ export const selectBolk = async (
   cmd: 'ACCEPT' | 'REJECT'
 ) => {
   try {
+    const method = cmd === 'ACCEPT' ? 'PUT' : 'POST'; // or 'post', 'patch', etc.
     const keyWord = cmd === 'ACCEPT' ? 'choose' : 'reject_applicant';
-    const response = await axios.put(`app/${keyWord}/${postId}/`, {
-      id: ids,
+
+    const url = `app/${keyWord}/${postId}/`;
+    const data = { id: ids };
+
+    const response = await axios({
+      method: method,
+      url: url,
+      data: data, // `data` is ignored by GET/DELETE if not needed
     });
     return response.data;
   } catch (error) {

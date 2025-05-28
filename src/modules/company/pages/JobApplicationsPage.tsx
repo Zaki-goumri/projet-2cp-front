@@ -98,12 +98,11 @@ const JobApplicationsPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <Button
-          variant="ghost"
-          className="mb-6 flex items-center text-gray-600! hover:text-gray-900!"
+          className="mb-6 flex items-center !text-gray-600 hover:!bg-gray-50 hover:!text-gray-900"
           onClick={handleBack}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Jobs
+          Back to Opportunities
         </Button>
         <Card className="border border-gray-200! bg-white! shadow-sm!">
           <CardContent className="flex h-40 items-center justify-center">
@@ -131,7 +130,7 @@ const JobApplicationsPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <Button
         variant="ghost"
-        className="mb-6 flex items-center text-gray-600! hover:text-gray-900!"
+        className="hover:!bg-primary mb-6 flex items-center text-gray-600! hover:!text-white"
         onClick={handleBack}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -316,10 +315,14 @@ const JobApplicationsPage: React.FC = () => {
                       {new Date(app.appliedDate).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-gray-900!">
-                      {app.experience}
+                      {app.experience?.length > 10
+                        ? app.experience.slice(0, 10) + '...'
+                        : app.experience}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge className={getStatusColor(app.status)}>
+                      <Badge
+                        className={getStatusColor(app.status) + ' border-none'}
+                      >
                         {getStatusText(app.status)}
                       </Badge>
                     </td>
@@ -328,7 +331,7 @@ const JobApplicationsPage: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-[#4A9D66]! hover:text-[#92E3A9]!"
+                          className="hover:!bg-primary !text-[#4A9D66] hover:!text-white"
                           onClick={() =>
                             navigate(`/company/applications/${app.id}`)
                           }
